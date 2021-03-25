@@ -19,16 +19,16 @@ class Validators {
     if (password.length >= 1) {
       sink.add(password);
     } else {
-      sink.addError('Password is required');
+      sink.addError('Contraseña es requerida');
     }
   });
 
   final validationNameRequired =
       StreamTransformer<String, String>.fromHandlers(handleData: (text, sink) {
-    if (text.length >= 1) {
+    if (text.length >= 5) {
       sink.add(text);
     } else {
-      sink.addError('Name is required');
+      sink.addError('Nombre debe ser mayor a 5 caracteres');
     }
   });
 

@@ -180,7 +180,6 @@ class _CollapsingListState extends State<CollapsingList>
         ),
         makeHeaderSpacerShort(context),
         makeListClubes(context),
-        makeHeaderSpacerShort(context),
         makelistCarouselMyPlants(context),
         makeListCarouselMyVisits(context),
         makeListProducts(context)
@@ -218,7 +217,7 @@ class _CollapsingListState extends State<CollapsingList>
     return SliverList(
       delegate: SliverChildListDelegate([
         Container(
-          padding: EdgeInsets.only(bottom: 10),
+          padding: EdgeInsets.only(bottom: 0, top: 20),
           child: StreamBuilder<PlantsResponse>(
             stream: plantBloc.plantsUser.stream,
             builder: (context, AsyncSnapshot<PlantsResponse> snapshot) {
@@ -281,7 +280,7 @@ class _CollapsingListState extends State<CollapsingList>
                       ? FadeIn(
                           child: Container(
                             padding: EdgeInsets.only(
-                                left: 40, top: size.height / 30, bottom: 0),
+                                left: 40, top: size.height / 60, bottom: 0),
                             child: Text(
                               'Ultimas Visitas',
                               style: TextStyle(
@@ -294,9 +293,12 @@ class _CollapsingListState extends State<CollapsingList>
                           ),
                         )
                       : Container(),
-                  FadeInRight(
-                    delay: Duration(milliseconds: 600),
-                    child: _buildWidgetVisits(visits, context),
+                  Container(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: FadeInRight(
+                      delay: Duration(milliseconds: 600),
+                      child: _buildWidgetVisits(visits, context),
+                    ),
                   ),
                 ],
               ); // image is ready
@@ -320,7 +322,7 @@ class _CollapsingListState extends State<CollapsingList>
           children: [
             Container(
               padding: EdgeInsets.only(
-                top: 30,
+                top: 10,
                 left: 15,
               ),
               child: Text(
@@ -334,7 +336,7 @@ class _CollapsingListState extends State<CollapsingList>
               ),
             ),
             Container(
-                padding: EdgeInsets.only(top: 40),
+                padding: EdgeInsets.only(top: 20),
                 child: StreamBuilder<ProductsProfilesResponse>(
                   stream: productBloc.produtsProfiles.stream,
                   builder: (context,
@@ -661,7 +663,7 @@ Widget _buildWidgetVisits(List<Visit> visits, context) {
             final visit = visits[index];
 
             return Container(
-              padding: EdgeInsets.only(right: 10, top: size.height / 12),
+              padding: EdgeInsets.only(right: 10, top: size.height / 14),
               child: OpenContainer(
                   closedElevation: 5,
                   openElevation: 5,

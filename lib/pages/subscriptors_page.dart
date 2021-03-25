@@ -191,22 +191,6 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                         key: Key(item.id),
                         controller: slidableController,
                         direction: Axis.horizontal,
-                        dismissal: SlidableDismissal(
-                          child: SlidableDrawerDismissal(),
-                          onDismissed: (actionType) => {
-                            _showSnackBar(
-                                context,
-                                actionType == SlideActionType.primary
-                                    ? 'Aprobado!, se agrego en "Mis pacientes"'
-                                    : 'Solicitud Rechazada'),
-                            setState(() {
-                              profiles.removeAt(index);
-                            }),
-                            actionType == SlideActionType.primary
-                                ? _approveSubscription(item.subId, index)
-                                : _deleteSubscription(item.subId, index),
-                          },
-                        ),
                         actionPane: _getActionPane(index),
                         actionExtentRatio: 0.25,
                         child: InkWell(

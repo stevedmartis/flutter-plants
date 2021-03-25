@@ -480,9 +480,7 @@ class _NotificationsPageState extends State<NotificationsPage>
   _approveSubscription(String id, int index) async {
     final res = await this.subscriptionApiProvider.approveSubscription(id);
     if (res) {
-      setState(() {
-        subscriptionBloc.getSubscriptionsPending(profile.user.uid);
-      });
+      subscriptionBloc.getSubscriptionsPending(profile.user.uid);
     }
   }
 

@@ -474,7 +474,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
     (isLikedSave) ? countLikes++ : countLikes--;
     productBloc.getProductsPrincipal(profile.user.uid);
 
-    return isLiked;
+    return isLikedSave;
   }
 
   SliverPersistentHeader makeHeaderTabs(context) {

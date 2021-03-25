@@ -249,9 +249,7 @@ class AddUpdateLightPageState extends State<AddUpdateLightPage> {
               color: (currentTheme.customTheme) ? Colors.white : Colors.black,
             ),
             controller: nameCtrl,
-            inputFormatters: <TextInputFormatter>[
-              LengthLimitingTextInputFormatter(30),
-            ],
+
             //  keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(

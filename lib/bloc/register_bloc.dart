@@ -14,12 +14,15 @@ class RegisterBloc with Validators {
       _emailController.stream.transform(validationOk);
   Stream<String> get passwordStream =>
       _passwordController.stream.transform(validarPassword);
-  Stream<String> get usernameSteam => _usernameController.stream;
+
+  Stream<String> get usernameSteam =>
+      _usernameController.stream.transform(validationNameRequired);
+
   Stream<String> get nameStream => _nameController.stream;
   Stream<String> get lastNameStream => _lastNameController.stream;
 
-  Stream<bool> get formValidStream =>
-      Rx.combineLatest2(emailStream, passwordStream, (e, p) => true);
+  Stream<bool> get formValidStream => Rx.combineLatest3(
+      emailStream, usernameSteam, passwordStream, (e, b, c) => true);
 
   // Insertar valores al Stream
   Function(String) get changeEmail => _emailController.sink.add;

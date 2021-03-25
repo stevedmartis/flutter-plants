@@ -252,7 +252,7 @@ class CbdthcRow extends StatelessWidget {
           ),
         ),
         SizedBox(
-          width: size.width / 5,
+          width: size.width / 10,
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5.0),

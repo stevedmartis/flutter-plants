@@ -64,7 +64,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
     if (numberMessages >= 2) {
       final controller2 = notifiModel.bounceController;
-      controller2.forward(from: 0.0);
+      // controller2.forward(from: 0.0);
     }
   }
 
@@ -225,7 +225,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.only(
-                            left: (number > 0) ? 0 : 24, top: 10),
+                            left: (number > 0) ? 0 : 24, top: 5.0),
                         child: FaIcon(
                           (currentPage == 4)
                               ? FontAwesomeIcons.solidBell
@@ -233,7 +233,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                           color: (currentPage == 4)
                               ? currentTheme.currentTheme.accentColor
                               : currentTheme.currentTheme.primaryColor,
-                          size: (currentPage == 4) ? 30 : 30,
+                          size: (currentPage == 4) ? 28 : 28,
                         ),
                       ),
                       (number > 0)

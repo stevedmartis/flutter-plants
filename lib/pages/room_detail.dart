@@ -121,7 +121,7 @@ class _RoomDetailPageState extends State<RoomDetailPage>
           title: Text(
             nameFinal,
             style: TextStyle(
-                fontSize: size.height / 40,
+                fontSize: 20,
                 color:
                     (currentTheme.customTheme) ? Colors.white : Colors.black),
           ),
@@ -144,7 +144,7 @@ class _RoomDetailPageState extends State<RoomDetailPage>
               Icons.chevron_left,
               color: currentTheme.currentTheme.accentColor,
             ),
-            iconSize: size.height / 30,
+            iconSize: 30,
             onPressed: () => Navigator.pop(context),
             color: Colors.white,
           )),

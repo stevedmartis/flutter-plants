@@ -8,6 +8,7 @@ import 'package:chat/widgets/header_curve_signin.dart';
 import 'package:chat/widgets/labels.dart';
 import 'package:chat/widgets/myprofile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -205,15 +206,15 @@ class __FormState extends State<_Form> {
         children: [
           Padding(
               padding: EdgeInsets.only(
-                  left: 40.0, right: 20.0, top: 10.0, bottom: 10.0),
+                  left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
               child: _createEmail(bloc)),
           Padding(
               padding: EdgeInsets.only(
-                  left: 40.0, right: 20.0, top: 10.0, bottom: 10.0),
+                  left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
               child: _createUsername(bloc, context)),
           Padding(
               padding: EdgeInsets.only(
-                  left: 40.0, right: 20.0, top: 10.0, bottom: 10.0),
+                  left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
               child: _createPassword(bloc)),
           _createButton(bloc),
           Container(
@@ -379,13 +380,14 @@ Widget _createButton(RegisterBloc bloc) {
     builder: (BuildContext context, AsyncSnapshot snapshot) {
       final authService = Provider.of<AuthService>(context);
 
+      print(snapshot);
       return Container(
         padding: EdgeInsets.only(left: 30, right: 30, top: 20),
         child: GestureDetector(
             child: roundedRectButton("Comenzar!", orangeGradients, false, true),
             onTap: authService.authenticated
                 ? null
-                : snapshot.hasData
+                : !snapshot.hasError
                     ? () => {
                           FocusScope.of(context).unfocus(),
                           _register(bloc, context)
@@ -438,7 +440,7 @@ Widget _createEmail(RegisterBloc bloc) {
               ),
               hintText: '',
               labelText: 'Email *',
-              counterText: snapshot.data,
+              //counterText: snapshot.data,
               labelStyle: TextStyle(
                   color: (currentTheme.customTheme)
                       ? Colors.white54
@@ -507,6 +509,9 @@ Widget _createUsername(RegisterBloc bloc, context) {
             color: (currentTheme.customTheme) ? Colors.white : Colors.black,
           ),
           //  keyboardType: TextInputType.emailAddress,
+          inputFormatters: <TextInputFormatter>[
+            LengthLimitingTextInputFormatter(5),
+          ],
           decoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(

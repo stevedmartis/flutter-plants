@@ -133,6 +133,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   ValueChanged<double> onScroll;
   int initPosition;
 
+  final produtBlocUser = new ProductBloc();
+
   @override
   void initState() {
     _scrollController = ScrollController()..addListener(() => setState(() {}));
@@ -245,10 +247,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   void fetchUserCatalogos() async {
     var result;
 
-    productBloc.getCatalogosUserProducts(
+    produtBlocUser.getCatalogosUserProducts(
         widget.profile.user.uid, profile.user.uid);
 
-    productBloc.catalogosProductsUser.listen((data) {
+    produtBlocUser.catalogosProductsUser.listen((data) {
       result = data;
 
       itemCount = result.catalogosProducts.length;
@@ -291,6 +293,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     controller.animation.removeListener(onScrollF);
     controller.removeListener(onPositionChangeF);
     controller.dispose();
+
     super.dispose();
   }
 
@@ -521,7 +524,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                                     (index) => FadeInLeft(
                                         child: tabBuilder(context, index)),
                                   )))
-                          : Container())
+                          : _buildLoadingWidget())
                 ];
               },
 
