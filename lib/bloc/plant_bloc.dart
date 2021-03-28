@@ -20,11 +20,15 @@ class PlantBloc with Validators {
   final _thcController = BehaviorSubject<String>();
   final _imageUpdateCtrl = BehaviorSubject<bool>();
   final _plantEdit = BehaviorSubject<bool>();
+  final _plantSelected = BehaviorSubject<bool>();
 
   final _ventilationController = BehaviorSubject<List<Ventilation>>();
 
   final _plantsController = BehaviorSubject<List<Plant>>();
   final PlantsRepository _repository = PlantsRepository();
+
+  final BehaviorSubject<List<Plant>> _plantsSelected =
+      BehaviorSubject<List<Plant>>();
 
   final BehaviorSubject<PlantsResponse> _subject =
       BehaviorSubject<PlantsResponse>();
@@ -53,6 +57,7 @@ class PlantBloc with Validators {
 
   BehaviorSubject<bool> get imageUpdate => _imageUpdateCtrl;
   BehaviorSubject<bool> get planEdit => _plantEdit;
+  BehaviorSubject<List<Plant>> get plantsSelected => _plantsSelected.stream;
 
   BehaviorSubject<Plant> get plantSelect => _plantSelect;
 
@@ -133,6 +138,7 @@ class PlantBloc with Validators {
   }
 
   disposePlant() {
+    _plantSelected?.close();
     _plantSelect?.close();
   }
 }

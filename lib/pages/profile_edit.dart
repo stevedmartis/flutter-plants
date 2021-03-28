@@ -236,6 +236,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                                                 secondaryAnimation) =>
                                             AvatarImagePage(
                                               profile: this.profile,
+                                              isUserAuth: true,
                                             ))),
 
                                     // make changes here

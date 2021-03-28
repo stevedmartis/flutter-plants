@@ -15,9 +15,26 @@ class PlantService with ChangeNotifier {
   Plant _plant;
   Plant get plant => this._plant;
 
+  Set<Plant> _platsSelected = Set();
+
+  Set<Plant> get platsSelected => this._platsSelected;
+
+  set platsSelected(Set<Plant> valor) {
+    this._platsSelected = valor;
+    notifyListeners();
+  }
+
   set plant(Plant valor) {
     this._plant = valor;
     // notifyListeners();
+  }
+
+  bool _plantsSelect = false;
+  bool get plantsSelect => this._plantsSelect;
+
+  set plantsSelect(bool valor) {
+    this._plantsSelect = valor;
+    notifyListeners();
   }
 
   final _storage = new FlutterSecureStorage();

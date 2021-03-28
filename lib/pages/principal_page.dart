@@ -40,6 +40,10 @@ class _PrincipalPageState extends State<PrincipalPage> {
     getNotificationsActive();
 
     this.socketService.socket?.on('principal-message', _listenMessage);
+    this
+        .socketService
+        .socket
+        ?.on('principal-notification', _listenNotification);
 
     super.initState();
   }
@@ -62,10 +66,10 @@ class _PrincipalPageState extends State<PrincipalPage> {
     numberMessages = notifications.messagesNotifi.length;
     notifiModel.number = numberMessages;
 
-    if (numberMessages >= 2) {
-      final controller2 = notifiModel.bounceController;
+    /*   if (numberMessages >= 2) {
+      //final controller2 = notifiModel.bounceController;
       // controller2.forward(from: 0.0);
-    }
+    } */
   }
 
   @override
@@ -76,13 +80,30 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   void _listenMessage(dynamic payload) {
     final notifiModel = Provider.of<NotificationModel>(context, listen: false);
-    int number = notifiModel.number;
-    number++;
-    notifiModel.number = number;
+    int numberMessages = notifiModel.number;
+    numberMessages++;
+    notifiModel.number = numberMessages;
 
-    if (number >= 2) {
+    if (numberMessages >= 2) {
       final controller = notifiModel.bounceController;
       controller.forward(from: 0.0);
+    }
+  }
+
+  void _listenNotification(dynamic payload) {
+    final currentPage =
+        Provider.of<MenuModel>(context, listen: false).currentPage;
+    if (currentPage != 4) {
+      final notifiModel =
+          Provider.of<NotificationModel>(context, listen: false);
+      int number = notifiModel.numberNotifiBell;
+      number++;
+      notifiModel.numberNotifiBell = number;
+
+      if (number >= 2) {
+        final controller = notifiModel.bounceControllerBell;
+        controller.forward(from: 0.0);
+      }
     }
   }
 
@@ -224,8 +245,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                   icon: Stack(
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(
-                            left: (number > 0) ? 0 : 24, top: 5.0),
+                        margin: EdgeInsets.only(top: 5.0, left: 10),
                         child: FaIcon(
                           (currentPage == 4)
                               ? FontAwesomeIcons.solidBell
@@ -237,10 +257,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
                         ),
                       ),
                       (number > 0)
-                          ? Positioned(
-                              top: 0.0,
-                              right: 0.0,
-                              bottom: 10.0,
+                          ? Container(
+                              margin: EdgeInsets.only(right: 35),
+                              alignment: Alignment.centerRight,
                               child: BounceInDown(
                                 from: 5,
                                 animate: (number > 0) ? true : false,

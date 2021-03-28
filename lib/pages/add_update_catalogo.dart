@@ -43,7 +43,7 @@ class _AddUpdateCatalogoPageState extends State<AddUpdateCatalogoPage> {
   bool isControllerChangeEdit = false;
   bool loading = false;
 
-  String optionItemSelected = "1";
+  String optionItemSelected = "3";
 
   bool isDefault;
 
@@ -127,6 +127,7 @@ class _AddUpdateCatalogoPageState extends State<AddUpdateCatalogoPage> {
               Navigator.pop(context),
           color: Colors.white,
         ),
+        centerTitle: true,
         title: (widget.isEdit)
             ? Text(
                 'Edit catalogo',
@@ -409,6 +410,7 @@ class _AddUpdateCatalogoPageState extends State<AddUpdateCatalogoPage> {
         loading = false;
 
         catalogoBloc.getMyCatalogos(uid);
+        catalogoService.catalogo = createCatalogoResp.catalogo;
 
         Navigator.pop(context);
         setState(() {});
@@ -454,7 +456,7 @@ class _AddUpdateCatalogoPageState extends State<AddUpdateCatalogoPage> {
         });
         catalogoBloc.getMyCatalogos(uid);
 
-        catalogoBloc.getCatalogo(widget.catalogo);
+        catalogoService.catalogo = editCatalogoRes.catalogo;
 
         Navigator.pop(context);
       } else {

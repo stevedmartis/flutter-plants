@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/bloc/product_bloc.dart';
 import 'package:chat/bloc/room_bloc.dart';
 import 'package:chat/models/products.dart';
@@ -91,7 +92,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
   Profiles profileFor;
 
   final roomService = new RoomService();
-  double get maxHeight => 200 + MediaQuery.of(context).padding.top;
+  double get maxHeight => 250 + MediaQuery.of(context).padding.top;
   double get minHeight => MediaQuery.of(context).padding.bottom;
 
   bool isLike = false;
@@ -162,7 +163,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
             slivers: <Widget>[
               SliverAppBar(
                 stretch: true,
-                stretchTriggerOffset: 250.0,
+                stretchTriggerOffset: 300.0,
 
                 backgroundColor: _showTitle
                     ? (currentTheme.customTheme)
@@ -523,17 +524,39 @@ class _ProductDetailPageState extends State<ProductDetailPage>
   ) async {
     final res = await this.productApiProvider.deleteProduct(id);
     if (res) {
-      setState(() {
-        //    widget.plants.removeAt(index);
+      //    widget.plants.removeAt(index);
 
-        productBloc.getProductsPrincipal(profile.user.uid);
+      productBloc.getProductsPrincipal(profile.user.uid);
 
-        productBloc.getCatalogosProducts(profile.user.uid);
+      productBloc.getCatalogosProducts(profile.user.uid);
 
-        Navigator.pop(context);
-        Navigator.pop(context);
-      });
+      Navigator.pop(context);
+      Navigator.pop(context);
     }
+  }
+
+  Widget cachedNetworkImagePlant(String image) {
+    return CachedNetworkImage(
+      imageUrl: image,
+      imageBuilder: (context, imageProvider) => Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(Colors.black, BlendMode.colorBurn)),
+        ),
+      ),
+      placeholder: (context, url) => Container(
+        child: Container(
+          child: Image(
+            image: AssetImage('assets/loading2.gif'),
+            fit: BoxFit.cover,
+            width: double.maxFinite,
+          ),
+        ),
+      ),
+      errorWidget: (context, url, error) => Icon(Icons.error),
+    );
   }
 
   createSelectionNvigator() {

@@ -72,9 +72,10 @@ class ProductsApiProvider {
         Uri.https('${Environment.apiUrl}', '/api/product/delete/$productId');
 
     try {
-      await http.delete(urlFinal,
+      final res = await http.delete(urlFinal,
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
+      print(res);
       return true;
     } catch (e) {
       return false;

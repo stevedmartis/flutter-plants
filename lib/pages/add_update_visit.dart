@@ -1180,8 +1180,7 @@ class AddUpdateVisitPageState extends State<AddUpdateVisitPage> {
         ? widget.visit.nameAbono
         : bloc.nameAbono.trim();
 
-    final grams =
-        (gramsCtrl.text == "") ? widget.visit.grams : bloc.gram.trim();
+    final grams = (bloc.gram == null) ? widget.visit.grams : bloc.gram.trim();
 
     final newVisit = Visit(
       // name: name,

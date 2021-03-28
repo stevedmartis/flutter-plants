@@ -447,7 +447,9 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                     ? makeInfoProfile(context)
                     : makeHeaderSpacer(context),
 
-                makePrivateAccountMessage(context),
+                (profile.isClub)
+                    ? makePrivateAccountMessage(context)
+                    : makeHeaderSpacerShort(context),
 
                 (itemCount != null)
                     ? SliverAppBar(

@@ -34,11 +34,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Leafety necesita acceso a la Camara para guardar imagenes del perfil, receta medica y visitas</string>
+	<string>Leafety necesita acceso a la Camara para guardar imágenes del perfil, receta medica y visitas</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Necesita acceso al microfono</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Leafety necesita acceso a la Galeria para guardar imagenes del perfil, receta medica y visitas</string>
+	<string>Leafety necesita acceso a la Galeria para guardar imágenes del perfil, receta medica y visitas</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

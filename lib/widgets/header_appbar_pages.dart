@@ -15,6 +15,7 @@ class CustomAppBarHeaderPages extends StatefulWidget {
   final bool showContent;
   final String title;
   final bool isAdd;
+  final bool isPlantOrigen;
 
   final Widget action;
 
@@ -23,6 +24,7 @@ class CustomAppBarHeaderPages extends StatefulWidget {
       {this.showContent = false,
       @required this.title,
       this.action,
+      this.isPlantOrigen = false,
       this.isAdd = false});
 
   @override
@@ -56,31 +58,46 @@ class _CustomAppBarHeaderState extends State<CustomAppBarHeaderPages> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(
-            child: GestureDetector(
-              onTap: () {
-                {
-                  Navigator.push(context, _createRoute());
-                }
-              },
-              child: Container(
-                padding: EdgeInsets.all(5.0),
-                margin: EdgeInsets.only(left: 10),
-                child: Hero(
-                  tag: profile.user.uid,
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: ImageUserChat(
-                      width: 100,
-                      height: 100,
-                      profile: profile,
-                      fontsize: 12,
+          (!widget.isPlantOrigen)
+              ? Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      {
+                        Navigator.push(context, _createRoute());
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(5.0),
+                      margin: EdgeInsets.only(left: 10),
+                      child: Hero(
+                        tag: profile.user.uid,
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: ImageUserChat(
+                            width: 100,
+                            height: 100,
+                            profile: profile,
+                            fontsize: 12,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
+                )
+              : Center(
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.chevron_left,
+                      color: currentTheme.currentTheme.accentColor,
+                    ),
+                    iconSize: 30,
+                    onPressed: () {
+                      //  Navigator.pushReplacement(context, createRouteProfile()),
+                      Navigator.pop(context);
+                    },
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            ),
-          ),
           (widget.isAdd)
               ? SizedBox(
                   width: 50,
@@ -132,11 +149,25 @@ class _CustomAppBarHeaderState extends State<CustomAppBarHeaderPages> {
                           ),
                           child: SearchContent())),
                 )
-              : Expanded(
-                  child: Center(
-                    child: Container(
+              : (!widget.isPlantOrigen)
+                  ? Expanded(
+                      child: Center(
+                        child: Container(
+                          child: Text(
+                            widget.title,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: (currentTheme.customTheme)
+                                    ? Colors.white
+                                    : Colors.black),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.only(right: 50),
                       child: Text(
-                        widget.title,
+                        'Seleccionar Room',
                         style: TextStyle(
                             fontSize: 20,
                             color: (currentTheme.customTheme)
@@ -144,61 +175,62 @@ class _CustomAppBarHeaderState extends State<CustomAppBarHeaderPages> {
                                 : Colors.black),
                       ),
                     ),
-                  ),
-                ),
           widget.action,
           SizedBox(
             width: 10,
           ),
-          IconButton(
-              onPressed: () {
-                Navigator.push(context, _createRouteMessages());
-              },
-              icon: Stack(
-                children: <Widget>[
-                  FaIcon(
-                    FontAwesomeIcons.commentDots,
-                    color: currentTheme.currentTheme.primaryColor,
-                    size: 30,
-                  ),
-                  (number > 0)
-                      ? Positioned(
-                          top: 0.0,
-                          right: 4.0,
-                          child: BounceInDown(
-                            from: 10,
-                            animate: (number > 0) ? true : false,
-                            child: Bounce(
-                              delay: Duration(seconds: 2),
-                              from: 15,
-                              controller: (controller) =>
-                                  Provider.of<NotificationModel>(context)
-                                      .bounceController = controller,
-                              child: Container(
-                                child: Text(
-                                  '$number',
-                                  style: TextStyle(
-                                      color: (currentTheme.customTheme)
-                                          ? Colors.black
-                                          : Colors.white,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold),
+          (!widget.isPlantOrigen)
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.push(context, _createRouteMessages());
+                  },
+                  icon: Stack(
+                    children: <Widget>[
+                      FaIcon(
+                        FontAwesomeIcons.commentDots,
+                        color: currentTheme.currentTheme.primaryColor,
+                        size: 30,
+                      ),
+                      (number > 0)
+                          ? Positioned(
+                              top: 0.0,
+                              right: 4.0,
+                              child: BounceInDown(
+                                from: 10,
+                                animate: (number > 0) ? true : false,
+                                child: Bounce(
+                                  delay: Duration(seconds: 2),
+                                  from: 15,
+                                  controller: (controller) =>
+                                      Provider.of<NotificationModel>(context)
+                                          .bounceController = controller,
+                                  child: Container(
+                                    child: Text(
+                                      '$number',
+                                      style: TextStyle(
+                                          color: (currentTheme.customTheme)
+                                              ? Colors.black
+                                              : Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    alignment: Alignment.center,
+                                    width: 20,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                        color: (currentTheme.customTheme)
+                                            ? currentTheme
+                                                .currentTheme.accentColor
+                                            : Colors.black,
+                                        shape: BoxShape.circle),
+                                  ),
                                 ),
-                                alignment: Alignment.center,
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                    color: (currentTheme.customTheme)
-                                        ? currentTheme.currentTheme.accentColor
-                                        : Colors.black,
-                                    shape: BoxShape.circle),
                               ),
-                            ),
-                          ),
-                        )
-                      : Container()
-                ],
-              )),
+                            )
+                          : Container()
+                    ],
+                  ))
+              : Container(),
         ],
       ),
     );

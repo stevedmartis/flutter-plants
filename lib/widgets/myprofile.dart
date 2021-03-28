@@ -305,6 +305,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
     final isUserAuth = authService.profile.user.uid == widget.profile.user.uid;
 
+    final name = (profile.name == "") ? profile.user.username : profile.name;
     setState(() {
       profile = (widget.isUserAuth && isUserAuth)
           ? authService.profile
@@ -431,7 +432,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                           children: [
                             (_showName)
                                 ? FadeIn(
-                                    child: Text(profile.name,
+                                    child: Text(name,
                                         style: TextStyle(
                                           color: (currentTheme.customTheme)
                                               ? Colors.white
@@ -486,17 +487,19 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                       ? makeInfoProfile(context)
                       : makeHeaderSpacer(context),
 
-                  makePrivateAccountMessage(context),
+                  (profile.isClub)
+                      ? makePrivateAccountMessage(context)
+                      : makeHeaderSpacer(context),
 
-                  SliverAppBar(
-                      toolbarHeight: 50,
-                      pinned: true,
-                      backgroundColor:
-                          currentTheme.currentTheme.scaffoldBackgroundColor,
-                      automaticallyImplyLeading: false,
-                      actions: [Container()],
-                      title: (itemCount != null)
-                          ? Container(
+                  (itemCount != null)
+                      ? SliverAppBar(
+                          toolbarHeight: 50,
+                          pinned: true,
+                          backgroundColor:
+                              currentTheme.currentTheme.scaffoldBackgroundColor,
+                          automaticallyImplyLeading: false,
+                          actions: [Container()],
+                          title: Container(
                               alignment: Alignment.centerLeft,
                               child: TabBar(
                                   controller: controller,
@@ -523,8 +526,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                                     itemCount,
                                     (index) => FadeInLeft(
                                         child: tabBuilder(context, index)),
-                                  )))
-                          : _buildLoadingWidget())
+                                  ))))
+                      : makeHeaderSpacerShort(context)
                 ];
               },
 
@@ -655,6 +658,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     );
   }
 
+  SliverList makeSpace(context) {
+    return SliverList(delegate: SliverChildListDelegate([Container()]));
+  }
+
   SliverList makeListCatalogos(context) {
     return SliverList(
       delegate: SliverChildListDelegate([
@@ -745,10 +752,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     //   final roomModel = Provider.of<Room>(context);
 
     return SliverPersistentHeader(
-      pinned: true,
+      pinned: false,
       delegate: SliverAppBarDelegate(
-          minHeight: 150,
-          maxHeight: 150,
+          minHeight: 50,
+          maxHeight: 50,
           child: Container(
               margin: EdgeInsets.only(top: 10), child: _buildLoadingWidget())),
     );
@@ -871,8 +878,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     return SliverPersistentHeader(
       pinned: true,
       delegate: SliverAppBarDelegate(
-          minHeight: 10,
-          maxHeight: 10,
+          minHeight: 0,
+          maxHeight: 0,
           child: Row(
             children: [Container()],
           )),

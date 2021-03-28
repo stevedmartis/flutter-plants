@@ -44,16 +44,6 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
   List<Profiles> profiles = [];
   SlidableController slidableController;
 
-  final List<_HomeItem> items = List.generate(
-    20,
-    (i) => _HomeItem(
-      i,
-      'Tile n°$i',
-      _getSubtitle(i),
-      _getAvatarColor(i),
-    ),
-  );
-
   @protected
   void initState() {
     slidableController = SlidableController(
@@ -318,7 +308,6 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                             }),
                       ),
                     ),
-                    Divider(height: 1),
                   ],
                 );
               },
@@ -343,24 +332,6 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
           'Vacio',
           style: TextStyle(color: Colors.grey),
         )));
-  }
-
-  _deleteSubscription(String id, int index) async {
-    final res = await this.subscriptionApiProvider.disapproveSubscription(id);
-    if (res) {
-      setState(() {
-        subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
-      });
-    }
-  }
-
-  _approveSubscription(String id, int index) async {
-    final res = await this.subscriptionApiProvider.approveSubscription(id);
-    if (res) {
-      setState(() {
-        subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
-      });
-    }
   }
 
   Route createRouteProfileSelect(Profiles profile) {
@@ -442,57 +413,4 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
         return null;
     }
   }
-
-  static Color _getAvatarColor(int index) {
-    switch (index % 4) {
-      case 0:
-        return Colors.red;
-      case 1:
-        return Colors.green;
-      case 2:
-        return Colors.blue;
-      case 3:
-        return Colors.indigoAccent;
-      default:
-        return null;
-    }
-  }
-
-  static String _getSubtitle(int index) {
-    switch (index % 4) {
-      case 0:
-        return 'SlidableBehindActionPane';
-      case 1:
-        return 'SlidableStrechActionPane';
-      case 2:
-        return 'SlidableScrollActionPane';
-      case 3:
-        return 'SlidableDrawerActionPane';
-      default:
-        return null;
-    }
-  }
-
-  void _showSnackBar(BuildContext context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.black,
-        content: Text(text,
-            style: TextStyle(
-              color: Colors.white54,
-            ))));
-  }
-}
-
-class _HomeItem {
-  const _HomeItem(
-    this.index,
-    this.title,
-    this.subtitle,
-    this.color,
-  );
-
-  final int index;
-  final String title;
-  final String subtitle;
-  final Color color;
 }

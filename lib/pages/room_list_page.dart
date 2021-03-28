@@ -7,6 +7,7 @@ import 'package:chat/models/profiles.dart';
 import 'package:chat/models/room.dart';
 import 'package:chat/models/rooms_response.dart';
 import 'package:chat/pages/add_room.dart';
+import 'package:chat/pages/plants_room.dart';
 import 'package:chat/pages/principalCustom_page.dart';
 import 'package:chat/pages/profile_page.dart';
 import 'package:chat/pages/room_detail.dart';
@@ -26,6 +27,9 @@ import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/socket_service.dart';
 
 class RoomsListPage extends StatefulWidget {
+  final bool plantOrigen;
+
+  RoomsListPage({this.plantOrigen = false});
   @override
   _RoomsListPageState createState() => _RoomsListPageState();
 }
@@ -69,7 +73,7 @@ class _RoomsListPageState extends State<RoomsListPage> {
   ) {
     return SliverList(
         delegate: SliverChildListDelegate([
-      RoomList(),
+      RoomList(plantOrigen: widget.plantOrigen),
     ]));
   }
 
@@ -88,6 +92,39 @@ class _RoomsListPageState extends State<RoomsListPage> {
                 child: Container(
                     color: Colors.black,
                     child: CustomAppBarHeaderPages(
+                        isPlantOrigen: widget.plantOrigen,
+                        title: title,
+                        isAdd: true,
+                        action: (!widget.plantOrigen)
+                            ? IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  color: currentTheme.accentColor,
+                                ),
+                                iconSize: 30,
+                                onPressed: () => {
+                                      Navigator.of(context).push(
+                                          createRouteAddRoom(room, false)),
+                                    })
+                            : Container())))));
+  }
+
+  SliverPersistentHeader makeHeaderCustomPlantOrigen(String title) {
+    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+
+    final room = new Room();
+
+    return SliverPersistentHeader(
+        floating: true,
+        delegate: SliverCustomHeaderDelegate(
+            minHeight: 60,
+            maxHeight: 60,
+            child: Container(
+                color: Colors.black,
+                child: Container(
+                    color: Colors.black,
+                    child: CustomAppBarHeaderPages(
+                      isPlantOrigen: widget.plantOrigen,
                       title: title,
                       isAdd: true,
                       action:
@@ -118,7 +155,10 @@ class _RoomsListPageState extends State<RoomsListPage> {
 class RoomList extends StatefulWidget {
   const RoomList({
     Key key,
+    this.plantOrigen = false,
   }) : super(key: key);
+
+  final bool plantOrigen;
 
   @override
   _RoomListState createState() => _RoomListState();
@@ -268,8 +308,11 @@ class _RoomListState extends State<RoomList> {
                       GestureDetector(
                         key: Key(item.id),
                         onTap: () => {
-                          Navigator.of(context)
-                              .push(createRouteRoomDetail(item, rooms)),
+                          (!widget.plantOrigen)
+                              ? Navigator.of(context)
+                                  .push(createRouteRoomDetail(item, rooms))
+                              : Navigator.of(context)
+                                  .push(createRoutePlantsByRoom(item, rooms)),
                         },
                         child: Dismissible(
                           confirmDismiss: (DismissDirection direction) async {
@@ -406,8 +449,32 @@ Route createRouteProfile() {
 
 Route createRouteRoomDetail(Room room, List<Room> rooms) {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        RoomDetailPage(room: room, rooms: rooms),
+    pageBuilder: (context, animation, secondaryAnimation) => RoomDetailPage(
+      room: room,
+      rooms: rooms,
+    ),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+    transitionDuration: Duration(milliseconds: 400),
+  );
+}
+
+Route createRoutePlantsByRoom(Room room, List<Room> rooms) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => PlantsRoomPage(
+      room: room,
+      rooms: rooms,
+    ),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;

@@ -212,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(context, _createRute());
     } else {
       // Mostara alerta
-      mostrarAlerta(context, 'Login incorrecto', 'El correo ya existe');
+      mostrarAlerta(context, 'Login incorrecto', 'Error del servidor, ');
     }
 
     //Navigator.pushReplacementNamed(context, '');

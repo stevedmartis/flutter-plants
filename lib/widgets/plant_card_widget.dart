@@ -1,3 +1,4 @@
+import 'package:chat/bloc/plant_bloc.dart';
 import 'package:chat/models/plant.dart';
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/productProfile_card.dart';
@@ -7,47 +8,156 @@ import 'package:provider/provider.dart';
 import '../utils/extension.dart';
 
 class CardPlant extends StatefulWidget {
+  CardPlant({this.plant, this.isPrincipal = false, this.isSelected = false});
+
   final Plant plant;
   final bool isPrincipal;
 
-  CardPlant({this.plant, this.isPrincipal = false});
+  final bool isSelected;
+
   @override
   _CardPlantState createState() => _CardPlantState();
 }
 
+int countSelect = 0;
+List<Plant> platsSelected = [];
+
 class _CardPlantState extends State<CardPlant> {
+  bool isSelected = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    countSelect = 0;
+    platsSelected = [];
+    plantBloc.plantsSelected.sink.add(platsSelected);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
     final currentTheme = Provider.of<ThemeChanger>(context);
 
-    return Container(
-      color: (currentTheme.customTheme)
-          ? currentTheme.currentTheme.cardColor
-          : Colors.white,
-      child: FittedBox(
-        child: Row(
-          children: <Widget>[
-            Center(child: plantItem()),
-            Container(
-              width: size.width,
-              height: (!widget.isPrincipal) ? size.height / 1.40 : size.height,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20.0),
-                      bottomRight: Radius.circular(15.0)),
-                  child: Material(
-                      type: MaterialType.transparency,
-                      child: (widget.plant.coverImage != "")
-                          ? cachedNetworkImage(widget.plant.getCoverImg())
-                          : cachedNetworkImage(
-                              'assets/images/empty_image.png'))),
+    //   final productService = Provider.of<PlantService>(context, listen: false);
+    final isPlantSelected =
+        (platsSelected.contains(widget.plant)) ? true : false;
+    return (widget.isSelected)
+        ? GestureDetector(
+            onTap: () {
+              setState(() {
+                if (isPlantSelected) {
+                  platsSelected.remove(widget.plant);
+                  plantBloc.plantsSelected.sink.add(platsSelected);
+
+                  countSelect--;
+                  if (countSelect == 0)
+                    plantBloc.plantsSelected.sink.add(platsSelected);
+                } else {
+                  platsSelected.add(widget.plant);
+                  countSelect++;
+                  plantBloc.plantsSelected.sink.add(platsSelected);
+                }
+
+                print(countSelect);
+              });
+            },
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: (isPlantSelected) ? 0 : 3,
+                    blurRadius: (isPlantSelected) ? 0 : 5,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+                border: Border.all(
+                  width: (isPlantSelected) ? 3.0 : 0,
+                  style: BorderStyle.solid,
+                  color: platsSelected.contains(widget.plant)
+                      ? currentTheme.currentTheme.accentColor
+                      : Colors.transparent,
+                ),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20.0),
+                    topLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0),
+                    bottomLeft: Radius.circular(10.0)),
+                color: (currentTheme.customTheme)
+                    ? currentTheme.currentTheme.cardColor
+                    : Colors.white,
+              ),
+              child: FittedBox(
+                child: Row(
+                  children: <Widget>[
+                    Center(child: plantItem()),
+                    Container(
+                      width: size.width,
+                      height: (!widget.isPrincipal)
+                          ? size.height / 1.40
+                          : size.height,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20.0),
+                              bottomRight: Radius.circular(15.0)),
+                          child: Material(
+                              type: MaterialType.transparency,
+                              child: (widget.plant.coverImage != "")
+                                  ? cachedNetworkImage(
+                                      widget.plant.getCoverImg())
+                                  : cachedNetworkImage(
+                                      'assets/images/empty_image.png'))),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ],
-        ),
-      ),
-    );
+          )
+        : AnimatedContainer(
+            duration: Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: (platsSelected.contains(widget.plant)) ? 3.0 : 0,
+                style: BorderStyle.solid,
+                color: platsSelected.contains(widget.plant)
+                    ? currentTheme.currentTheme.accentColor
+                    : Colors.transparent,
+              ),
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20.0),
+                  topLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0)),
+              color: (currentTheme.customTheme)
+                  ? currentTheme.currentTheme.cardColor
+                  : Colors.white,
+            ),
+            child: FittedBox(
+              child: Row(
+                children: <Widget>[
+                  Center(child: plantItem()),
+                  Container(
+                    width: size.width,
+                    height: (!widget.isPrincipal)
+                        ? size.height / 1.40
+                        : size.height,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(20.0),
+                            bottomRight: Radius.circular(15.0)),
+                        child: Material(
+                            type: MaterialType.transparency,
+                            child: (widget.plant.coverImage != "")
+                                ? cachedNetworkImage(widget.plant.getCoverImg())
+                                : cachedNetworkImage(
+                                    'assets/images/empty_image.png'))),
+                  ),
+                ],
+              ),
+            ),
+          );
   }
 
   Widget plantItem() {

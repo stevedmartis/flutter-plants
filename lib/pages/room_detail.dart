@@ -108,7 +108,6 @@ class _RoomDetailPageState extends State<RoomDetailPage>
     final currentTheme = Provider.of<ThemeChanger>(context);
 
     final roomService = Provider.of<RoomService>(context, listen: false);
-    final size = MediaQuery.of(context).size;
 
     setState(() {
       room = (roomService.room != null) ? roomService.room : widget.room;
@@ -118,6 +117,7 @@ class _RoomDetailPageState extends State<RoomDetailPage>
     return Scaffold(
       backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
       appBar: AppBar(
+          centerTitle: true,
           title: Text(
             nameFinal,
             style: TextStyle(

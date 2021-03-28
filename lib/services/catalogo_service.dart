@@ -9,12 +9,12 @@ import 'package:chat/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class CatalogoService with ChangeNotifier {
-  Catalogo _air;
-  Catalogo get air => this._air;
+  Catalogo _catalogo;
+  Catalogo get catalogo => this._catalogo;
 
-  set air(Catalogo valor) {
-    this._air = valor;
-    notifyListeners();
+  set catalogo(Catalogo valor) {
+    this._catalogo = valor;
+    // notifyListeners();
   }
 
   final _storage = new FlutterSecureStorage();

@@ -93,7 +93,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
   Profiles profile;
 
   final roomService = new RoomService();
-  double get maxHeight => 200 + MediaQuery.of(context).padding.top;
+  double get maxHeight => 250 + MediaQuery.of(context).padding.top;
   double get minHeight => MediaQuery.of(context).padding.bottom;
 
   bool isLike = false;

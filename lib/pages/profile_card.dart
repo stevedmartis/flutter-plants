@@ -1,17 +1,17 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:animations/animations.dart';
 import 'package:chat/bloc/subscribe_bloc.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/models/subscribe.dart';
-import 'package:chat/pages/avatar_image.dart';
 import 'package:chat/pages/chat_page.dart';
 import 'package:chat/pages/recipe_image_page.dart';
 import 'package:chat/pages/register_page.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/aws_service.dart';
 import 'package:chat/services/chat_service.dart';
+import 'package:chat/services/socket_service.dart';
 import 'package:chat/services/subscription_service.dart';
 import 'package:chat/theme/theme.dart';
+import 'package:chat/widgets/avatar_user_chat.dart';
 import 'package:chat/widgets/button_gold.dart';
 import 'package:chat/widgets/productProfile_card.dart';
 import 'package:chat/widgets/sliver_header.dart';
@@ -66,10 +66,14 @@ class _ProfileCardState extends State<ProfileCard> {
   bool isSuscriptionActive = false;
   bool isUploadRecipe = false;
 
+  SocketService socketService;
+
   @override
   void initState() {
     final authService = Provider.of<AuthService>(context, listen: false);
     profileMyUser = authService.profile;
+
+    this.socketService = Provider.of<SocketService>(context, listen: false);
 
     super.initState();
 
@@ -85,6 +89,7 @@ class _ProfileCardState extends State<ProfileCard> {
 
   @override
   void dispose() {
+    this.socketService.socket.off('principal-notification');
     super.dispose();
   }
 
@@ -128,115 +133,15 @@ class _ProfileCardState extends State<ProfileCard> {
                             child: Container(
                                 width: 100,
                                 height: 100,
-                                child: Hero(
-                                    tag: profileUser.user.uid,
-                                    child: GestureDetector(
-                                      onTap: () {},
-                                      child: Material(
-                                          type: MaterialType.transparency,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(100)),
-                                            ),
-                                            child: ClipRRect(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(100.0)),
-                                                child: (profileUser.imageAvatar !=
-                                                        "")
-                                                    ? OpenContainer(
-                                                        closedColor:
-                                                            (currentTheme.customTheme)
-                                                                ? Colors.black
-                                                                : Colors.white,
-                                                        openColor: (currentTheme
-                                                                .customTheme)
-                                                            ? Colors.black
-                                                            : Colors.white,
-                                                        transitionType:
-                                                            ContainerTransitionType
-                                                                .fade,
-                                                        openShape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                        ),
-                                                        closedShape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                    100)),
-                                                        openBuilder: (_,
-                                                            closeContainer) {
-                                                          return AvatarImagePage(
-                                                            profile: this
-                                                                .widget
-                                                                .profile,
-                                                            isUserAuth: widget
-                                                                .isUserAuth,
-                                                          );
-                                                        },
-                                                        closedBuilder:
-                                                            (_, openContainer) {
-                                                          return CircleAvatar(
-                                                            child: Container(
-                                                                color: Colors
-                                                                    .white,
-                                                                width: 100,
-                                                                height: 100,
-                                                                child: cachedNetworkImage(
-                                                                    profileUser
-                                                                        .getAvatarImg())),
-                                                          );
-                                                        })
-                                                    : OpenContainer(
-                                                        closedColor: (currentTheme.customTheme) ? Colors.black : Colors.white,
-                                                        openColor: (currentTheme.customTheme) ? Colors.black : Colors.white,
-                                                        transitionType: ContainerTransitionType.fade,
-                                                        openShape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                        ),
-                                                        closedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-                                                        openBuilder: (_, closeContainer) {
-                                                          return AvatarImagePage(
-                                                            profile: this
-                                                                .widget
-                                                                .profile,
-                                                            isUserAuth: widget
-                                                                .isUserAuth,
-                                                          );
-                                                        },
-                                                        closedBuilder: (_, openContainer) {
-                                                          return CircleAvatar(
-                                                            child: Container(
-                                                              width: 100,
-                                                              height: 100,
-                                                              child: Center(
-                                                                child: Text(
-                                                                  profileUser
-                                                                      .user
-                                                                      .username
-                                                                      .substring(
-                                                                          0, 2)
-                                                                      .toUpperCase(),
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          15),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            backgroundColor:
-                                                                currentTheme
-                                                                    .currentTheme
-                                                                    .accentColor,
-                                                          );
-                                                        })),
-                                          )),
-                                    )))))))),
+                                child: Material(
+                                  type: MaterialType.transparency,
+                                  child: ImageUserChat(
+                                    width: size.width,
+                                    height: size.height,
+                                    profile: widget.profile,
+                                    fontsize: 20,
+                                  ),
+                                ))))))),
         (!widget.isUserAuth && profileMyUser.isClub)
             ? FadeIn(
                 duration: Duration(milliseconds: 500),
@@ -254,14 +159,21 @@ class _ProfileCardState extends State<ProfileCard> {
                               ? currentTheme
                                   .currentTheme.scaffoldBackgroundColor
                               : Colors.black54,
-                          textColor: Colors.white54,
+                          textColor: Colors.white,
                           text: 'Ver receta',
                           onPressed: () {
                             (widget.isUserAuth)
                                 ? Navigator.of(context)
                                     .push(createRouteEditProfile())
-                                : Navigator.push(context,
-                                    createRouteRecipeViewImage(widget.profile));
+                                : Navigator.of(context).push(PageRouteBuilder(
+                                    transitionDuration:
+                                        Duration(milliseconds: 200),
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        RecipeImagePage(
+                                          profile: profileUser,
+                                          isUserAuth: widget.isUserAuth,
+                                        )));
                           }),
                     )),
               )
@@ -283,7 +195,7 @@ class _ProfileCardState extends State<ProfileCard> {
                               ? currentTheme
                                   .currentTheme.scaffoldBackgroundColor
                               : Colors.black54,
-                          textColor: Colors.white54,
+                          textColor: Colors.white,
                           text: 'Editar perfil',
                           onPressed: () {
                             Navigator.of(context)
@@ -490,47 +402,156 @@ class _ProfileCardState extends State<ProfileCard> {
       return showDialog(
           context: context,
           builder: (_) => AlertDialog(
-                title: Text('Envia tu receta para suscribirte '),
-                content: Column(
-                  children: [
-                    StreamBuilder(
-                        stream: subscriptionBloc.subscription,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          return GestureDetector(
-                              child: roundedRectButton(
-                                  "Empecemos!", orangeGradients, false, false),
-                              onTap: subscription.isUpload
-                                  ? null
-                                  : () => {
-                                        FocusScope.of(context).unfocus(),
-                                      });
-                        }),
-                  ],
+                contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                title: Text(
+                  'Suscribirme',
+                  style: TextStyle(color: Colors.white54, fontSize: 20),
                 ),
+                content: StreamBuilder(
+                    stream: subscriptionBloc.subscription.stream,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      final isHasData = snapshot.hasData;
+
+                      if (isHasData) {
+                        final imageRecipe =
+                            (snapshot.data.imageRecipe == "") ? false : true;
+
+                        if (!imageRecipe &&
+                            !snapshot.data.isUpload &&
+                            !snapshot.data.subscribeApproved &&
+                            !snapshot.data.subscribeActive) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Subir mi receta',
+                                style: TextStyle(
+                                    color: Colors.white54, fontSize: 15),
+                              ),
+                              GestureDetector(
+                                  child: roundedRectButtonIcon(
+                                      "Desde mis fotos",
+                                      orangeGradients,
+                                      FontAwesomeIcons.fileUpload),
+                                  onTap: !isHasData
+                                      ? null
+                                      : () => {_selectImage(false)}),
+                              GestureDetector(
+                                  child: roundedRectButtonIcon(
+                                      "Desde mi camara",
+                                      orangeGradients,
+                                      FontAwesomeIcons.camera),
+                                  onTap: !isHasData
+                                      ? null
+                                      : () => {_selectImage(true)}),
+                            ],
+                          );
+                        } else if (isHasData &&
+                            imageRecipe &&
+                            !snapshot.data.subscribeApproved &&
+                            !snapshot.data.subscribeActive) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: () => {
+                                  Navigator.push(context,
+                                      createRouteRecipeViewImage(profileMyUser))
+                                  //_selectImage(false)
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 10.0),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0)),
+                                      child: Container(
+                                          child: Container(
+                                        padding: EdgeInsets.only(
+                                            left: size.width / 20, top: 10),
+                                        child: Container(
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              FaIcon(
+                                                FontAwesomeIcons.notesMedical,
+                                                size: 20,
+                                                color: color,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                'Mi receta',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: color),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ) /* FadeInImage(
+
+                                      image:
+                                          NetworkImage(snapshot.data.imageRecipe),
+                                      placeholder:
+                                          AssetImage('assets/loading2.gif'),
+                                      fit: BoxFit.cover,
+                                      height: 120,
+                                      width: double.infinity,
+                                      alignment: Alignment.center,
+                                    ), */
+                                          )),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      } else {
+                        return Container();
+                      }
+
+                      return Container();
+                    }),
                 actions: <Widget>[
                   StreamBuilder(
                       stream: subscriptionBloc.subscription.stream,
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         isData = snapshot.hasData;
-                        return Row(
-                          children: [
-                            Expanded(
-                                child: MaterialButton(
-                                    child: Text('Enviar'),
-                                    elevation: 5,
-                                    textColor: Colors.blue,
-                                    onPressed: () => addSubscription(context))),
-                            Expanded(
-                              child: MaterialButton(
-                                  child: Text(
-                                    'Cancelar',
-                                    style: TextStyle(color: Colors.white54),
-                                  ),
-                                  onPressed: () => Navigator.pop(context)),
-                            ),
-                          ],
-                        );
+
+                        if (isData) {
+                          final imageRecipe =
+                              (snapshot.data.imageRecipe == "") ? false : true;
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: CupertinoDialogAction(
+                                    isDefaultAction: true,
+                                    child: Text(
+                                      'ENVIAR',
+                                      style: TextStyle(
+                                          color: (imageRecipe)
+                                              ? color
+                                              : Colors.white54),
+                                    ),
+                                    onPressed: () => (imageRecipe)
+                                        ? addSubscription(context)
+                                        : null),
+                              ),
+                              Expanded(
+                                child: CupertinoDialogAction(
+                                    isDestructiveAction: true,
+                                    child: Text(
+                                      'Cancelar',
+                                      style: TextStyle(color: Colors.white54),
+                                    ),
+                                    onPressed: () => Navigator.pop(context)),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Container();
+                        }
                       }),
                 ],
               ));
@@ -690,64 +711,52 @@ class _ProfileCardState extends State<ProfileCard> {
   }
 
   unSubscribe(context, color, bool isUploadRecipe) {
-    const List<Color> orangeGradients = [
+    /*   const List<Color> orangeGradients = [
       Color(0xff34EC9C),
       Color(0xff1C3041),
       Color(0xff34EC9C),
-    ];
+    ]; */
+
+    final nameClub = widget.profile.name;
 
     if (Platform.isAndroid) {
       // Android
       return showDialog(
           context: context,
           builder: (_) => AlertDialog(
-                title: Text('Envia tu receta para suscribirte '),
-                content: Column(
-                  children: [
-                    StreamBuilder(
-                        stream: subscriptionBloc.subscription.stream,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          return GestureDetector(
-                              child: roundedRectButton(
-                                  "Empecemos!", orangeGradients, false, false),
-                              onTap: isUploadRecipe
-                                  ? null
-                                  : () => {
-                                        FocusScope.of(context).unfocus(),
-                                      });
-                        }),
-                  ],
-                ),
-                actions: <Widget>[
-                  StreamBuilder(
-                      stream: subscriptionBloc.subscription.stream,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        isData = snapshot.hasData;
-                        return Row(
-                          children: [
-                            Expanded(
-                                child: MaterialButton(
-                                    child: Text('Enviar'),
-                                    elevation: 5,
-                                    textColor: Colors.blue,
-                                    onPressed: () => addSubscription(context))),
-                            Expanded(
-                              child: MaterialButton(
-                                  child: Text(
-                                    'Cancelar',
-                                    style: TextStyle(color: Colors.white54),
-                                  ),
-                                  onPressed: () => Navigator.pop(context)),
+                  title: Container(
+                    child: Text(
+                      '¿Deseas anular tu suscripción a $nameClub ?',
+                      style: TextStyle(color: Colors.white54, fontSize: 15),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    Column(
+                      children: [
+                        CupertinoDialogAction(
+                            isDefaultAction: true,
+                            child: Text(
+                              'ANULAR SUSCRIPCIÓN',
+                              style: TextStyle(color: color, fontSize: 15),
                             ),
-                          ],
-                        );
-                      }),
-                ],
-              ));
+                            onPressed: () => (loadSub)
+                                ? unSubscription(
+                                    context,
+                                  )
+                                : null),
+                        CupertinoDialogAction(
+                            isDestructiveAction: true,
+                            child: Text(
+                              'Cancelar',
+                              style: TextStyle(
+                                  color: Colors.white54, fontSize: 15),
+                            ),
+                            onPressed: () => Navigator.pop(context)),
+                      ],
+                    )
+                  ]));
     }
 
-    final nameClub = widget.profile.name;
     showCupertinoDialog(
         context: context,
         builder: (_) => CupertinoAlertDialog(
@@ -814,23 +823,28 @@ class _ProfileCardState extends State<ProfileCard> {
       print('No image selected.');
     }
   }
-}
 
-void addSubscription(
-  context,
-) async {
-  Subscription subscription = subscriptionBloc.subscription.value;
+  void addSubscription(
+    context,
+  ) async {
+    Subscription subscription = subscriptionBloc.subscription.value;
 
-  final subscriptionService =
-      Provider.of<SubscriptionService>(context, listen: false);
+    final subscriptionService =
+        Provider.of<SubscriptionService>(context, listen: false);
 
-  final resp = await subscriptionService.createSubscription(subscription);
+    final resp = await subscriptionService.createSubscription(subscription);
 
-  if (resp.ok) {
-    subscriptionBloc.getSubscription(
-        resp.subscription.subscriptor, resp.subscription.club);
+    if (resp.ok) {
+      subscriptionBloc.getSubscription(
+          resp.subscription.subscriptor, resp.subscription.club);
+
+      this.socketService.emit('principal-notification', {
+        'by': profileMyUser.user.uid,
+        'for': profileUser.user.uid,
+      });
+    }
+    Navigator.pop(context);
   }
-  Navigator.pop(context);
 }
 
 void unSubscription(context) async {

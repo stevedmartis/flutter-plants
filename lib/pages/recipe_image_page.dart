@@ -64,27 +64,31 @@ class _RecipeImagePageState extends State<RecipeImagePage> {
           color: Colors.white,
         ),
         actions: [
-          (!loadingImage)
-              ? IconButton(
-                  icon: FaIcon(
-                    FontAwesomeIcons.camera,
-                    color: currentTheme.accentColor,
-                  ),
-                  iconSize: 25,
-                  onPressed: () async => _editImage(true),
-                  color: Colors.white,
-                )
-              : _buildLoadingWidget(),
-          (!loadingImage)
-              ? IconButton(
-                  icon: Icon(
-                    Icons.add_photo_alternate,
-                    color: currentTheme.accentColor,
-                  ),
-                  iconSize: 35,
-                  onPressed: () async => _editImage(false),
-                  color: Colors.white,
-                )
+          (widget.isUserAuth)
+              ? (!loadingImage)
+                  ? IconButton(
+                      icon: FaIcon(
+                        FontAwesomeIcons.camera,
+                        color: currentTheme.accentColor,
+                      ),
+                      iconSize: 25,
+                      onPressed: () async => _editImage(true),
+                      color: Colors.white,
+                    )
+                  : _buildLoadingWidget()
+              : Container(),
+          (widget.isUserAuth)
+              ? (!loadingImage)
+                  ? IconButton(
+                      icon: Icon(
+                        Icons.add_photo_alternate,
+                        color: currentTheme.accentColor,
+                      ),
+                      iconSize: 35,
+                      onPressed: () async => _editImage(false),
+                      color: Colors.white,
+                    )
+                  : Container()
               : Container()
         ],
       ),

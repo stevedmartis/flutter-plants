@@ -8,12 +8,14 @@ import 'package:chat/models/products.dart';
 import 'package:chat/models/profiles.dart';
 
 import 'package:chat/pages/profile_page.dart';
+import 'package:chat/pages/room_list_page.dart';
 
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/aws_service.dart';
 import 'package:chat/services/product_services.dart';
 
 import 'package:chat/theme/theme.dart';
+import 'package:chat/widgets/button_gold.dart';
 import 'package:chat/widgets/productProfile_card.dart';
 
 import 'package:flutter/material.dart';
@@ -199,6 +201,7 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
             },
             color: Colors.white,
           ),
+          centerTitle: true,
           title: (widget.isEdit)
               ? Text(
                   'Editar tratamiento',
@@ -285,8 +288,9 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
                                 Expanded(child: _createCbd(bloc)),
                               ],
                             ),
+                            _createDescription(bloc),
                             SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -350,7 +354,25 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
                             SizedBox(
                               height: 10,
                             ),
-                            _createDescription(bloc),
+                            Container(
+                              //top: size.height / 3.5,
+                              width: size.width / 2.0,
+                              margin: EdgeInsets.only(top: 10),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: ButtonSubEditProfile(
+                                    isSecond: true,
+                                    color: currentTheme.currentTheme.cardColor,
+                                    textColor: (currentTheme.customTheme)
+                                        ? Colors.white
+                                        : Colors.black,
+                                    text: 'Planta origen',
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .push(createRouterRoomsUser(true));
+                                    }),
+                              ),
+                            ),
                             SizedBox(
                               height: 10,
                             ),
@@ -785,6 +807,26 @@ Route createRoute() {
         SliverAppBarProfilepPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(-0.5, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
+Route createRouterRoomsUser(bool plantOrigen) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => RoomsListPage(
+      plantOrigen: plantOrigen,
+    ),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
       var end = Offset.zero;
       var curve = Curves.ease;
 

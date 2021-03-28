@@ -145,8 +145,11 @@ class AuthService with ChangeNotifier {
     try {
       final account = await _googleSignIn.signIn();
 
+      print(account);
+
       final googleKey = await account.authentication;
 
+      print(googleKey);
       final authBack = await siginWithGoogleBack(googleKey.idToken);
 
       return authBack;

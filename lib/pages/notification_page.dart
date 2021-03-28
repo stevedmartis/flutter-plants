@@ -154,7 +154,7 @@ class _NotificationsPageState extends State<NotificationsPage>
               shrinkWrap: true,
               itemCount: profiles.length,
               itemBuilder: (BuildContext ctxt, int index) {
-                var item = profiles[index];
+                Profiles item = profiles[index];
 
                 final DateTime dateMessage = item.messageDate;
 
@@ -183,7 +183,7 @@ class _NotificationsPageState extends State<NotificationsPage>
                                     profiles.removeAt(index);
                                   }),
                                   actionType == SlideActionType.primary
-                                      ? _approveSubscription(item.subId, index)
+                                      ? _approveSubscription(item, index)
                                       : _deleteSubscription(item.subId, index),
                                 },
                               ),
@@ -359,19 +359,6 @@ class _NotificationsPageState extends State<NotificationsPage>
                             direction: Axis.horizontal,
                             dismissal: SlidableDismissal(
                               child: SlidableDrawerDismissal(),
-                              onDismissed: (actionType) => {
-                                _showSnackBar(
-                                    context,
-                                    actionType == SlideActionType.primary
-                                        ? 'Aprobado!, se agrego en "Mis pacientes"'
-                                        : 'Solicitud Rechazada'),
-                                setState(() {
-                                  profiles.removeAt(index);
-                                }),
-                                actionType == SlideActionType.primary
-                                    ? _approveSubscription(item.subId, index)
-                                    : _deleteSubscription(item.subId, index),
-                              },
                             ),
                             actionPane: _getActionPane(index),
                             actionExtentRatio: 0.25,
@@ -477,10 +464,14 @@ class _NotificationsPageState extends State<NotificationsPage>
     }
   }
 
-  _approveSubscription(String id, int index) async {
-    final res = await this.subscriptionApiProvider.approveSubscription(id);
+  _approveSubscription(Profiles item, int index) async {
+    final res =
+        await this.subscriptionApiProvider.approveSubscription(item.subId);
     if (res) {
       subscriptionBloc.getSubscriptionsPending(profile.user.uid);
+
+      this.socketService.emit('principal-notification',
+          {'by': profile.user.uid, 'for': item.user.uid});
     }
   }
 

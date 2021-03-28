@@ -23,6 +23,7 @@ import 'package:chat/providers/products_provider.dart';
 import 'package:chat/providers/rooms_provider.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/aws_service.dart';
+import 'package:chat/services/catalogo_service.dart';
 import 'package:chat/services/plant_services.dart';
 import 'package:chat/services/product_services.dart';
 import 'package:chat/widgets/product_card.dart';
@@ -84,6 +85,11 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
     _tabController = new TabController(vsync: this, length: myTabs.length);
 
     catalogoBloc.getCatalogo(widget.catalogo);
+
+    final catalogoService =
+        Provider.of<CatalogoService>(context, listen: false);
+
+    catalogoService.catalogo = null;
   }
 
   @override
@@ -97,35 +103,30 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
   @override
   Widget build(BuildContext context) {
     final currentTheme = Provider.of<ThemeChanger>(context);
+    final catalogoService =
+        Provider.of<CatalogoService>(context, listen: false);
 
     final productService = Provider.of<ProductService>(context, listen: false);
     final aws = Provider.of<AwsService>(context, listen: false);
+
+    setState(() {
+      catalogo = (catalogoService.catalogo != null)
+          ? catalogoService.catalogo
+          : widget.catalogo;
+    });
+
+    final nameFinal = catalogo.name.isEmpty ? "" : catalogo.name.capitalize();
 
     final product = new Product();
     return Scaffold(
       backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
       appBar: AppBar(
-          title: StreamBuilder<Catalogo>(
-            stream: catalogoBloc.catalogoSelect.stream,
-            builder: (context, AsyncSnapshot<Catalogo> snapshot) {
-              if (snapshot.hasData) {
-                final catalogo = snapshot.data;
-                final nameFinal =
-                    catalogo.name.isEmpty ? "" : catalogo.name.capitalize();
-
-                return Text(
-                  nameFinal,
-                  style: TextStyle(
-                      color: (currentTheme.customTheme)
-                          ? Colors.white
-                          : Colors.black),
-                );
-              } else if (snapshot.hasError) {
-                return _buildErrorWidget(snapshot.error);
-              } else {
-                return _buildLoadingWidget();
-              }
-            },
+          centerTitle: true,
+          title: Text(
+            nameFinal,
+            style: TextStyle(
+                color:
+                    (currentTheme.customTheme) ? Colors.white : Colors.black),
           ),
           backgroundColor:
               (currentTheme.customTheme) ? Colors.black : Colors.white,
@@ -158,33 +159,19 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
             color: Colors.white,
           )),
       body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(new FocusNode());
-        },
-        child: StreamBuilder<Catalogo>(
-          stream: catalogoBloc.catalogoSelect.stream,
-          builder: (context, AsyncSnapshot<Catalogo> snapshot) {
-            if (snapshot.hasData) {
-              catalogo = snapshot.data;
-
-              return CustomScrollView(
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  controller: _scrollController,
-                  slivers: <Widget>[
-                    makeHeaderInfo(context),
-                    makeHeaderTabs(context),
-                    // (_tabController.index == 0)
-                    makeListProducts(context)
-                  ]);
-            } else if (snapshot.hasError) {
-              return _buildErrorWidget(snapshot.error);
-            } else {
-              return _buildLoadingWidget();
-            }
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
           },
-        ),
-      ),
+          child: CustomScrollView(
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              controller: _scrollController,
+              slivers: <Widget>[
+                makeHeaderInfo(context),
+                makeHeaderTabs(context),
+                // (_tabController.index == 0)
+                makeListProducts(context)
+              ])),
     );
   }
 
@@ -195,16 +182,6 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
         height: 400.0,
         child: Center(
             child: CircularProgressIndicator(color: currentTheme.accentColor)));
-  }
-
-  Widget _buildErrorWidget(String error) {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Error occured: $error"),
-      ],
-    ));
   }
 
   SliverPersistentHeader makeHeaderSpacer(context) {
@@ -243,7 +220,7 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
             ? 'Suscriptores'
             : (catalogo.privacity == '3')
                 ? 'Nadie'
-                : '';
+                : '3';
 
     return SliverPersistentHeader(
       pinned: false,
@@ -321,8 +298,7 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
                     child: ButtonSubEditProfile(
                         isSecond: true,
                         color: currentTheme.currentTheme.accentColor,
-                        textColor:
-                            currentTheme.currentTheme.scaffoldBackgroundColor,
+                        textColor: Colors.white,
                         text: 'Editar',
                         onPressed: () {
                           Navigator.of(context)
