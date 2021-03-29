@@ -1,4 +1,5 @@
 import 'package:chat/models/plant.dart';
+import 'package:chat/widgets/productProfile_card.dart';
 
 import 'package:flutter/material.dart';
 
@@ -26,13 +27,7 @@ class _CoverImagePlantState extends State<CoverImagePlant> {
   @override
   Widget build(BuildContext context) {
     return (widget.plant.coverImage != "")
-        ? Container(
-            child: Image(
-              image: NetworkImage(widget.plant.getCoverImg()),
-              fit: BoxFit.cover,
-              width: double.maxFinite,
-            ),
-          )
+        ? Container(child: cachedNetworkImage(widget.plant.getCoverImg()))
         : Container(
             child: Image(
               image: AssetImage('assets/images/empty_image.png'),

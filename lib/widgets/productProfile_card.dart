@@ -47,8 +47,14 @@ class _CardProductState extends State<CardProductProfile> {
                                   "")
                               ? cachedNetworkImage(
                                   widget.productProfile.product.getCoverImg())
-                              : cachedNetworkImage(
-                                  'assets/images/empty_image.png'))),
+                              : Container(
+                                  child: Image(
+                                    image: AssetImage(
+                                        'assets/images/empty_image.png'),
+                                    fit: BoxFit.cover,
+                                    width: double.maxFinite,
+                                  ),
+                                ))),
                 ),
               ],
             ),

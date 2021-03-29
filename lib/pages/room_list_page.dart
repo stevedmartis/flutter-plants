@@ -302,7 +302,7 @@ class _RoomListState extends State<RoomList> {
                 key: Key(item.id),
                 padding: EdgeInsets.only(bottom: 1.0),
                 child: FadeInLeft(
-                  delay: Duration(milliseconds: 300 * index),
+                  delay: Duration(milliseconds: 100 * index),
                   child: Stack(
                     children: [
                       GestureDetector(

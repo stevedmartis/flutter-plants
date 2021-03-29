@@ -1,15 +1,18 @@
 import 'package:chat/bloc/plant_bloc.dart';
 
 import 'package:chat/models/air.dart';
+import 'package:chat/models/catalogo.dart';
 import 'package:chat/models/light.dart';
 
 import 'package:chat/models/plant.dart';
+import 'package:chat/models/products.dart';
 import 'package:chat/models/profiles.dart';
 
 import 'package:chat/models/room.dart';
 import 'package:chat/pages/add_update_air.dart';
 import 'package:chat/pages/add_update_light.dart';
 import 'package:chat/pages/add_update_plant.dart';
+import 'package:chat/pages/add_update_product.dart';
 import 'package:chat/pages/plant_detail.dart';
 import 'package:chat/pages/profile_page.dart';
 import 'package:chat/pages/room_list_page.dart';
@@ -87,6 +90,8 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
     final roomService = Provider.of<RoomService>(context, listen: false);
 
     roomService.room = null;
+
+    plantBloc.plantsSelected.sink.add(platsSelected);
   }
 
   @override
@@ -123,7 +128,7 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
           ),
           backgroundColor:
               (currentTheme.customTheme) ? Colors.black : Colors.white,
-          actions: [_createButton(plantBloc, isPlantSelect)],
+          actions: [_createButton(isPlantSelect)],
           leading: IconButton(
             icon: Icon(
               Icons.chevron_left,
@@ -136,28 +141,23 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
             },
             color: Colors.white,
           )),
-      body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).requestFocus(new FocusNode());
-          },
-          child: CustomScrollView(
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              controller: _scrollController,
-              slivers: <Widget>[
-                //  makeHeaderInfo(context),
-                makeHeaderTabs(context),
-                makeListPlants(context)
-              ])),
+      body: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
+          controller: _scrollController,
+          slivers: <Widget>[
+            //  makeHeaderInfo(context),
+            makeHeaderTabs(context),
+            makeListPlants(context)
+          ]),
     );
   }
 
   Widget _createButton(
-    PlantBloc bloc,
     bool isPlantSelect,
   ) {
     return StreamBuilder(
-      stream: bloc.plantsSelected.stream,
+      stream: plantBloc.plantsSelected.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
@@ -180,9 +180,8 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
               ),
             ),
             onTap: isSelected && !loading
-                ? () => {
-                      FocusScope.of(context).unfocus(),
-                    }
+                ? () =>
+                    {Navigator.pop(context, true), Navigator.pop(context, true)}
                 : null);
       },
     );
@@ -387,13 +386,29 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
     );
   }
 
-  void addBandToList(String name) {
-    if (name.length > 1) {
-      final socketService = Provider.of<SocketService>(context, listen: false);
-      socketService.emit('add-band', {'name': name});
-    }
+  Route createRouteNewProduct(Product product, Catalogo catalogo, bool isEdit) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          AddUpdateProductPage(
+        product: product,
+        catalogo: catalogo,
+        isEdit: isEdit,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
 
-    Navigator.pop(context);
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+      transitionDuration: Duration(milliseconds: 400),
+    );
   }
 
   SliverList makeListPlants(context) {
@@ -425,10 +440,7 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
                             )),
                       ); // image is ready
               } else {
-                return Container(
-                    height: 400.0,
-                    child: Center(
-                        child: CircularProgressIndicator())); // placeholder
+                return _buildLoadingWidget(); // placeholder
               }
             },
           ),
@@ -455,14 +467,11 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
               backgroundColor: currentTheme.scaffoldBackgroundColor,
               bottom: TabBar(
                 indicatorWeight: 3.0,
-                indicatorColor: currentTheme.accentColor,
+                indicatorColor: Colors.grey,
                 tabs: [
                   StreamBuilder(
                     stream: plantBloc.plantsSelected.stream,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      final currentTheme =
-                          Provider.of<ThemeChanger>(context).currentTheme;
-
                       final isSelected = (snapshot.data != null)
                           ? (snapshot.data.length > 0)
                               ? true
@@ -472,9 +481,10 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
                           (isSelected) ? snapshot.data.length : 0;
                       return Tab(
                         child: Text(
-                          '$countSelection Seleccionadas',
-                          style: TextStyle(
-                              color: currentTheme.accentColor, fontSize: 18),
+                          (isSelected)
+                              ? '$countSelection Seleccionadas'
+                              : 'Seleccione planta de origen',
+                          style: TextStyle(color: Colors.grey, fontSize: 18),
                         ),
                       );
                     },
@@ -487,61 +497,6 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
       ),
     );
   }
-}
-
-Container buildCircleQuantityPlantDash(String quantity, context) {
-  final size = MediaQuery.of(context).size;
-  final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
-  return Container(
-      alignment: Alignment.topRight,
-      margin: EdgeInsets.only(left: size.width / 1.45, top: 0.0),
-      width: 100,
-      height: 100,
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        child: CircleAvatar(
-            child: Text(
-              '$quantity',
-              style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-            backgroundColor: currentTheme.accentColor),
-      ));
-}
-
-Container buildCircleQuantityPlant(String quantity, context) {
-  final size = MediaQuery.of(context).size;
-  final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
-  return Container(
-      alignment: Alignment.topRight,
-      margin: EdgeInsets.only(left: size.width / 2.0, top: 0.0),
-      width: 100,
-      height: 100,
-      child: CircleAvatar(
-          child: Text('$quantity',
-              style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black)),
-          backgroundColor: currentTheme.accentColor));
-}
-
-Container buildCircleFavoriteProduct(context) {
-  final size = MediaQuery.of(context).size;
-  final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
-  return Container(
-      alignment: Alignment.topRight,
-      margin: EdgeInsets.only(left: size.width / 2.0, top: 0.0),
-      width: 100,
-      height: 100,
-      child: CircleAvatar(
-          child: FaIcon(FontAwesomeIcons.heart),
-          backgroundColor: currentTheme.accentColor));
 }
 
 Route createRouteProfile() {

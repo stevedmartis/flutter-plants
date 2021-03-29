@@ -61,6 +61,23 @@ class PlantsApiProvider {
     }
   }
 
+  Future<List<Plant>> getPlantsByProduct(String productId) async {
+    final urlFinal = Uri.https('${Environment.apiUrl}',
+        '/api/plant_product/plants/product/$productId');
+
+    final token = await this._storage.read(key: 'token');
+
+    try {
+      final resp = await http.get(urlFinal,
+          headers: {'Content-Type': 'application/json', 'x-token': token});
+
+      final plantsResponse = plantsResponseFromJson(resp.body);
+      return plantsResponse.plants;
+    } catch (e) {
+      return [];
+    }
+  }
+
   Future<Plant> getPlant(String roomId) async {
     final urlFinal =
         Uri.https('${Environment.apiUrl}', '/api/plant/plant/$roomId');

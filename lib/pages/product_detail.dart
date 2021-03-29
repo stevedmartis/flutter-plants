@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/bloc/product_bloc.dart';
 import 'package:chat/bloc/room_bloc.dart';
+import 'package:chat/models/plant.dart';
 import 'package:chat/models/products.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/models/room.dart';
@@ -11,9 +13,12 @@ import 'package:chat/models/rooms_response.dart';
 import 'package:chat/models/visit.dart';
 import 'package:chat/pages/add_update_product.dart';
 import 'package:chat/pages/add_update_visit.dart';
+import 'package:chat/pages/catalogo_detail.dart';
 import 'package:chat/pages/chat_page.dart';
+import 'package:chat/pages/plant_detail.dart';
 import 'package:chat/pages/principal_page.dart';
 import 'package:chat/pages/room_list_page.dart';
+import 'package:chat/providers/plants_provider.dart';
 import 'package:chat/providers/products_provider.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/chat_service.dart';
@@ -23,6 +28,7 @@ import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/card_product.dart';
 import 'package:chat/widgets/carousel_tabs.dart';
 import 'package:chat/widgets/myprofile.dart';
+import 'package:chat/widgets/plant_card_widget.dart';
 import 'package:chat/widgets/productProfile_card.dart';
 import 'package:chat/widgets/sliver_appBar_snap.dart';
 import 'package:flutter/cupertino.dart';
@@ -78,6 +84,7 @@ class NetworkImageDecoder {
 class _ProductDetailPageState extends State<ProductDetailPage>
     with TickerProviderStateMixin {
   ScrollController _scrollController;
+  final plantService = new PlantsApiProvider();
 
   TabController _tabController;
 
@@ -454,7 +461,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               // makeHeaderSpacer(context),
 
               //   makeHeaderTabs(context),
-
+              makeListPlants(context)
               //   makeListVisits(context)
             ]));
   }
@@ -828,6 +835,121 @@ class _ProductDetailPageState extends State<ProductDetailPage>
           ),
         ),
       ]),
+    );
+  }
+
+  List<Plant> plants = [];
+
+  SliverList makeListPlants(context) {
+    final currentTheme = Provider.of<ThemeChanger>(context);
+    final size = MediaQuery.of(context).size;
+
+    return SliverList(
+      delegate: SliverChildListDelegate([
+        Container(
+          child: FutureBuilder(
+            future: this.plantService.getPlantsByProduct(widget.product.id),
+            initialData: null,
+            builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+              if (snapshot.hasData) {
+                plants = snapshot.data;
+                return (plants.length > 0)
+                    ? Stack(
+                        children: [
+                          Container(
+                              margin: EdgeInsets.only(top: 20),
+                              alignment: Alignment.center,
+                              child: Text('Planta de origen',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: (currentTheme.customTheme)
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ))),
+                          Container(child: _buildWidgetPlant(plants))
+                        ],
+                      )
+                    : Center(
+                        child: Container(
+                            padding: EdgeInsets.all(50),
+                            child: Text(
+                              'Sin Plantas, crea una nueva',
+                              style: TextStyle(
+                                fontSize: size.width / 30,
+                                color: (currentTheme.customTheme)
+                                    ? Colors.white54
+                                    : Colors.black54,
+                              ),
+                            )),
+                      ); // image is ready
+              } else {
+                return Container(
+                    height: 400.0,
+                    child: Center(
+                        child: CircularProgressIndicator())); // placeholder
+              }
+            },
+          ),
+        ),
+      ]),
+    );
+  }
+
+  Widget _buildWidgetPlant(plants) {
+    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+
+    return Container(
+      child: SizedBox(
+        child: ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: plants.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              final plant = plants[index];
+
+              return Stack(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 20, left: 20, right: 20, bottom: 10.0),
+                    child: OpenContainer(
+                        closedElevation: 5,
+                        openElevation: 5,
+                        closedColor: currentTheme.scaffoldBackgroundColor,
+                        openColor: currentTheme.scaffoldBackgroundColor,
+                        transitionType: ContainerTransitionType.fade,
+                        openShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20.0),
+                              topLeft: Radius.circular(10.0),
+                              bottomRight: Radius.circular(10.0),
+                              bottomLeft: Radius.circular(10.0)),
+                        ),
+                        closedShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20.0),
+                              topLeft: Radius.circular(10.0),
+                              bottomRight: Radius.circular(10.0),
+                              bottomLeft: Radius.circular(10.0)),
+                        ),
+                        openBuilder: (_, closeContainer) {
+                          return PlantDetailPage(plant: plant);
+                        },
+                        closedBuilder: (_, openContainer) {
+                          return Stack(children: [
+                            CardPlant(plant: plant),
+                            Container(
+                              child: buildCircleQuantityPlantDash(
+                                  plant.quantity, context),
+                            ),
+                          ]);
+                        }),
+                  ),
+                ],
+              );
+            }),
+      ),
     );
   }
 

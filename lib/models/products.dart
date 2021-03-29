@@ -76,9 +76,7 @@ class Product {
         "thc": thc,
         "price": price,
         "isLike": isLike,
-        "countLikes": countLikes
-
-        // "products": List<dynamic>.from(products.map((x) => x)),
+        "countLikes": countLikes,
       };
 
   getCoverImg() {

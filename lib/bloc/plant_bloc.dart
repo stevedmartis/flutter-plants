@@ -114,6 +114,7 @@ class PlantBloc with Validators {
   String get thc => _thcController.value;
 
   dispose() {
+    _plantSelected?.close();
     _imageUpdateCtrl.close();
     _plantEdit.close();
     _plantsUser.close();
@@ -138,7 +139,6 @@ class PlantBloc with Validators {
   }
 
   disposePlant() {
-    _plantSelected?.close();
     _plantSelect?.close();
   }
 }

@@ -1,11 +1,14 @@
+import 'package:chat/bloc/plant_bloc.dart';
 import 'package:chat/bloc/product_bloc.dart';
 import 'package:chat/bloc/provider.dart';
 
 import 'package:chat/helpers/mostrar_alerta.dart';
 import 'package:chat/models/catalogo.dart';
+import 'package:chat/models/plant.dart';
 
 import 'package:chat/models/products.dart';
 import 'package:chat/models/profiles.dart';
+import 'package:chat/pages/plant_cover_image.dart';
 
 import 'package:chat/pages/profile_page.dart';
 import 'package:chat/pages/room_list_page.dart';
@@ -13,9 +16,11 @@ import 'package:chat/pages/room_list_page.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/aws_service.dart';
 import 'package:chat/services/product_services.dart';
+import 'package:chat/services/socket_service.dart';
 
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/button_gold.dart';
+import 'package:chat/widgets/plant_card_widget.dart';
 import 'package:chat/widgets/productProfile_card.dart';
 
 import 'package:flutter/material.dart';
@@ -142,11 +147,15 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
     super.initState();
   }
 
+  List<Plant> platsSelected = [];
+
   @override
   void dispose() {
     nameCtrl.dispose();
 
     descriptionCtrl.dispose();
+
+    plantBloc.plantsSelected.sink.add(platsSelected);
 
     // plantBloc?.dispose();
 
@@ -230,7 +239,7 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
             },
             child: CustomScrollView(
                 physics: const BouncingScrollPhysics(
-                    parent: ClampingScrollPhysics()),
+                    parent: AlwaysScrollableScrollPhysics()),
                 // controller: _scrollController,
                 slivers: <Widget>[
                   SliverFixedExtentList(
@@ -287,6 +296,9 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
                                 ),
                                 Expanded(child: _createCbd(bloc)),
                               ],
+                            ),
+                            SizedBox(
+                              height: 10,
                             ),
                             _createDescription(bloc),
                             SizedBox(
@@ -364,21 +376,21 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
                                     isSecond: true,
                                     color: currentTheme.currentTheme.cardColor,
                                     textColor: (currentTheme.customTheme)
-                                        ? Colors.white
-                                        : Colors.black,
+                                        ? Colors.white54
+                                        : Colors.black54,
                                     text: 'Planta origen',
                                     onPressed: () {
+                                      //plantBloc.plantsSelected.sink.add(platsSelected);
+
                                       Navigator.of(context)
                                           .push(createRouterRoomsUser(true));
                                     }),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
                           ],
                         ),
                       )),
+                  makeListPlants(context),
                 ]),
           ),
         ),
@@ -386,15 +398,64 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
     );
   }
 
+  SliverList makeListPlants(context) {
+    final currentTheme = Provider.of<ThemeChanger>(context);
+    final size = MediaQuery.of(context).size;
+
+    return SliverList(
+      delegate: SliverChildListDelegate([
+        Container(
+          child: StreamBuilder(
+            stream: plantBloc.plantsSelected.stream,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                final plants = snapshot.data;
+                if (plants.length > 0) {
+                  return _buildWidgetPlant(plants);
+                } else {
+                  return Container();
+                }
+              } else {
+                return Container();
+              }
+            },
+          ),
+        ),
+      ]),
+    );
+  }
+
   Widget _buildLoadingWidget() {
     final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
     return Container(
+        padding: EdgeInsets.only(right: 10),
         height: 400.0,
         child: Center(
             child: CircularProgressIndicator(
           color: currentTheme.accentColor,
         )));
+  }
+
+  Widget _buildWidgetPlant(plants) {
+    return Container(
+      child: SizedBox(
+        child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: plants.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              final plant = plants[index];
+
+              return Container(
+                  padding: EdgeInsets.only(
+                      top: 0, left: 20, right: 20, bottom: 20.0),
+                  child: CardPlant(
+                    plant: plant,
+                  ));
+            }),
+      ),
+    );
   }
 
   Widget _buildErrorWidget(String error) {
@@ -688,6 +749,8 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
 
     final cbd = (bloc.cbd == null) ? widget.product.cbd : bloc.cbd.trim();
 
+    final plants = plantBloc.plantsSelected.value;
+
     final newProduct = Product(
       name: name,
       description: description,
@@ -698,7 +761,9 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
       cbd: cbd,
       thc: thc,
     );
-    final createProductResp = await productService.createProduct(newProduct);
+
+    final createProductResp =
+        await productService.createProduct(newProduct, plants);
 
     if (createProductResp != null) {
       if (createProductResp.ok) {

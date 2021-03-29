@@ -1,3 +1,4 @@
+import 'package:chat/models/plant.dart';
 import 'package:chat/models/product_principal.dart';
 import 'package:chat/models/product_response.dart';
 import 'package:chat/models/products.dart';
@@ -63,17 +64,26 @@ class ProductService with ChangeNotifier {
     }
   }
 
-  Future createProduct(Product product) async {
+  Future createProduct(Product product, List<Plant> plants) async {
     // this.authenticated = true;
 
     final token = await this._storage.read(key: 'token');
 
     final urlFinal = Uri.https('${Environment.apiUrl}', '/api/product/new');
 
-    //final data = {'name': name, 'email': description, 'uid': uid};
-
+    final data = {
+      'name': product.name,
+      'description': product.description,
+      'catalogo': product.catalogo,
+      'user': product.user,
+      'coverImage': product.coverImage,
+      'ratingInit': product.ratingInit,
+      'cbd': product.cbd,
+      'thc': product.thc,
+      'plants': plants
+    };
     final resp = await http.post(urlFinal,
-        body: jsonEncode(product),
+        body: json.encode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
     if (resp.statusCode == 200) {

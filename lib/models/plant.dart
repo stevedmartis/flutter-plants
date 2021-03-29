@@ -21,6 +21,7 @@ class Plant {
       this.createdAt,
       this.updatedAt,
       this.coverImage = "",
+      this.position,
       isRoute,
       init()});
 
@@ -40,6 +41,7 @@ class Plant {
   String pot;
   String coverImage;
 
+  int position;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -58,7 +60,8 @@ class Plant {
       pot: json["pot"],
       cbd: json["cbd"],
       thc: json["thc"],
-      coverImage: json["coverImage"]
+      coverImage: json["coverImage"],
+      position: json["position"]
       //images: List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
       );
 
@@ -75,7 +78,8 @@ class Plant {
         "pot": pot,
         "cbd": cbd,
         "thc": thc,
-        "coverImage": coverImage
+        "coverImage": coverImage,
+        "position": position
         // "images": List<Image>.from(images.map((x) => x)),
       };
 

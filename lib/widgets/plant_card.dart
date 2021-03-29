@@ -40,13 +40,20 @@ class _CardPlantPrincipalState extends State<CardPlantPrincipal> {
                       bottomRight: Radius.circular(10.0),
                       bottomLeft: Radius.circular(10.0)),
                   child: Material(
-                      type: MaterialType.transparency,
-                      child: (widget.plant.coverImage != "")
-                          ? cachedNetworkImage(
-                              widget.plant.getCoverImg(),
-                            )
-                          : cachedNetworkImage(
-                              'assets/images/empty_image.png'))),
+                    type: MaterialType.transparency,
+                    child: (widget.plant.coverImage != "")
+                        ? cachedNetworkImage(
+                            widget.plant.getCoverImg(),
+                          )
+                        : Container(
+                            child: Image(
+                              image:
+                                  AssetImage('assets/images/empty_image.png'),
+                              fit: BoxFit.cover,
+                              width: double.maxFinite,
+                            ),
+                          ),
+                  )),
             ),
           ],
         ),

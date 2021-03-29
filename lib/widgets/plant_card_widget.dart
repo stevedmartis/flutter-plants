@@ -30,7 +30,7 @@ class _CardPlantState extends State<CardPlant> {
     super.dispose();
     countSelect = 0;
     platsSelected = [];
-    plantBloc.plantsSelected.sink.add(platsSelected);
+    //plantBloc.plantsSelected.sink.add(platsSelected);
   }
 
   @override
@@ -39,92 +39,103 @@ class _CardPlantState extends State<CardPlant> {
 
     final currentTheme = Provider.of<ThemeChanger>(context);
 
+    setState(() {
+      platsSelected = (plantBloc.plantsSelected.value != null)
+          ? plantBloc.plantsSelected.value
+          : [];
+    });
+
     //   final productService = Provider.of<PlantService>(context, listen: false);
     final isPlantSelected =
         (platsSelected.contains(widget.plant)) ? true : false;
+
     return (widget.isSelected)
-        ? GestureDetector(
-            onTap: () {
-              setState(() {
-                if (isPlantSelected) {
-                  platsSelected.remove(widget.plant);
-                  plantBloc.plantsSelected.sink.add(platsSelected);
+        ? Stack(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (isPlantSelected) {
+                      platsSelected.remove(widget.plant);
+                      plantBloc.plantsSelected.sink.add(platsSelected);
 
-                  countSelect--;
-                  if (countSelect == 0)
-                    plantBloc.plantsSelected.sink.add(platsSelected);
-                } else {
-                  platsSelected.add(widget.plant);
-                  countSelect++;
-                  plantBloc.plantsSelected.sink.add(platsSelected);
-                }
+                      countSelect--;
+                      if (countSelect == 0)
+                        plantBloc.plantsSelected.sink.add(platsSelected);
+                    } else {
+                      platsSelected.add(widget.plant);
+                      countSelect++;
+                      plantBloc.plantsSelected.sink.add(platsSelected);
+                    }
 
-                print(countSelect);
-              });
-            },
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 200),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: (isPlantSelected) ? 0 : 3,
-                    blurRadius: (isPlantSelected) ? 0 : 5,
-                    offset: Offset(0, 3), // changes position of shadow
+                    print(countSelect);
+                  });
+                },
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: (isPlantSelected) ? 0 : 3,
+                        blurRadius: (isPlantSelected) ? 0 : 5,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                    /* border: Border.all(
+                      width: (isPlantSelected) ? 3.0 : 0,
+                      style: BorderStyle.solid,
+                      color: platsSelected.contains(widget.plant)
+                          ? currentTheme.currentTheme.accentColor
+                          : Colors.transparent,
+                    ), */
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        topLeft: Radius.circular(10.0),
+                        bottomRight: Radius.circular(10.0),
+                        bottomLeft: Radius.circular(10.0)),
+                    color: (currentTheme.customTheme)
+                        ? currentTheme.currentTheme.cardColor
+                        : Colors.white,
                   ),
-                ],
-                border: Border.all(
-                  width: (isPlantSelected) ? 3.0 : 0,
-                  style: BorderStyle.solid,
-                  color: platsSelected.contains(widget.plant)
-                      ? currentTheme.currentTheme.accentColor
-                      : Colors.transparent,
-                ),
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20.0),
-                    topLeft: Radius.circular(10.0),
-                    bottomRight: Radius.circular(10.0),
-                    bottomLeft: Radius.circular(10.0)),
-                color: (currentTheme.customTheme)
-                    ? currentTheme.currentTheme.cardColor
-                    : Colors.white,
-              ),
-              child: FittedBox(
-                child: Row(
-                  children: <Widget>[
-                    Center(child: plantItem()),
-                    Container(
-                      width: size.width,
-                      height: (!widget.isPrincipal)
-                          ? size.height / 1.40
-                          : size.height,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20.0),
-                              bottomRight: Radius.circular(15.0)),
-                          child: Material(
-                              type: MaterialType.transparency,
-                              child: (widget.plant.coverImage != "")
-                                  ? cachedNetworkImage(
-                                      widget.plant.getCoverImg())
-                                  : cachedNetworkImage(
-                                      'assets/images/empty_image.png'))),
+                  child: FittedBox(
+                    child: Row(
+                      children: <Widget>[
+                        Center(child: plantItem()),
+                        Container(
+                          width: size.width,
+                          height: (!widget.isPrincipal)
+                              ? size.height / 1.40
+                              : size.height,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(20.0),
+                                  bottomRight: Radius.circular(15.0)),
+                              child: Material(
+                                  type: MaterialType.transparency,
+                                  child: (widget.plant.coverImage != "")
+                                      ? cachedNetworkImage(
+                                          widget.plant.getCoverImg())
+                                      : Container(
+                                          child: Image(
+                                            image: AssetImage(
+                                                'assets/images/empty_image.png'),
+                                            fit: BoxFit.cover,
+                                            width: double.maxFinite,
+                                          ),
+                                        ))),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              (isPlantSelected) ? buildCircle(context) : Container(),
+            ],
           )
         : AnimatedContainer(
             duration: Duration(milliseconds: 200),
             decoration: BoxDecoration(
-              border: Border.all(
-                width: (platsSelected.contains(widget.plant)) ? 3.0 : 0,
-                style: BorderStyle.solid,
-                color: platsSelected.contains(widget.plant)
-                    ? currentTheme.currentTheme.accentColor
-                    : Colors.transparent,
-              ),
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(20.0),
                   topLeft: Radius.circular(10.0),
@@ -151,8 +162,14 @@ class _CardPlantState extends State<CardPlant> {
                             type: MaterialType.transparency,
                             child: (widget.plant.coverImage != "")
                                 ? cachedNetworkImage(widget.plant.getCoverImg())
-                                : cachedNetworkImage(
-                                    'assets/images/empty_image.png'))),
+                                : Container(
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/images/empty_image.png'),
+                                      fit: BoxFit.cover,
+                                      width: double.maxFinite,
+                                    ),
+                                  ))),
                   ),
                 ],
               ),
@@ -246,6 +263,31 @@ class _CardPlantState extends State<CardPlant> {
       ),
     );
   }
+}
+
+Container buildCircle(context) {
+  final size = MediaQuery.of(context).size;
+  final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+
+  final numberSelect = platsSelected.length;
+
+  return Container(
+      alignment: Alignment.topLeft,
+      margin: EdgeInsets.only(top: 5.0, left: 5.0),
+      width: 30,
+      height: 30,
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        child: CircleAvatar(
+            child: Text(
+              '$numberSelect',
+              style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            backgroundColor: currentTheme.accentColor),
+      ));
 }
 
 class SexLtRow extends StatelessWidget {
