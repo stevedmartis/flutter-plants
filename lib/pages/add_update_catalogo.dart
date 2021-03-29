@@ -220,7 +220,7 @@ class _AddUpdateCatalogoPageState extends State<AddUpdateCatalogoPage> {
                       color: currentTheme.currentTheme.accentColor, width: 2.0),
                 ),
                 hintText: '',
-                labelText: 'Name *',
+                labelText: 'Nombre *',
                 //counterText: snapshot.data,
                 errorText: snapshot.error),
             onChanged: bloc.changeName,
