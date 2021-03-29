@@ -509,9 +509,7 @@ Widget _createUsername(RegisterBloc bloc, context) {
             color: (currentTheme.customTheme) ? Colors.white : Colors.black,
           ),
           //  keyboardType: TextInputType.emailAddress,
-          inputFormatters: <TextInputFormatter>[
-            LengthLimitingTextInputFormatter(5),
-          ],
+
           decoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
