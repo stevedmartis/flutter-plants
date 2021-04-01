@@ -618,7 +618,10 @@ Widget _buildWidgetPlants(List<Plant> plants, context) {
                         bottomLeft: Radius.circular(10.0)),
                   ),
                   openBuilder: (_, closeContainer) {
-                    return PlantDetailPage(plant: plant);
+                    return PlantDetailPage(
+                      plant: plant,
+                      isUserAuth: true,
+                    );
                   },
                   closedBuilder: (_, openContainer) {
                     return Stack(

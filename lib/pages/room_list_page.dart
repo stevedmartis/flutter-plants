@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:chat/bloc/room_bloc.dart';
+import 'package:chat/models/products.dart';
 
 import 'package:chat/models/profiles.dart';
 import 'package:chat/models/room.dart';
@@ -29,7 +30,9 @@ import 'package:chat/services/socket_service.dart';
 class RoomsListPage extends StatefulWidget {
   final bool plantOrigen;
 
-  RoomsListPage({this.plantOrigen = false});
+  final Product product;
+
+  RoomsListPage({this.plantOrigen = false, this.product});
   @override
   _RoomsListPageState createState() => _RoomsListPageState();
 }
@@ -73,7 +76,10 @@ class _RoomsListPageState extends State<RoomsListPage> {
   ) {
     return SliverList(
         delegate: SliverChildListDelegate([
-      RoomList(plantOrigen: widget.plantOrigen),
+      RoomList(
+        plantOrigen: widget.plantOrigen,
+        product: widget.product,
+      ),
     ]));
   }
 
@@ -153,12 +159,11 @@ class _RoomsListPageState extends State<RoomsListPage> {
 }
 
 class RoomList extends StatefulWidget {
-  const RoomList({
-    Key key,
-    this.plantOrigen = false,
-  }) : super(key: key);
+  const RoomList({Key key, this.plantOrigen = false, this.product})
+      : super(key: key);
 
   final bool plantOrigen;
+  final Product product;
 
   @override
   _RoomListState createState() => _RoomListState();
@@ -311,8 +316,9 @@ class _RoomListState extends State<RoomList> {
                           (!widget.plantOrigen)
                               ? Navigator.of(context)
                                   .push(createRouteRoomDetail(item, rooms))
-                              : Navigator.of(context)
-                                  .push(createRoutePlantsByRoom(item, rooms)),
+                              : Navigator.of(context).push(
+                                  createRoutePlantsByRoom(
+                                      item, rooms, widget.product)),
                         },
                         child: Dismissible(
                           confirmDismiss: (DismissDirection direction) async {
@@ -469,12 +475,10 @@ Route createRouteRoomDetail(Room room, List<Room> rooms) {
   );
 }
 
-Route createRoutePlantsByRoom(Room room, List<Room> rooms) {
+Route createRoutePlantsByRoom(Room room, List<Room> rooms, Product product) {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => PlantsRoomPage(
-      room: room,
-      rooms: rooms,
-    ),
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        PlantsRoomPage(room: room, rooms: rooms, product: product),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;

@@ -3,6 +3,7 @@ import 'package:chat/bloc/validators.dart';
 import 'package:chat/models/plant.dart';
 import 'package:chat/models/plants_response.dart';
 import 'package:chat/models/fromPlant.dart';
+import 'package:chat/providers/plants_provider.dart';
 import 'package:chat/repository/plants_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -26,6 +27,8 @@ class PlantBloc with Validators {
 
   final _plantsController = BehaviorSubject<List<Plant>>();
   final PlantsRepository _repository = PlantsRepository();
+
+  final PlantsApiProvider _plantApiProvider = PlantsApiProvider();
 
   final BehaviorSubject<List<Plant>> _plantsSelected =
       BehaviorSubject<List<Plant>>();
@@ -53,6 +56,13 @@ class PlantBloc with Validators {
   getPlant(Plant plant) async {
     Plant response = await _repository.getPlant(plant.id);
     _plantSelect.sink.add(response);
+  }
+
+  getPlantsOrigen(String productId) async {
+    List<Plant> response =
+        await _plantApiProvider.getPlantsByProduct(productId);
+
+    if (!_plantsSelected.isClosed) _plantsSelected.sink.add(response);
   }
 
   BehaviorSubject<bool> get imageUpdate => _imageUpdateCtrl;
@@ -114,6 +124,7 @@ class PlantBloc with Validators {
   String get thc => _thcController.value;
 
   dispose() {
+    _plantsSelected?.close();
     _plantSelected?.close();
     _imageUpdateCtrl.close();
     _plantEdit.close();

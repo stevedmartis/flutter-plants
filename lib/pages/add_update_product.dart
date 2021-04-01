@@ -8,7 +8,6 @@ import 'package:chat/models/plant.dart';
 
 import 'package:chat/models/products.dart';
 import 'package:chat/models/profiles.dart';
-import 'package:chat/pages/plant_cover_image.dart';
 
 import 'package:chat/pages/profile_page.dart';
 import 'package:chat/pages/room_list_page.dart';
@@ -16,7 +15,6 @@ import 'package:chat/pages/room_list_page.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/aws_service.dart';
 import 'package:chat/services/product_services.dart';
-import 'package:chat/services/socket_service.dart';
 
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/button_gold.dart';
@@ -38,11 +36,17 @@ import 'image_cover_product.dart';
 //final Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 
 class AddUpdateProductPage extends StatefulWidget {
-  AddUpdateProductPage({this.product, this.isEdit = false, this.catalogo});
+  AddUpdateProductPage(
+      {this.product,
+      this.isEdit = false,
+      this.catalogo,
+      this.plantProductBloc});
 
   final Product product;
   final bool isEdit;
   final Catalogo catalogo;
+
+  final PlantBloc plantProductBloc;
 
   @override
   _AddUpdateProductPageState createState() => _AddUpdateProductPageState();
@@ -80,6 +84,8 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
 
   double ratingActual = 0;
 
+  List<Plant> plantsOrigen = [];
+
   @override
   void initState() {
     final productService = Provider.of<ProductService>(context, listen: false);
@@ -101,6 +107,10 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
 
     ratingActual =
         (widget.isEdit) ? double.parse(widget.product.ratingInit) : 0;
+
+    if (!widget.isEdit) plantBloc.plantsSelected.sink.add(platsSelected);
+
+    plantsOrigen = plantBloc.plantsSelected.value;
 
     productBloc.imageUpdate.add(true);
     nameCtrl.addListener(() {
@@ -155,7 +165,7 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
 
     descriptionCtrl.dispose();
 
-    plantBloc.plantsSelected.sink.add(platsSelected);
+    // plantBloc.plantsSelected.sink.add(platsSelected);
 
     // plantBloc?.dispose();
 
@@ -180,6 +190,8 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
         isCbdChange ||
         isRatingChange;
 
+    final int plantOrigenInitialCount = plantsOrigen.length;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
@@ -188,8 +200,10 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
               (currentTheme.customTheme) ? Colors.black : Colors.white,
           actions: [
             (widget.isEdit)
-                ? _createButton(bloc, isControllerChangeEdit)
-                : _createButton(bloc, isControllerChange),
+                ? _createButton(
+                    bloc, isControllerChangeEdit, plantOrigenInitialCount)
+                : _createButton(
+                    bloc, isControllerChange, plantOrigenInitialCount),
           ],
           leading: IconButton(
             icon: Icon(
@@ -369,7 +383,7 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
                             Container(
                               //top: size.height / 3.5,
                               width: size.width / 2.0,
-                              margin: EdgeInsets.only(top: 10),
+                              margin: EdgeInsets.only(top: 0),
                               child: Align(
                                 alignment: Alignment.center,
                                 child: ButtonSubEditProfile(
@@ -382,8 +396,9 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
                                     onPressed: () {
                                       //plantBloc.plantsSelected.sink.add(platsSelected);
 
-                                      Navigator.of(context)
-                                          .push(createRouterRoomsUser(true));
+                                      Navigator.of(context).push(
+                                          createRouterRoomsUser(
+                                              true, widget.product));
                                     }),
                               ),
                             ),
@@ -399,9 +414,6 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
   }
 
   SliverList makeListPlants(context) {
-    final currentTheme = Provider.of<ThemeChanger>(context);
-    final size = MediaQuery.of(context).size;
-
     return SliverList(
       delegate: SliverChildListDelegate([
         Container(
@@ -692,14 +704,19 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
   }
 
   Widget _createButton(
-    ProductBloc bloc,
-    bool isControllerChange,
-  ) {
+      ProductBloc bloc, bool isControllerChange, int plantOrigenInitialCount) {
     return StreamBuilder(
-      stream: bloc.formValidStream,
+      stream: plantBloc.plantsSelected.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+        final isSelected = (snapshot.data != null)
+            ? (snapshot.data.length > 0)
+                ? true
+                : false
+            : false;
+        final countSelection = (isSelected) ? snapshot.data.length : 0;
 
+        final isPlantsOrigenChange = plantOrigenInitialCount != countSelection;
         return GestureDetector(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -707,14 +724,16 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
                 child: Text(
                   (widget.isEdit) ? 'Guardar' : 'Crear',
                   style: TextStyle(
-                      color: (isControllerChange && !errorRequired)
+                      color: (isControllerChange && !errorRequired ||
+                              isPlantsOrigenChange)
                           ? currentTheme.accentColor
                           : Colors.grey,
                       fontSize: 18),
                 ),
               ),
             ),
-            onTap: isControllerChange && !errorRequired && !loading
+            onTap: isControllerChange && !errorRequired && !loading ||
+                    isPlantsOrigenChange
                 ? () => {
                       setState(() {
                         loading = true;
@@ -816,6 +835,7 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
     final cbd = (bloc.cbd == null) ? widget.product.cbd : bloc.cbd.trim();
 
     final ratingActualString = ratingActual.toString();
+    final plants = plantBloc.plantsSelected.value;
 
     final editProduct = Product(
       name: name,
@@ -830,7 +850,8 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
     );
 
     if (widget.isEdit) {
-      final editProductRes = await productService.editProduct(editProduct);
+      final editProductRes =
+          await productService.editProduct(editProduct, plants);
 
       if (editProductRes != null) {
         if (editProductRes.ok) {
@@ -838,6 +859,7 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
 
           productBloc.getProductsPrincipal(uid);
           productBloc.getCatalogosProducts(profile.user.uid);
+          widget.plantProductBloc.getPlantsOrigen(widget.product.id);
 
           setState(() {
             loading = false;
@@ -885,10 +907,11 @@ Route createRoute() {
   );
 }
 
-Route createRouterRoomsUser(bool plantOrigen) {
+Route createRouterRoomsUser(bool plantOrigen, Product product) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => RoomsListPage(
       plantOrigen: plantOrigen,
+      product: product,
     ),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);

@@ -596,7 +596,7 @@ class AddUpdatePlantPageState extends State<AddUpdatePlantPage> {
             ),
             controller: quantityCtrl,
             inputFormatters: <TextInputFormatter>[
-              LengthLimitingTextInputFormatter(3),
+              LengthLimitingTextInputFormatter(2),
             ],
             keyboardType: TextInputType.number,
             decoration: InputDecoration(

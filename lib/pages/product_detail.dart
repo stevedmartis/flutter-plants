@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat/bloc/plant_bloc.dart';
 import 'package:chat/bloc/product_bloc.dart';
 import 'package:chat/bloc/room_bloc.dart';
 import 'package:chat/models/plant.dart';
@@ -13,10 +15,10 @@ import 'package:chat/models/rooms_response.dart';
 import 'package:chat/models/visit.dart';
 import 'package:chat/pages/add_update_product.dart';
 import 'package:chat/pages/add_update_visit.dart';
-import 'package:chat/pages/catalogo_detail.dart';
 import 'package:chat/pages/chat_page.dart';
 import 'package:chat/pages/plant_detail.dart';
 import 'package:chat/pages/principal_page.dart';
+import 'package:chat/pages/room_detail.dart';
 import 'package:chat/pages/room_list_page.dart';
 import 'package:chat/providers/plants_provider.dart';
 import 'package:chat/providers/products_provider.dart';
@@ -104,6 +106,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
 
   bool isLike = false;
 
+  final plantProductBloc = new PlantBloc();
+
   @override
   void initState() {
     _scrollController = ScrollController()..addListener(() => setState(() {}));
@@ -122,6 +126,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
 
     productService.product = null;
     profile = authService.profile;
+
+    plantProductBloc.getPlantsOrigen(widget.product.id);
+    plantBloc.getPlantsOrigen(widget.product.id);
   }
 
   @override
@@ -222,14 +229,17 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                                         productService.product = product;
                                         Navigator.of(context).push(
                                             createRouteEditProduct(
-                                                widget.product));
+                                                widget.product,
+                                                plantProductBloc));
                                         break;
                                       case '3':
                                         confirmDelete(
                                             context,
                                             'Confirmar',
                                             'Desea eliminar el tratamiento?',
-                                            product.id);
+                                            product.id,
+                                            currentTheme
+                                                .currentTheme.cardColor);
                                         break;
 
                                       default:
@@ -337,7 +347,6 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                               child: LikeButton(
                                 isLiked: isLikedSave,
                                 onTap: onLikeButtonTapped,
-
                                 circleColor: CircleColor(
                                     start: Colors.white,
                                     end: currentTheme.currentTheme.accentColor),
@@ -358,25 +367,6 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                                     size: isLikedSave ? 28 : 28,
                                   );
                                 },
-                                // likeCount: 665,
-                                /* countBuilder:
-                                    (int count, bool isLiked, String text) {
-                                  var color = isLiked
-                                      ? Colors.deepPurpleAccent
-                                      : Colors.grey;
-                                  Widget result;
-                                  if (count == 0) {
-                                    result = Text(
-                                      "love",
-                                      style: TextStyle(color: color),
-                                    );
-                                  } else
-                                    result = Text(
-                                      text,
-                                      style: TextStyle(color: color),
-                                    );
-                                  return result;
-                                }, */
                               ),
                               backgroundColor: _showTitle
                                   ? (currentTheme.customTheme)
@@ -455,21 +445,12 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                           ),
                         ))),
               ),
-
-              // makeHeaderSpacer(context),
               makeHeaderInfo(context),
-              // makeHeaderSpacer(context),
-
-              //   makeHeaderTabs(context),
               makeListPlants(context)
-              //   makeListVisits(context)
             ]));
   }
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
-    /// send your request here
-    // final bool success= await sendRequest();
-
     final success = await productApiProvider.addUpdateFavorite(
         product.id, profile.user.uid);
 
@@ -484,9 +465,6 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         ? productBloc.getCatalogosProducts(profile.user.uid)
         : productBloc.getCatalogosUserProducts(
             profileFor.user.uid, profile.user.uid);
-
-    /*  productBloc.getCatalogosUserProducts(
-        widget.products.profile.user.uid, profile.user.uid); */
 
     return isLikedSave;
   }
@@ -531,8 +509,6 @@ class _ProductDetailPageState extends State<ProductDetailPage>
   ) async {
     final res = await this.productApiProvider.deleteProduct(id);
     if (res) {
-      //    widget.plants.removeAt(index);
-
       productBloc.getProductsPrincipal(profile.user.uid);
 
       productBloc.getCatalogosProducts(profile.user.uid);
@@ -830,7 +806,11 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               Divider(
                 thickness: 2.0,
                 height: 1.0,
-              )
+                color: Colors.grey,
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
             ],
           ),
         ),
@@ -847,47 +827,47 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     return SliverList(
       delegate: SliverChildListDelegate([
         Container(
-          child: FutureBuilder(
-            future: this.plantService.getPlantsByProduct(widget.product.id),
-            initialData: null,
-            builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+          child: StreamBuilder(
+            stream: plantProductBloc.plantsSelected.stream,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
-                plants = snapshot.data;
-                return (plants.length > 0)
-                    ? Stack(
-                        children: [
-                          Container(
-                              margin: EdgeInsets.only(top: 20),
-                              alignment: Alignment.center,
-                              child: Text('Planta de origen',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: (currentTheme.customTheme)
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ))),
-                          Container(child: _buildWidgetPlant(plants))
-                        ],
-                      )
-                    : Center(
-                        child: Container(
-                            padding: EdgeInsets.all(50),
-                            child: Text(
-                              'Sin Plantas, crea una nueva',
+                final plants = snapshot.data;
+                if (plants.length > 0) {
+                  return Column(
+                    children: [
+                      Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                              (plants.length == 1)
+                                  ? 'Planta de origen'
+                                  : 'Plantas de origen',
                               style: TextStyle(
-                                fontSize: size.width / 30,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                                 color: (currentTheme.customTheme)
                                     ? Colors.white54
                                     : Colors.black54,
-                              ),
-                            )),
-                      ); // image is ready
+                              ))),
+                      Container(child: _buildWidgetPlant(plants))
+                    ],
+                  );
+                } else {
+                  return Center(
+                    child: Container(
+                        padding: EdgeInsets.all(50),
+                        child: Text(
+                          'Sin Plantas de origen',
+                          style: TextStyle(
+                            fontSize: size.width / 30,
+                            color: (currentTheme.customTheme)
+                                ? Colors.white54
+                                : Colors.black54,
+                          ),
+                        )),
+                  );
+                }
               } else {
-                return Container(
-                    height: 400.0,
-                    child: Center(
-                        child: CircularProgressIndicator())); // placeholder
+                return _buildLoadingWidget();
               }
             },
           ),
@@ -912,7 +892,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                 children: [
                   Container(
                     padding: EdgeInsets.only(
-                        top: 20, left: 20, right: 20, bottom: 10.0),
+                        top: 0, left: 20, right: 20, bottom: 20.0),
                     child: OpenContainer(
                         closedElevation: 5,
                         openElevation: 5,
@@ -934,16 +914,23 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                               bottomLeft: Radius.circular(10.0)),
                         ),
                         openBuilder: (_, closeContainer) {
-                          return PlantDetailPage(plant: plant);
+                          return PlantDetailPage(
+                            plant: plant,
+                            isUserAuth: widget.isUserAuth,
+                          );
                         },
                         closedBuilder: (_, openContainer) {
-                          return Stack(children: [
-                            CardPlant(plant: plant),
-                            Container(
-                              child: buildCircleQuantityPlantDash(
-                                  plant.quantity, context),
-                            ),
-                          ]);
+                          return FadeIn(
+                            child: Stack(children: [
+                              CardPlant(plant: plant),
+                              (widget.isUserAuth)
+                                  ? Container(
+                                      child: buildCircleQuantityPlantDash(
+                                          plant.quantity, context),
+                                    )
+                                  : Container(),
+                            ]),
+                          );
                         }),
                   ),
                 ],
@@ -953,31 +940,36 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     );
   }
 
-  confirmDelete(
-    BuildContext context,
-    String titulo,
-    String subtitulo,
-    String id,
-  ) {
+  confirmDelete(BuildContext context, String titulo, String subtitulo,
+      String id, Color cardColor) {
     if (Platform.isAndroid) {
       return showDialog(
           context: context,
           builder: (_) => AlertDialog(
-                title: Text(titulo),
-                content: Text(subtitulo),
+                backgroundColor: cardColor,
+                title: Text(
+                  titulo,
+                  style: TextStyle(color: Colors.grey),
+                ),
+                content: Text(
+                  subtitulo,
+                  style: TextStyle(color: Colors.grey),
+                ),
                 actions: <Widget>[
                   MaterialButton(
-                      child: Text('Eliminar'),
-                      elevation: 5,
-                      textColor: Colors.red,
-                      onPressed: () => Navigator.pop(context)),
+                    child:
+                        Text('Eliminar', style: TextStyle(color: Colors.red)),
+                    onPressed: () => _deleteProduct(id),
+                    elevation: 5,
+                    textColor: Colors.red,
+                  ),
                   MaterialButton(
-                      child: Text(
-                        'Cancelar',
-                      ),
-                      elevation: 5,
-                      textColor: Colors.white54,
-                      onPressed: () => Navigator.pop(context))
+                    child:
+                        Text('Cancelar', style: TextStyle(color: Colors.grey)),
+                    onPressed: () => Navigator.pop(context),
+                    elevation: 5,
+                    textColor: Colors.grey,
+                  )
                 ],
               ));
     }
@@ -992,8 +984,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               actions: <Widget>[
                 CupertinoDialogAction(
                   isDefaultAction: true,
-                  child: Text('Confirmar',
-                      style: TextStyle(color: Color(0xff34EC9C))),
+                  child: Text('Eliminar', style: TextStyle(color: Colors.red)),
                   onPressed: () => _deleteProduct(id),
                 ),
                 CupertinoDialogAction(
@@ -1027,8 +1018,13 @@ class _ProductDetailPageState extends State<ProductDetailPage>
   }
 
   Widget _buildLoadingWidget() {
+    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+
     return Container(
-        height: 400.0, child: Center(child: CircularProgressIndicator()));
+        padding: EdgeInsets.only(right: 10),
+        height: 200.0,
+        child: Center(
+            child: CircularProgressIndicator(color: currentTheme.accentColor)));
   }
 
   Widget _buildErrorWidget(String error) {
@@ -1331,13 +1327,11 @@ class BottomWaveClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-Route createRouteEditProduct(Product product) {
+Route createRouteEditProduct(Product product, PlantBloc plantProductBloc) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) =>
         AddUpdateProductPage(
-      product: product,
-      isEdit: true,
-    ),
+            product: product, isEdit: true, plantProductBloc: plantProductBloc),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;

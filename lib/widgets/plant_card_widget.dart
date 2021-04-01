@@ -33,6 +33,17 @@ class _CardPlantState extends State<CardPlant> {
     //plantBloc.plantsSelected.sink.add(platsSelected);
   }
 
+  bool findPersonUsingFirstWhere(List<Plant> plants, String plantId) {
+    final plant =
+        plants.firstWhere((element) => element.id == plantId, orElse: () {
+      return null;
+    });
+
+    final exist = (plant != null) ? true : false;
+
+    return exist;
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -47,8 +58,9 @@ class _CardPlantState extends State<CardPlant> {
 
     //   final productService = Provider.of<PlantService>(context, listen: false);
     final isPlantSelected =
-        (platsSelected.contains(widget.plant)) ? true : false;
+        findPersonUsingFirstWhere(platsSelected, widget.plant.id);
 
+    print(isPlantSelected);
     return (widget.isSelected)
         ? Stack(
             children: [
@@ -56,15 +68,11 @@ class _CardPlantState extends State<CardPlant> {
                 onTap: () {
                   setState(() {
                     if (isPlantSelected) {
-                      platsSelected.remove(widget.plant);
+                      platsSelected
+                          .removeWhere((item) => item.id == widget.plant.id);
                       plantBloc.plantsSelected.sink.add(platsSelected);
-
-                      countSelect--;
-                      if (countSelect == 0)
-                        plantBloc.plantsSelected.sink.add(platsSelected);
                     } else {
                       platsSelected.add(widget.plant);
-                      countSelect++;
                       plantBloc.plantsSelected.sink.add(platsSelected);
                     }
 
@@ -76,10 +84,14 @@ class _CardPlantState extends State<CardPlant> {
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
+                        color: (currentTheme.customTheme)
+                            ? currentTheme.currentTheme.cardColor
+                            : Colors.grey.withOpacity(0.5),
                         spreadRadius: (isPlantSelected) ? 0 : 3,
                         blurRadius: (isPlantSelected) ? 0 : 5,
-                        offset: Offset(0, 3), // changes position of shadow
+                        offset: (isPlantSelected)
+                            ? Offset(0, 0)
+                            : Offset(0, 3), // changes position of shadow
                       ),
                     ],
                     /* border: Border.all(
@@ -105,7 +117,7 @@ class _CardPlantState extends State<CardPlant> {
                         Container(
                           width: size.width,
                           height: (!widget.isPrincipal)
-                              ? size.height / 1.40
+                              ? size.height / 1.7
                               : size.height,
                           child: ClipRRect(
                               borderRadius: BorderRadius.only(
@@ -130,7 +142,9 @@ class _CardPlantState extends State<CardPlant> {
                   ),
                 ),
               ),
-              (isPlantSelected) ? buildCircle(context) : Container(),
+              (isPlantSelected)
+                  ? buildCircle(context, widget.plant.position)
+                  : Container(),
             ],
           )
         : AnimatedContainer(
@@ -151,9 +165,8 @@ class _CardPlantState extends State<CardPlant> {
                   Center(child: plantItem()),
                   Container(
                     width: size.width,
-                    height: (!widget.isPrincipal)
-                        ? size.height / 1.40
-                        : size.height,
+                    height:
+                        (!widget.isPrincipal) ? size.height / 1.7 : size.height,
                     child: ClipRRect(
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(20.0),
@@ -265,11 +278,10 @@ class _CardPlantState extends State<CardPlant> {
   }
 }
 
-Container buildCircle(context) {
-  final size = MediaQuery.of(context).size;
+Container buildCircle(context, int position) {
   final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
-  final numberSelect = platsSelected.length;
+  final numberSelect = (position == 0) ? platsSelected.length : position;
 
   return Container(
       alignment: Alignment.topLeft,

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/models/visit.dart';
 import 'package:chat/services/visit_service.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class _ImageCoverVisitExpandedState extends State<ImageCoverVisitExpanded> {
           minScale: 0.5,
           maxScale: 4,
           child: Image(
-            image: NetworkImage(widget.visit.getCoverImg()),
+            image: CachedNetworkImageProvider(widget.visit.getCoverImg()),
             fit: BoxFit.cover,
             width: double.maxFinite,
           ),

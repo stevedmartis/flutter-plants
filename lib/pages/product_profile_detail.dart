@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:animate_do/animate_do.dart';
+import 'package:animations/animations.dart';
+import 'package:chat/bloc/plant_bloc.dart';
 import 'package:chat/bloc/product_bloc.dart';
 import 'package:chat/bloc/room_bloc.dart';
 import 'package:chat/models/product_principal.dart';
@@ -12,7 +15,9 @@ import 'package:chat/models/visit.dart';
 import 'package:chat/pages/add_update_product.dart';
 import 'package:chat/pages/add_update_visit.dart';
 import 'package:chat/pages/chat_page.dart';
+import 'package:chat/pages/plant_detail.dart';
 import 'package:chat/pages/principal_page.dart';
+import 'package:chat/pages/room_detail.dart';
 import 'package:chat/pages/room_list_page.dart';
 import 'package:chat/providers/products_provider.dart';
 import 'package:chat/services/auth_service.dart';
@@ -25,6 +30,7 @@ import 'package:chat/widgets/avatar_user_chat.dart';
 import 'package:chat/widgets/card_product.dart';
 import 'package:chat/widgets/carousel_tabs.dart';
 import 'package:chat/widgets/myprofile.dart';
+import 'package:chat/widgets/plant_card_widget.dart';
 import 'package:chat/widgets/productProfile_card.dart';
 import 'package:chat/widgets/sliver_appBar_snap.dart';
 import 'package:flutter/cupertino.dart';
@@ -98,6 +104,8 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
 
   bool isLike = false;
 
+  final plantProductBloc = new PlantBloc();
+
   @override
   void initState() {
     _scrollController = ScrollController()..addListener(() => setState(() {}));
@@ -113,6 +121,9 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
 
     productService.productProfile = null;
     profile = authService.profile;
+
+    plantProductBloc.getPlantsOrigen(widget.productProfile.product.id);
+    plantBloc.getPlantsOrigen(widget.productProfile.product.id);
   }
 
   @override
@@ -222,8 +233,10 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                                                 productProfile;
 
                                             Navigator.of(context).push(
-                                                createRouteEditProduct(widget
-                                                    .productProfile.product));
+                                                createRouteEditProduct(
+                                                    widget
+                                                        .productProfile.product,
+                                                    plantProductBloc));
                                             break;
                                           case '3':
                                             confirmDelete(
@@ -231,7 +244,9 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                                                 'Confirmar',
                                                 'Desea eliminar el tratamiento?',
                                                 widget
-                                                    .productProfile.product.id);
+                                                    .productProfile.product.id,
+                                                currentTheme
+                                                    .currentTheme.cardColor);
                                             break;
 
                                           default:
@@ -247,47 +262,50 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                LikeButton(
-                                                  isLiked: isLikedSave,
-                                                  onTap: onLikeButtonTapped,
-                                                  bubblesColor: BubblesColor(
-                                                    dotPrimaryColor:
-                                                        currentTheme
-                                                            .currentTheme
-                                                            .accentColor,
-                                                    dotSecondaryColor:
-                                                        currentTheme
-                                                            .currentTheme
-                                                            .accentColor,
-                                                  ),
-                                                  likeBuilder: (
-                                                    bool isLiked,
-                                                  ) {
-                                                    return Icon(
-                                                      (!isLikedSave)
-                                                          ? Icons
-                                                              .favorite_border
-                                                          : Icons.favorite,
-                                                      color: isLikedSave
-                                                          ? currentTheme
+                                                Container(
+                                                  child: LikeButton(
+                                                    isLiked: isLikedSave,
+                                                    onTap: onLikeButtonTapped,
+                                                    bubblesColor: BubblesColor(
+                                                      dotPrimaryColor:
+                                                          currentTheme
                                                               .currentTheme
-                                                              .accentColor
-                                                          : Colors.white54,
-                                                      size:
-                                                          isLikedSave ? 28 : 28,
-                                                    );
-                                                  },
-                                                  likeCount: countLikes,
-                                                  countBuilder: (int count,
+                                                              .accentColor,
+                                                      dotSecondaryColor:
+                                                          currentTheme
+                                                              .currentTheme
+                                                              .accentColor,
+                                                    ),
+                                                    likeBuilder: (
                                                       bool isLiked,
-                                                      String text) {
-                                                    return Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 10),
-                                                        child: Text(
-                                                            '$countLikes'));
-                                                  },
+                                                    ) {
+                                                      return Icon(
+                                                        (!isLikedSave)
+                                                            ? Icons
+                                                                .favorite_border
+                                                            : Icons.favorite,
+                                                        color: isLikedSave
+                                                            ? currentTheme
+                                                                .currentTheme
+                                                                .accentColor
+                                                            : Colors.white54,
+                                                        size: isLikedSave
+                                                            ? 28
+                                                            : 28,
+                                                      );
+                                                    },
+                                                    likeCount: countLikes,
+                                                    countBuilder: (int count,
+                                                        bool isLiked,
+                                                        String text) {
+                                                      return Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10),
+                                                          child: Text(
+                                                              '$countLikes'));
+                                                    },
+                                                  ),
                                                 ),
                                                 SizedBox(
                                                   width: 5.0,
@@ -455,6 +473,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                             ))),
                   ),
                   makeHeaderInfo(context),
+                  makeListPlants(context)
                 ])));
   }
 
@@ -585,6 +604,127 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  SliverList makeListPlants(context) {
+    final currentTheme = Provider.of<ThemeChanger>(context);
+    final size = MediaQuery.of(context).size;
+
+    return SliverList(
+      delegate: SliverChildListDelegate([
+        Container(
+          child: StreamBuilder(
+            stream: plantProductBloc.plantsSelected.stream,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                final plants = snapshot.data;
+                if (plants.length > 0) {
+                  return Stack(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(top: 0),
+                          alignment: Alignment.center,
+                          child: Text(
+                              (plants.length == 1)
+                                  ? 'Planta de origen'
+                                  : 'Plantas de origen',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: (currentTheme.customTheme)
+                                    ? Colors.white54
+                                    : Colors.black54,
+                              ))),
+                      Container(child: _buildWidgetPlant(plants))
+                    ],
+                  );
+                } else {
+                  return Center(
+                    child: Container(
+                        padding: EdgeInsets.all(50),
+                        child: Text(
+                          'Sin Plantas de origen',
+                          style: TextStyle(
+                            fontSize: size.width / 30,
+                            color: (currentTheme.customTheme)
+                                ? Colors.white54
+                                : Colors.black54,
+                          ),
+                        )),
+                  );
+                }
+              } else {
+                return _buildLoadingWidget();
+              }
+            },
+          ),
+        ),
+      ]),
+    );
+  }
+
+  Widget _buildWidgetPlant(plants) {
+    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+
+    return Container(
+      child: SizedBox(
+        child: ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: plants.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              final plant = plants[index];
+
+              return Stack(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 0, left: 20, right: 20, bottom: 20.0),
+                    child: OpenContainer(
+                        closedElevation: 5,
+                        openElevation: 5,
+                        closedColor: currentTheme.scaffoldBackgroundColor,
+                        openColor: currentTheme.scaffoldBackgroundColor,
+                        transitionType: ContainerTransitionType.fade,
+                        openShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20.0),
+                              topLeft: Radius.circular(10.0),
+                              bottomRight: Radius.circular(10.0),
+                              bottomLeft: Radius.circular(10.0)),
+                        ),
+                        closedShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20.0),
+                              topLeft: Radius.circular(10.0),
+                              bottomRight: Radius.circular(10.0),
+                              bottomLeft: Radius.circular(10.0)),
+                        ),
+                        openBuilder: (_, closeContainer) {
+                          return PlantDetailPage(
+                            plant: plant,
+                            isUserAuth: widget.isUserAuth,
+                          );
+                        },
+                        closedBuilder: (_, openContainer) {
+                          return FadeIn(
+                            child: Stack(children: [
+                              CardPlant(plant: plant),
+                              (widget.isUserAuth)
+                                  ? Container(
+                                      child: buildCircleQuantityPlantDash(
+                                          plant.quantity, context),
+                                    )
+                                  : Container(),
+                            ]),
+                          );
+                        }),
+                  ),
+                ],
+              );
+            }),
       ),
     );
   }
@@ -856,7 +996,11 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
               Divider(
                 thickness: 2.0,
                 height: 1.0,
-              )
+                color: Colors.grey,
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
             ],
           ),
         ),
@@ -864,31 +1008,36 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
     );
   }
 
-  confirmDelete(
-    BuildContext context,
-    String titulo,
-    String subtitulo,
-    String id,
-  ) {
+  confirmDelete(BuildContext context, String titulo, String subtitulo,
+      String id, Color cardColor) {
     if (Platform.isAndroid) {
       return showDialog(
           context: context,
           builder: (_) => AlertDialog(
-                title: Text(titulo),
-                content: Text(subtitulo),
+                backgroundColor: cardColor,
+                title: Text(
+                  titulo,
+                  style: TextStyle(color: Colors.grey),
+                ),
+                content: Text(
+                  subtitulo,
+                  style: TextStyle(color: Colors.grey),
+                ),
                 actions: <Widget>[
                   MaterialButton(
-                      child: Text('Eliminar'),
-                      elevation: 5,
-                      textColor: Colors.red,
-                      onPressed: () => Navigator.pop(context)),
+                    child:
+                        Text('Eliminar', style: TextStyle(color: Colors.red)),
+                    onPressed: () => _deleteProduct(id),
+                    elevation: 5,
+                    textColor: Colors.red,
+                  ),
                   MaterialButton(
-                      child: Text(
-                        'Cancelar',
-                      ),
-                      elevation: 5,
-                      textColor: Colors.white54,
-                      onPressed: () => Navigator.pop(context))
+                    child:
+                        Text('Cancelar', style: TextStyle(color: Colors.grey)),
+                    onPressed: () => Navigator.pop(context),
+                    elevation: 5,
+                    textColor: Colors.grey,
+                  )
                 ],
               ));
     }
@@ -937,8 +1086,13 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
   }
 
   Widget _buildLoadingWidget() {
+    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+
     return Container(
-        height: 400.0, child: Center(child: CircularProgressIndicator()));
+        padding: EdgeInsets.only(right: 10),
+        height: 200.0,
+        child: Center(
+            child: CircularProgressIndicator(color: currentTheme.accentColor)));
   }
 
   Widget _buildErrorWidget(String error) {
@@ -1037,13 +1191,11 @@ class BottomWaveClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-Route createRouteEditProduct(Product product) {
+Route createRouteEditProduct(Product product, PlantBloc plantProductBloc) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) =>
         AddUpdateProductPage(
-      product: product,
-      isEdit: true,
-    ),
+            product: product, isEdit: true, plantProductBloc: plantProductBloc),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;

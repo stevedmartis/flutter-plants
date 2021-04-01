@@ -133,7 +133,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   ValueChanged<double> onScroll;
   int initPosition;
 
-  final produtBlocUser = new ProductBloc();
+  final productBlocUser = new ProductBloc();
 
   @override
   void initState() {
@@ -247,10 +247,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   void fetchUserCatalogos() async {
     var result;
 
-    produtBlocUser.getCatalogosUserProducts(
+    productBlocUser.getCatalogosUserProducts(
         widget.profile.user.uid, profile.user.uid);
 
-    produtBlocUser.catalogosProductsUser.listen((data) {
+    productBlocUser.catalogosProductsUser.listen((data) {
       result = data;
 
       itemCount = result.catalogosProducts.length;

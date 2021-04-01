@@ -124,24 +124,27 @@ class _ProfileCardState extends State<ProfileCard> {
                     alignment: (widget.isUserEdit)
                         ? Alignment.bottomCenter
                         : Alignment.bottomLeft,
-                    child: CircleAvatar(
-                        radius: 55,
-                        backgroundColor: Colors.transparent,
-                        child: CircleAvatar(
-                            radius: ProfileCard.avatarRadius + 120,
-                            backgroundColor: Colors.transparent,
-                            child: Container(
-                                width: 100,
-                                height: 100,
-                                child: Material(
-                                  type: MaterialType.transparency,
-                                  child: ImageUserChat(
-                                    width: size.width,
-                                    height: size.height,
-                                    profile: widget.profile,
-                                    fontsize: 20,
-                                  ),
-                                ))))))),
+                    child: Hero(
+                      tag: profileUser.user.uid,
+                      child: CircleAvatar(
+                          radius: 55,
+                          backgroundColor: Colors.transparent,
+                          child: CircleAvatar(
+                              radius: ProfileCard.avatarRadius + 120,
+                              backgroundColor: Colors.transparent,
+                              child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  child: Material(
+                                    type: MaterialType.transparency,
+                                    child: ImageUserChat(
+                                      width: size.width,
+                                      height: size.height,
+                                      profile: widget.profile,
+                                      fontsize: 20,
+                                    ),
+                                  )))),
+                    )))),
         (!widget.isUserAuth && profileMyUser.isClub)
             ? FadeIn(
                 duration: Duration(milliseconds: 500),

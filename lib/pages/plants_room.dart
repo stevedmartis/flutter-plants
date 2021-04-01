@@ -31,16 +31,15 @@ import 'package:chat/widgets/room_card.dart';
 import 'package:chat/widgets/sliver_appBar_snap.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-
-import 'package:chat/services/socket_service.dart';
 
 class PlantsRoomPage extends StatefulWidget {
   final Room room;
   final List<Room> rooms;
 
-  PlantsRoomPage({@required this.room, this.rooms});
+  final Product product;
+
+  PlantsRoomPage({@required this.room, this.rooms, this.product});
 
   @override
   _PlantsRoomPageState createState() => _PlantsRoomPageState();
@@ -90,8 +89,6 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
     final roomService = Provider.of<RoomService>(context, listen: false);
 
     roomService.room = null;
-
-    plantBloc.plantsSelected.sink.add(platsSelected);
   }
 
   @override
@@ -162,7 +159,7 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
         final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
         final isSelected = (snapshot.data != null)
-            ? (snapshot.data.length > 0)
+            ? (snapshot.data.length != plants.length)
                 ? true
                 : false
             : false;
@@ -171,7 +168,7 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
               padding: const EdgeInsets.all(10.0),
               child: Center(
                 child: Text(
-                  'Guardar',
+                  'Hecho',
                   style: TextStyle(
                       color:
                           (isSelected) ? currentTheme.accentColor : Colors.grey,
@@ -364,6 +361,32 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
     );
   }
 
+  Plant findPlant(String id) =>
+      plantBloc.plantsSelected.value.firstWhere((plant) => plant.id == id);
+
+  void findPersonUsingLoop(List<Plant> plants, String plantId) {
+    for (var i = 0; i < plants.length; i++) {
+      if (plants[i].id == plantId) {
+        print('Using loop: ${plants[i]}');
+
+        // Found the person, stop the loop
+        return;
+      }
+    }
+  }
+
+  /// Find a person in the list using firstWhere method.
+  bool findPersonUsingFirstWhere(List<Plant> plants, String plantId) {
+    final plant =
+        plants.firstWhere((element) => element.id == plantId, orElse: () {
+      return null;
+    });
+
+    final exist = (plant != null) ? true : false;
+
+    return exist;
+  }
+
   Widget _buildWidgetPlant(plants) {
     return Container(
       child: SizedBox(
@@ -419,7 +442,8 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
       delegate: SliverChildListDelegate([
         Container(
           child: FutureBuilder(
-            future: this.plantService.getPlantsRoom(widget.room.id),
+            future: this.plantService.getPlantsRoomSelectedProduct(
+                widget.room.id, widget.product.id),
             initialData: null,
             builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
               if (snapshot.hasData) {
@@ -430,7 +454,7 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
                         child: Container(
                             padding: EdgeInsets.all(50),
                             child: Text(
-                              'Sin Plantas, crea una nueva',
+                              'Sin Plantas para seleccionar',
                               style: TextStyle(
                                 fontSize: size.width / 30,
                                 color: (currentTheme.customTheme)

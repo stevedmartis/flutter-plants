@@ -22,7 +22,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             gradient: LinearGradient(
               colors: [
                 Color(0xff1C181D),
-                Color(0xff1C181D),
+                Colors.black,
               ],
               stops: [0, 1],
               begin: Alignment(-0.00, -5.00),

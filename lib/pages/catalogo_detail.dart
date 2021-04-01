@@ -16,7 +16,6 @@ import 'package:chat/pages/add_update_catalogo.dart';
 import 'package:chat/pages/add_update_light.dart';
 import 'package:chat/pages/plant_detail.dart';
 import 'package:chat/pages/product_detail.dart';
-import 'package:chat/pages/profile_page.dart';
 import 'package:chat/providers/air_provider.dart';
 import 'package:chat/providers/light_provider.dart';
 import 'package:chat/providers/products_provider.dart';
@@ -571,70 +570,6 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
       ),
     );
   }
-}
-
-Container buildCircleQuantityPlantDash(String quantity, context) {
-  final size = MediaQuery.of(context).size;
-  final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
-  return Container(
-      alignment: Alignment.topRight,
-      margin: EdgeInsets.only(left: size.width / 1.45, top: 0.0),
-      width: 100,
-      height: 100,
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        child: CircleAvatar(
-            child: Text(
-              '$quantity',
-              style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-            backgroundColor: currentTheme.accentColor),
-      ));
-}
-
-Container buildCircleQuantityPlant(String quantity, context) {
-  final size = MediaQuery.of(context).size;
-  final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
-  return Container(
-      alignment: Alignment.topRight,
-      margin: EdgeInsets.only(left: size.width / 2.5, top: 0.0),
-      width: 100,
-      height: 100,
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        child: CircleAvatar(
-            child: Text('$quantity',
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
-            backgroundColor: currentTheme.accentColor),
-      ));
-}
-
-Route createRouteProfile() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        SliverAppBarProfilepPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(-1.0, 0.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-    transitionDuration: Duration(milliseconds: 400),
-  );
 }
 
 Route createRouteNewProduct(Product product, Catalogo catalogo, bool isEdit) {

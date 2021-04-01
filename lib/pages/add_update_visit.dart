@@ -25,11 +25,14 @@ import 'package:provider/provider.dart';
 //final Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 
 class AddUpdateVisitPage extends StatefulWidget {
-  AddUpdateVisitPage({this.visit, this.isEdit = false, this.plant});
+  AddUpdateVisitPage(
+      {this.visit, this.isEdit = false, this.plant, this.isAuthUser});
 
   final Visit visit;
   final bool isEdit;
   final String plant;
+
+  final bool isAuthUser;
 
   @override
   AddUpdateVisitPageState createState() => AddUpdateVisitPageState();

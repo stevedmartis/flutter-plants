@@ -98,18 +98,31 @@ class ProductService with ChangeNotifier {
     }
   }
 
-  Future editProduct(Product product) async {
+  Future editProduct(Product product, List<Plant> plants) async {
     // this.authenticated = true;
 
     final token = await this._storage.read(key: 'token');
 
     //final data = {'name': name, 'email': description, 'uid': uid};
 
+    final data = {
+      'id': product.id,
+      'name': product.name,
+      'description': product.description,
+      'catalogo': product.catalogo,
+      'user': product.user,
+      'coverImage': product.coverImage,
+      'ratingInit': product.ratingInit,
+      'cbd': product.cbd,
+      'thc': product.thc,
+      'plants': plants
+    };
+
     final urlFinal =
         Uri.https('${Environment.apiUrl}', '/api/product/update/product');
 
     final resp = await http.post(urlFinal,
-        body: jsonEncode(product),
+        body: json.encode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
     if (resp.statusCode == 200) {

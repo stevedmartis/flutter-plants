@@ -13,7 +13,6 @@ import 'package:chat/pages/add_update_air.dart';
 import 'package:chat/pages/add_update_light.dart';
 import 'package:chat/pages/add_update_plant.dart';
 import 'package:chat/pages/plant_detail.dart';
-import 'package:chat/pages/profile_page.dart';
 import 'package:chat/pages/room_list_page.dart';
 import 'package:chat/providers/air_provider.dart';
 import 'package:chat/providers/light_provider.dart';
@@ -385,7 +384,10 @@ class _RoomDetailPageState extends State<RoomDetailPage>
                               bottomLeft: Radius.circular(10.0)),
                         ),
                         openBuilder: (_, closeContainer) {
-                          return PlantDetailPage(plant: plant);
+                          return PlantDetailPage(
+                            plant: plant,
+                            isUserAuth: true,
+                          );
                         },
                         closedBuilder: (_, openContainer) {
                           return Stack(children: [
@@ -779,7 +781,7 @@ class _RoomDetailPageState extends State<RoomDetailPage>
                         child: Container(
                             padding: EdgeInsets.all(50),
                             child: Text(
-                              'Sin Plantas, crea una nueva',
+                              'Sin Plantas de origen',
                               style: TextStyle(
                                 fontSize: size.width / 30,
                                 color: (currentTheme.customTheme)
@@ -992,26 +994,6 @@ Container buildCircleFavoriteProduct(context) {
       child: CircleAvatar(
           child: FaIcon(FontAwesomeIcons.heart),
           backgroundColor: currentTheme.accentColor));
-}
-
-Route createRouteProfile() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        SliverAppBarProfilepPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(-1.0, 0.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-    transitionDuration: Duration(milliseconds: 400),
-  );
 }
 
 Route createRouteNewPlant(Plant plant, Room room, bool isEdit) {

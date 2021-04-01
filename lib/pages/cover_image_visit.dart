@@ -35,7 +35,7 @@ class CoverImageVisitPageState extends State<CoverImageVisitPage> {
 
   @override
   void initState() {
-    if (!widget.isEdit) {
+    if (widget.isUserAuth) if (!widget.isEdit) {
       _selectImage(false);
     }
     super.initState();
@@ -64,31 +64,34 @@ class CoverImageVisitPageState extends State<CoverImageVisitPage> {
           color: Colors.white,
         ),
         actions: [
-          (!loadImage)
-              ? IconButton(
-                  icon: FaIcon(
-                    FontAwesomeIcons.camera,
-                    color: currentTheme.accentColor,
-                  ),
-                  iconSize: 30,
-                  onPressed: () async =>
-                      (!widget.isEdit) ? _selectImage(true) : _editImage(true),
-                  color: Colors.white,
-                )
-              : _buildLoadingWidget(),
-          (!loadImage)
-              ? IconButton(
-                  icon: Icon(
-                    Icons.add_photo_alternate,
-                    color: currentTheme.accentColor,
-                  ),
-                  iconSize: 40,
-                  onPressed: () async => (!widget.isEdit)
-                      ? _selectImage(false)
-                      : _editImage(false),
-                  color: Colors.white,
-                )
-              : _buildLoadingWidget(),
+          if (widget.isUserAuth)
+            (!loadImage)
+                ? IconButton(
+                    icon: FaIcon(
+                      FontAwesomeIcons.camera,
+                      color: currentTheme.accentColor,
+                    ),
+                    iconSize: 30,
+                    onPressed: () async => (!widget.isEdit)
+                        ? _selectImage(true)
+                        : _editImage(true),
+                    color: Colors.white,
+                  )
+                : _buildLoadingWidget(),
+          if (widget.isUserAuth)
+            (!loadImage)
+                ? IconButton(
+                    icon: Icon(
+                      Icons.add_photo_alternate,
+                      color: currentTheme.accentColor,
+                    ),
+                    iconSize: 40,
+                    onPressed: () async => (!widget.isEdit)
+                        ? _selectImage(false)
+                        : _editImage(false),
+                    color: Colors.white,
+                  )
+                : _buildLoadingWidget(),
         ],
       ),
       backgroundColor: Colors.black,
