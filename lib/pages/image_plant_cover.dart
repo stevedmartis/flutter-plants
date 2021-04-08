@@ -132,7 +132,9 @@ class CoverImagePlantPageState extends State<CoverImagePlantPage> {
     final plantService = Provider.of<PlantService>(context, listen: false);
 
     final pickedFile = await picker.getImage(
-        source: (isCamera) ? ImageSource.camera : ImageSource.gallery);
+      source: (isCamera) ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: 50,
+    );
 
     if (pickedFile != null) {
       imageCover = File(pickedFile.path);

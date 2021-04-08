@@ -83,7 +83,10 @@ class _AvatarImagePageState extends State<AvatarImagePage> {
     final awsService = Provider.of<AwsService>(context, listen: false);
     final authService = Provider.of<AuthService>(context, listen: false);
 
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
 
     if (pickedFile != null) {
       image = File(pickedFile.path);

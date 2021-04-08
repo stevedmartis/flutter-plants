@@ -116,7 +116,10 @@ class CoverImageProductPageState extends State<CoverImageProductPage> {
     final awsService = Provider.of<AwsService>(context, listen: false);
     final productService = Provider.of<ProductService>(context, listen: false);
 
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
 
     if (pickedFile != null) {
       imageCover = File(pickedFile.path);
