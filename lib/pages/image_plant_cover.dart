@@ -123,7 +123,7 @@ class CoverImagePlantPageState extends State<CoverImagePlantPage> {
         height: 400.0,
         child: Center(
             child: CircularProgressIndicator(
-          color: currentTheme.accentColor,
+          backgroundColor: currentTheme.accentColor,
         )));
   }
 

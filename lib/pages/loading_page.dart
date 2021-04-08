@@ -30,7 +30,7 @@ class LoadingPage extends StatelessWidget {
         height: 400.0,
         child: Center(
             child: CircularProgressIndicator(
-          color: currentTheme.accentColor,
+          backgroundColor: currentTheme.accentColor,
         )));
   }
 

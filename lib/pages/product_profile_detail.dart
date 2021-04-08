@@ -624,7 +624,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                   return Stack(
                     children: [
                       Container(
-                          margin: EdgeInsets.only(top: 0),
+                          margin: EdgeInsets.only(bottom: 0),
                           alignment: Alignment.center,
                           child: Text(
                               (plants.length == 1)
@@ -681,7 +681,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                 children: [
                   Container(
                     padding: EdgeInsets.only(
-                        top: 0, left: 20, right: 20, bottom: 20.0),
+                        top: 10, left: 20, right: 20, bottom: 20.0),
                     child: OpenContainer(
                         closedElevation: 5,
                         openElevation: 5,
@@ -1092,7 +1092,8 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
         padding: EdgeInsets.only(right: 10),
         height: 200.0,
         child: Center(
-            child: CircularProgressIndicator(color: currentTheme.accentColor)));
+            child: CircularProgressIndicator(
+                backgroundColor: currentTheme.accentColor)));
   }
 
   Widget _buildErrorWidget(String error) {

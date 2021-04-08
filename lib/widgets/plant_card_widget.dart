@@ -166,7 +166,7 @@ class _CardPlantState extends State<CardPlant> {
                   Container(
                     width: size.width,
                     height:
-                        (!widget.isPrincipal) ? size.height / 1.7 : size.height,
+                        (!widget.isPrincipal) ? size.height / 1.6 : size.height,
                     child: ClipRRect(
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(20.0),
@@ -230,7 +230,6 @@ class _CardPlantState extends State<CardPlant> {
               overflow: TextOverflow.ellipsis,
               maxLines: 4,
               style: TextStyle(
-                  fontWeight: FontWeight.bold,
                   fontSize: (widget.isPrincipal)
                       ? size.width / 10
                       : size.width / 12.5,

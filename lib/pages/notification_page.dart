@@ -493,7 +493,7 @@ class _NotificationsPageState extends State<NotificationsPage>
         height: 200.0,
         child: Center(
             child: CircularProgressIndicator(
-          color: currentTheme.currentTheme.accentColor,
+          backgroundColor: currentTheme.currentTheme.accentColor,
         )));
   }
 

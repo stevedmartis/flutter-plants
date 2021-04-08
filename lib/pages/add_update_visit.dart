@@ -406,7 +406,8 @@ class AddUpdateVisitPageState extends State<AddUpdateVisitPage> {
     return Container(
         height: 400.0,
         child: Center(
-            child: CircularProgressIndicator(color: currentTheme.accentColor)));
+            child: CircularProgressIndicator(
+                backgroundColor: currentTheme.accentColor)));
   }
 
   Widget _buildErrorWidget(String error) {

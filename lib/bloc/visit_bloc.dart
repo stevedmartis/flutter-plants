@@ -50,7 +50,7 @@ class VisitBloc with Validators {
 
   // Recuperar los datos del Stream
   Stream<String> get degreesStream =>
-      _degreesController.stream.transform(validationNameRequired);
+      _degreesController.stream.transform(validationGradosCRequired);
   Stream<String> get descriptionStream => _descriptionController.stream;
 
   Stream<String> get nameAbonoStream => _nameAbonoController.stream;

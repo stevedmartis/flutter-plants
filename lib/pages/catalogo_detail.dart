@@ -180,7 +180,8 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
     return Container(
         height: 400.0,
         child: Center(
-            child: CircularProgressIndicator(color: currentTheme.accentColor)));
+            child: CircularProgressIndicator(
+                backgroundColor: currentTheme.accentColor)));
   }
 
   SliverPersistentHeader makeHeaderSpacer(context) {
@@ -342,7 +343,7 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
                     height: 400.0,
                     child: Center(
                         child: CircularProgressIndicator(
-                      color: currentTheme.currentTheme.accentColor,
+                      backgroundColor: currentTheme.currentTheme.accentColor,
                     ))); // placeholder
               }
             },

@@ -176,7 +176,7 @@ class _RoomDetailPageState extends State<RoomDetailPage>
         height: 400.0,
         child: Center(
             child: CircularProgressIndicator(
-          color: currentTheme.accentColor,
+          backgroundColor: currentTheme.accentColor,
         )));
   }
 

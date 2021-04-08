@@ -489,7 +489,8 @@ class AddUpdateLightPageState extends State<AddUpdateLightPage> {
         padding: EdgeInsets.only(right: 10),
         height: 400.0,
         child: Center(
-            child: CircularProgressIndicator(color: currentTheme.accentColor)));
+            child: CircularProgressIndicator(
+                backgroundColor: currentTheme.accentColor)));
   }
 
   _createLight(LightBloc bloc) async {

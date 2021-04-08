@@ -836,6 +836,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   return Column(
                     children: [
                       Container(
+                          margin: EdgeInsets.only(bottom: 0),
                           alignment: Alignment.center,
                           child: Text(
                               (plants.length == 1)
@@ -1024,7 +1025,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         padding: EdgeInsets.only(right: 10),
         height: 200.0,
         child: Center(
-            child: CircularProgressIndicator(color: currentTheme.accentColor)));
+            child: CircularProgressIndicator(
+                backgroundColor: currentTheme.accentColor)));
   }
 
   Widget _buildErrorWidget(String error) {

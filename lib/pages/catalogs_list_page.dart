@@ -215,7 +215,7 @@ class _CatalogsListState extends State<CatalogsList> {
         height: 400.0,
         child: Center(
             child: CircularProgressIndicator(
-          color: currentTheme.currentTheme.accentColor,
+          backgroundColor: currentTheme.currentTheme.accentColor,
         )));
   }
 

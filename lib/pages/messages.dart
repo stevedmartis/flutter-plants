@@ -211,7 +211,7 @@ class _MessagesPageState extends State<MessagesPage>
         height: 400.0,
         child: Center(
             child: CircularProgressIndicator(
-          color: currentTheme.currentTheme.accentColor,
+          backgroundColor: currentTheme.currentTheme.accentColor,
         )));
   }
 

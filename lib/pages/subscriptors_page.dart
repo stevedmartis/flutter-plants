@@ -266,12 +266,14 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                       return AlertDialog(
                                         backgroundColor: Colors.black,
                                         title: Text(
-                                          'Eliminar Solicitud',
+                                          'Eliminar Suscripción',
                                           style:
                                               TextStyle(color: Colors.white54),
                                         ),
                                         content: Text(
-                                          'Se desaprobara la solicitud',
+                                          (profile.isClub)
+                                              ? 'Se anulara la suscripción de este paciente'
+                                              : 'Se anulara tu suscripción a club',
                                           style:
                                               TextStyle(color: Colors.white54),
                                         ),
@@ -288,12 +290,13 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                           ),
                                           TextButton(
                                             child: Text(
-                                              'Ok',
+                                              'Eliminar',
                                               style:
                                                   TextStyle(color: Colors.red),
                                             ),
                                             onPressed: () =>
-                                                Navigator.of(context).pop(true),
+                                                _deleteSubscription(
+                                                    item.subId, index),
                                           ),
                                         ],
                                       );
@@ -322,6 +325,17 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
         }
       },
     );
+  }
+
+  _deleteSubscription(String id, int index) async {
+    final res = await this.subscriptionApiProvider.disapproveSubscription(id);
+    if (res) {
+      setState(() {
+        subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
+
+        Navigator.of(context).pop(true);
+      });
+    }
   }
 
   Widget _buildEmptyWidget() {
@@ -374,7 +388,7 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
         height: 400.0,
         child: Center(
             child: CircularProgressIndicator(
-          color: currentTheme.accentColor,
+          backgroundColor: currentTheme.accentColor,
         )));
   }
 

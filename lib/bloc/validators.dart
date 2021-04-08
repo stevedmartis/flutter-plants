@@ -16,10 +16,10 @@ class Validators {
 
   final validarPassword = StreamTransformer<String, String>.fromHandlers(
       handleData: (password, sink) {
-    if (password.length >= 1) {
+    if (password.length >= 6) {
       sink.add(password);
     } else {
-      sink.addError('Contraseña es requerida');
+      sink.addError('Contraseña debe ser mayor a 6 caracteres');
     }
   });
 
@@ -55,6 +55,15 @@ class Validators {
       sink.add(text);
     } else {
       sink.addError('Quantity is required');
+    }
+  });
+
+  final validationGradosCRequired =
+      StreamTransformer<String, String>.fromHandlers(handleData: (text, sink) {
+    if (text.length >= 1) {
+      sink.add(text);
+    } else {
+      sink.addError('Grados celsius es requerido');
     }
   });
 
