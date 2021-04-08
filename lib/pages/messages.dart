@@ -205,14 +205,8 @@ class _MessagesPageState extends State<MessagesPage>
   }
 
   Widget _buildLoadingWidget() {
-    final currentTheme = Provider.of<ThemeChanger>(context);
-
     return Container(
-        height: 400.0,
-        child: Center(
-            child: CircularProgressIndicator(
-          backgroundColor: currentTheme.currentTheme.accentColor,
-        )));
+        height: 400.0, child: Center(child: CircularProgressIndicator()));
   }
 
   Route createRouteChat() {

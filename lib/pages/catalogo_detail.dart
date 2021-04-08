@@ -175,13 +175,8 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
   }
 
   Widget _buildLoadingWidget() {
-    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
     return Container(
-        height: 400.0,
-        child: Center(
-            child: CircularProgressIndicator(
-                backgroundColor: currentTheme.accentColor)));
+        height: 400.0, child: Center(child: CircularProgressIndicator()));
   }
 
   SliverPersistentHeader makeHeaderSpacer(context) {
@@ -342,9 +337,7 @@ class _CatalogoDetailPagePageState extends State<CatalogoDetailPage>
                 return Container(
                     height: 400.0,
                     child: Center(
-                        child: CircularProgressIndicator(
-                      backgroundColor: currentTheme.currentTheme.accentColor,
-                    ))); // placeholder
+                        child: CircularProgressIndicator())); // placeholder
               }
             },
           ),

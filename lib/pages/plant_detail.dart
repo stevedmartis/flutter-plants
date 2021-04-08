@@ -470,9 +470,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                 return Container(
                     height: 100.0,
                     child: Center(
-                        child: CircularProgressIndicator(
-                      backgroundColor: currentTheme.currentTheme.accentColor,
-                    ))); // placeholder
+                        child: CircularProgressIndicator())); // placeholder
               }
             },
           ),

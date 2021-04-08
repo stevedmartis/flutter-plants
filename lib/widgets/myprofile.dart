@@ -1236,11 +1236,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
     return Container(
-        height: 400.0,
-        child: Center(
-            child: CircularProgressIndicator(
-          backgroundColor: currentTheme.accentColor,
-        )));
+        height: 400.0, child: Center(child: CircularProgressIndicator()));
   }
 
   Widget _buildErrorWidget(String error) {

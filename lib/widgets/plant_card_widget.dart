@@ -280,7 +280,8 @@ class _CardPlantState extends State<CardPlant> {
 Container buildCircle(context, int position) {
   final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
-  final numberSelect = (position == 0) ? platsSelected.length : position;
+  final numberSelect =
+      (position == 0 || position == null) ? platsSelected.length : position;
 
   return Container(
       alignment: Alignment.topLeft,

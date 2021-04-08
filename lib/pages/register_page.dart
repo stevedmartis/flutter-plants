@@ -587,8 +587,8 @@ _register(RegisterBloc bloc, BuildContext context) async {
       mostrarAlerta(context, 'Registro incorrecto', registroOk);
     }
   } else {
-    mostrarAlerta(
-        context, 'Error del servidor', 'Ingrese un correo electrónico valido');
+    mostrarAlerta(context, 'Correo electrónico invalido',
+        'Ingrese un correo electrónico valido');
   }
 }
 

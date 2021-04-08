@@ -108,15 +108,10 @@ class _RecipeImagePageState extends State<RecipeImagePage> {
   }
 
   Widget _buildLoadingWidget() {
-    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
     return Container(
         padding: EdgeInsets.only(right: 10),
         height: 400.0,
-        child: Center(
-            child: CircularProgressIndicator(
-          backgroundColor: currentTheme.accentColor,
-        )));
+        child: Center(child: CircularProgressIndicator()));
   }
 
   _editImage(
