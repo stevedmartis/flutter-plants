@@ -5,7 +5,6 @@ import 'package:chat/services/aws_service.dart';
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/header_image_user.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -134,17 +133,6 @@ class _HeaderImagePageState extends State<HeaderImagePage> {
       print('No image selected.');
     }
   }
-}
-
-Future<File> compressImage(File file, String targetPath) async {
-  var result = await FlutterImageCompress.compressAndGetFile(
-    file.absolute.path,
-    targetPath,
-    quality: 88,
-    rotate: 180,
-  );
-
-  return result;
 }
 
 class ResizebleWidget extends StatefulWidget {
