@@ -380,7 +380,6 @@ Widget _createButton(RegisterBloc bloc) {
     builder: (BuildContext context, AsyncSnapshot snapshot) {
       final authService = Provider.of<AuthService>(context);
 
-      print(snapshot);
       return Container(
         padding: EdgeInsets.only(left: 30, right: 30, top: 20),
         child: GestureDetector(

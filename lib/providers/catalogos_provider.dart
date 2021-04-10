@@ -59,7 +59,6 @@ class CatalogosApiProvider {
 
       final catalogosResponse = catalogosProductsResponseFromJson(resp.body);
 
-      print(catalogosResponse);
       return catalogosResponse;
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");

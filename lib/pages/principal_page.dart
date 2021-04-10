@@ -258,7 +258,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                       ),
                       (number > 0)
                           ? Container(
-                              margin: EdgeInsets.only(right: 35),
+                              margin: EdgeInsets.only(right: 45),
                               alignment: Alignment.centerRight,
                               child: BounceInDown(
                                 from: 5,

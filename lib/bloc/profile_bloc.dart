@@ -56,6 +56,4 @@ class ProfileBloc with Validators {
   }
 }
 
-disposeFieds() {}
-
 final profileBloc = ProfileBloc();

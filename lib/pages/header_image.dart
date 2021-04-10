@@ -144,9 +144,6 @@ Future<File> compressImage(File file, String targetPath) async {
     rotate: 180,
   );
 
-  print(file.lengthSync());
-  print(result.lengthSync());
-
   return result;
 }
 

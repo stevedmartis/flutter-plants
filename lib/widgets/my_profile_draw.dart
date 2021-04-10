@@ -218,8 +218,6 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
         : result = await catalogoService.getCatalogosProductsUser(
             widget.profile.user.uid, profile.user.uid);
 
-    print(result);
-
     setState(() {
       itemCount = result.catalogosProducts.length;
       tabBuilder =

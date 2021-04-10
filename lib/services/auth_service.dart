@@ -109,8 +109,6 @@ class AuthService with ChangeNotifier {
 
       await this._guardarToken(loginResponse.token);
 
-      // await getProfileByUserId(this.profile.user.uid);
-
       return true;
     } else {
       return false;
@@ -129,27 +127,19 @@ class AuthService with ChangeNotifier {
       this.profile = loginResponse.profile;
 
       await this._guardarToken(loginResponse.token);
-      // this.authenticated = true;
-
-      // await getProfileByUserId(this.profile.user.uid);
 
       return true;
     } else {
       return false;
     }
-
-    // await getProfileByUserId(this.profile.user.uid);
   }
 
   Future signInWitchGoogle() async {
     try {
       final account = await _googleSignIn.signIn();
 
-      print(account);
-
       final googleKey = await account.authentication;
 
-      print(googleKey);
       final authBack = await siginWithGoogleBack(googleKey.idToken);
 
       return authBack;

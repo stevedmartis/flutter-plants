@@ -86,7 +86,7 @@ class _CollapsingListState extends State<CollapsingList>
 
     this._chargeClubesProfileUsers();
 
-    this._chargeMyLastPlantsByUser();
+    //this._chargeMyLastPlantsByUser();
 
     this._chargeMyLastVisitByUser();
 
@@ -126,10 +126,10 @@ class _CollapsingListState extends State<CollapsingList>
     this.profiles = await usuarioService.getProfilesLastUsers();
   }
 
-  _chargeMyLastPlantsByUser() async {
+  /*  _chargeMyLastPlantsByUser() async {
     // this.plants = await plantService.getLastPlantsByUser(profile.user.uid);
     plantBloc.getPlantsByUser(profile.user.uid);
-  }
+  } */
 
   _chargeMyLastVisitByUser() async {
     // this.visits = await visitService.getLastVisitsByUser(profile.user.uid);
@@ -145,7 +145,7 @@ class _CollapsingListState extends State<CollapsingList>
 
   pullToRefreshData() async {
     this._chargeClubesProfileUsers();
-    this._chargeMyLastPlantsByUser();
+    //this._chargeMyLastPlantsByUser();
     this._chargeMyLastVisitByUser();
     this._chargeLastProducts();
   }
@@ -180,7 +180,7 @@ class _CollapsingListState extends State<CollapsingList>
         ),
         makeHeaderSpacerShort(context),
         makeListClubes(context),
-        makelistCarouselMyPlants(context),
+        // makelistCarouselMyPlants(context),
         makeListCarouselMyVisits(context),
         makeListProducts(context)
       ],
@@ -280,7 +280,7 @@ class _CollapsingListState extends State<CollapsingList>
                       ? FadeIn(
                           child: Container(
                             padding: EdgeInsets.only(
-                                left: 40, top: size.height / 60, bottom: 0),
+                                left: 40, top: size.height / 30, bottom: 0),
                             child: Text(
                               'Ultimas Visitas',
                               style: TextStyle(

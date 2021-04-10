@@ -1,5 +1,4 @@
 import 'package:chat/pages/onBoarding_page.dart';
-import 'package:chat/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

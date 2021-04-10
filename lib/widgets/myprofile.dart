@@ -487,6 +487,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                       ? makeInfoProfile(context)
                       : makeHeaderSpacer(context),
 
+                  // makeHeaderSpace(context),
+
                   (profile.isClub)
                       ? makePrivateAccountMessage(context)
                       : makeHeaderSpacer(context),
@@ -702,11 +704,18 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
               return Stack(
                 children: [
+                  Container(
+                      padding: EdgeInsets.only(left: 20, top: 10, bottom: 20),
+                      child: Text(
+                        'Tratamientos',
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.bold),
+                      )),
                   FadeIn(
                     delay: Duration(milliseconds: 100 * index),
                     child: Container(
                       padding: EdgeInsets.only(
-                          top: 20, left: 20, right: 20, bottom: 0.0),
+                          top: 40, left: 20, right: 20, bottom: 0.0),
                       child: OpenContainer(
                           closedElevation: 5,
                           openElevation: 5,
@@ -886,6 +895,20 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     );
   }
 
+  SliverPersistentHeader makeHeaderSpace(context) {
+    //   final roomModel = Provider.of<Room>(context);
+
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: SliverAppBarDelegate(
+          minHeight: 20,
+          maxHeight: 20,
+          child: Row(
+            children: [Container()],
+          )),
+    );
+  }
+
   SliverPersistentHeader makeHeaderDefaultTabs(context) {
     //   final roomModel = Provider.of<Room>(context);
 
@@ -900,7 +923,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     );
   }
 
-  SliverFixedExtentList makeInfoProfile(context) {
+  SliverToBoxAdapter makeInfoProfile(context) {
     final currentTheme = Provider.of<ThemeChanger>(context);
 
     final username = profile.user.username.toLowerCase();
@@ -913,181 +936,158 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
     final nameFinal = name.isEmpty ? "" : name.capitalize();
 
-    return SliverFixedExtentList(
-        itemExtent: (about != null)
-            ? (about.length == 0 && widget.isUserAuth)
-                ? 120
-                : (about.length == 0 && !widget.isUserAuth)
-                    ? 80
-                    : (about.length > 10 && about.length < 40)
-                        ? 150
-                        : (about.length > 40 && about.length < 80)
-                            ? 160
-                            : (about.length > 80 && !widget.isUserAuth)
-                                ? 160
-                                : (about.length > 80 && widget.isUserAuth)
-                                    ? 190
-                                    : 0
-            : 0,
-        delegate: SliverChildListDelegate([
-          //var imageRecipe = profile.imageRecipe;
-          // var parts = imageRecipe.split('image_picker');
-          //var nameImageRecipe = parts.sublist(1).join('image_picker').trim();
-
-          FadeIn(
-            child: Container(
-              padding: EdgeInsets.only(top: 10.0),
-              color: currentTheme.currentTheme.scaffoldBackgroundColor,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!this.widget.isUserEdit)
-                    Container(
-                      child: Container(
-                          width: size.width - 15.0,
-                          padding: EdgeInsets.only(
-                              left: size.width / 20.0, top: 5.0),
-                          //margin: EdgeInsets.only(left: size.width / 6, top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              (nameFinal == "")
-                                  ? Text(username,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w800,
-                                          fontSize:
-                                              (name.length >= 15) ? 20 : 22,
-                                          color: (currentTheme.customTheme)
-                                              ? Colors.white
-                                              : Colors.black))
-                                  : Text(
-                                      (nameFinal.length >= 45)
-                                          ? nameFinal.substring(0, 45)
-                                          : nameFinal,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: (nameFinal.length >= 15)
-                                              ? 20
-                                              : 22,
-                                          color: (currentTheme.customTheme)
-                                              ? Colors.white
-                                              : Colors.black)),
-                              (isClub)
-                                  ? Container(
-                                      margin: EdgeInsets.only(left: 10),
-                                      child: Stack(children: [
-                                        FaIcon(
-                                          FontAwesomeIcons.certificate,
-                                          color: currentTheme
-                                              .currentTheme.accentColor,
-                                          size: 20,
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              left: 4.5, top: 4.5),
-                                          child: FaIcon(
-                                            FontAwesomeIcons.check,
-                                            color: (currentTheme.customTheme)
-                                                ? Colors.black
-                                                : Colors.white,
-                                            size: 11,
-                                          ),
-                                        )
-                                      ]),
-                                    )
-                                  : Container(),
-                            ],
-                          )),
-                    ),
-                  if (!this.widget.isUserEdit)
-                    Expanded(
-                      flex: -2,
-                      child: Container(
-                          width: size.width - 1.10,
-                          padding: EdgeInsets.only(
-                              left: size.width / 20.0, top: 5.0, bottom: 10),
-                          //margin: EdgeInsets.only(left: size.width / 6, top: 10),
-
-                          child: Text('@' + username,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: TextStyle(
-                                  fontSize: (username.length >= 16) ? 16 : 18,
-                                  color: (currentTheme.customTheme)
-                                      ? Colors.white.withOpacity(0.60)
-                                      : Colors.grey))),
-                    ),
-                  Expanded(
-                    flex: -1,
-                    child: Container(
-                        width: size.width - 50,
-                        padding: EdgeInsets.only(
-                          left: size.width / 20.0,
-                          right: 10,
-                        ),
-                        //margin: EdgeInsets.only(left: size.width / 6, top: 10),
-
-                        child: (about != null)
-                            ? (about.length > 0)
-                                ? convertHashtag(about, context)
-                                : Container()
-                            : null),
-                  ),
-                  (widget.isUserAuth)
-                      ? Expanded(
-                          flex: 0,
-                          child: GestureDetector(
-                            onTap: () => {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                transitionDuration: Duration(milliseconds: 200),
-                                pageBuilder: (context, animation,
-                                        secondaryAnimation) =>
-                                    RecipeImagePage(profile: widget.profile),
-                              ))
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  left: size.width / 20, top: 10),
-                              child: Container(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
+    return SliverToBoxAdapter(
+      child: FadeIn(
+        child: Container(
+          padding: EdgeInsets.only(top: 10.0, bottom: 25),
+          color: currentTheme.currentTheme.scaffoldBackgroundColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!this.widget.isUserEdit)
+                Container(
+                  child: Container(
+                      width: size.width - 15.0,
+                      padding:
+                          EdgeInsets.only(left: size.width / 20.0, top: 5.0),
+                      //margin: EdgeInsets.only(left: size.width / 6, top: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          (nameFinal == "")
+                              ? Text(username,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: (name.length >= 15) ? 20 : 22,
+                                      color: (currentTheme.customTheme)
+                                          ? Colors.white
+                                          : Colors.black))
+                              : Text(
+                                  (nameFinal.length >= 45)
+                                      ? nameFinal.substring(0, 45)
+                                      : nameFinal,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      fontSize:
+                                          (nameFinal.length >= 15) ? 20 : 22,
+                                      color: (currentTheme.customTheme)
+                                          ? Colors.white
+                                          : Colors.black)),
+                          (isClub)
+                              ? Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: Stack(children: [
                                     FaIcon(
-                                      FontAwesomeIcons.notesMedical,
-                                      size: 20,
+                                      FontAwesomeIcons.certificate,
                                       color:
                                           currentTheme.currentTheme.accentColor,
+                                      size: 20,
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'Mi receta',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: currentTheme
-                                              .currentTheme.accentColor),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(left: 4.5, top: 4.5),
+                                      child: FaIcon(
+                                        FontAwesomeIcons.check,
+                                        color: (currentTheme.customTheme)
+                                            ? Colors.black
+                                            : Colors.white,
+                                        size: 11,
+                                      ),
                                     )
-                                  ],
+                                  ]),
+                                )
+                              : Container(),
+                        ],
+                      )),
+                ),
+              if (!this.widget.isUserEdit)
+                Expanded(
+                  flex: -2,
+                  child: Container(
+                      width: size.width - 1.10,
+                      padding: EdgeInsets.only(
+                          left: size.width / 20.0, top: 5.0, bottom: 10),
+                      //margin: EdgeInsets.only(left: size.width / 6, top: 10),
+
+                      child: Text('@' + username,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                              fontSize: (username.length >= 16) ? 16 : 18,
+                              color: (currentTheme.customTheme)
+                                  ? Colors.white.withOpacity(0.60)
+                                  : Colors.grey))),
+                ),
+              Expanded(
+                flex: -1,
+                child: Container(
+                    width: size.width - 50,
+                    padding: EdgeInsets.only(
+                      left: size.width / 20.0,
+                      right: 10,
+                    ),
+                    //margin: EdgeInsets.only(left: size.width / 6, top: 10),
+
+                    child: (about != null)
+                        ? (about.length > 0)
+                            ? convertHashtag(about, context)
+                            : Container()
+                        : null),
+              ),
+              (widget.isUserAuth)
+                  ? Expanded(
+                      flex: 0,
+                      child: GestureDetector(
+                        onTap: () => {
+                          Navigator.of(context).push(PageRouteBuilder(
+                            transitionDuration: Duration(milliseconds: 200),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    RecipeImagePage(profile: widget.profile),
+                          ))
+                        },
+                        child: Container(
+                          padding:
+                              EdgeInsets.only(left: size.width / 20, top: 10),
+                          child: Container(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.notesMedical,
+                                  size: 20,
+                                  color: currentTheme.currentTheme.accentColor,
                                 ),
-                              ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Mi receta',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: currentTheme
+                                          .currentTheme.accentColor),
+                                )
+                              ],
                             ),
                           ),
-                        )
-                      : Container(),
-                ],
-              ),
-            ),
-          )
-        ]));
+                        ),
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  SliverFixedExtentList makePrivateAccountMessage(context) {
+  SliverToBoxAdapter makePrivateAccountMessage(context) {
     final currentTheme = Provider.of<ThemeChanger>(context);
 
     final size = MediaQuery.of(context).size;
@@ -1097,13 +1097,9 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
             ? !widget.profile.subscribeApproved
             : false;
 
-    return SliverFixedExtentList(
-        itemExtent: (isSuscribeApprove) ? 60 : 0,
-        delegate: SliverChildListDelegate([
-          //var imageRecipe = profile.imageRecipe;
-          // var parts = imageRecipe.split('image_picker');
-          //var nameImageRecipe = parts.sublist(1).join('image_picker').trim();
-          Divider(height: 1, color: Colors.grey),
+    return SliverToBoxAdapter(
+      child: Stack(
+        children: [
           FadeIn(
             child: Container(
                 padding: EdgeInsets.only(top: 0.0),
@@ -1154,7 +1150,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                                 Container(
                                   width: size.width / 1.7,
                                   child: Text(
-                                    'Suscríbete a este club para ver sus catálogos y tratamientos.',
+                                    'Suscríbete a este club para ver todos sus catálogos y tratamientos.',
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
                                         fontSize: 15,
@@ -1168,7 +1164,9 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                       )
                     : Container()),
           )
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget _buildCatalogoWidget() {
@@ -1233,8 +1231,6 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   }
 
   Widget _buildLoadingWidget() {
-    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
     return Container(
         height: 400.0, child: Center(child: CircularProgressIndicator()));
   }

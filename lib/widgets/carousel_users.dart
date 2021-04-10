@@ -350,40 +350,6 @@ class _UserItemState extends State<UserItem> {
                       )),
                 ),
               ),
-              Positioned(
-                bottom: 0.0,
-                left: 30.0,
-                top: 60.0,
-                right: 0.0,
-                child: Container(
-                    child: Container(
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Expanded(
-                        child: Container(
-                          constraints: BoxConstraints(maxWidth: 80),
-                          child: Text(
-                            (widget.profile.user.username.length >= 10)
-                                ? widget.profile.user.username.substring(0, 7) +
-                                    '...'
-                                : widget.profile.user.username,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-              ),
             ],
           ),
         ),

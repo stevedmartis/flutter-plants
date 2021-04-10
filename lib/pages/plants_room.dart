@@ -144,8 +144,12 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
           controller: _scrollController,
           slivers: <Widget>[
             //  makeHeaderInfo(context),
+
             makeHeaderTabs(context),
-            makeListPlants(context)
+
+            (widget.product.id != null)
+                ? makeListPlants(context)
+                : makeListPlantsRoom(context)
           ]),
     );
   }
@@ -159,7 +163,8 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
         final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
         final isSelected = (snapshot.data != null)
-            ? (snapshot.data.length != plants.length)
+            ? (snapshot.data.length > 0 ||
+                    snapshot.data.length != plants.length)
                 ? true
                 : false
             : false;
@@ -361,8 +366,6 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
   void findPersonUsingLoop(List<Plant> plants, String plantId) {
     for (var i = 0; i < plants.length; i++) {
       if (plants[i].id == plantId) {
-        print('Using loop: ${plants[i]}');
-
         // Found the person, stop the loop
         return;
       }
@@ -438,6 +441,44 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
           child: FutureBuilder(
             future: this.plantService.getPlantsRoomSelectedProduct(
                 widget.room.id, widget.product.id),
+            initialData: null,
+            builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+              if (snapshot.hasData) {
+                plants = snapshot.data;
+                return (plants.length > 0)
+                    ? Container(child: _buildWidgetPlant(plants))
+                    : Center(
+                        child: Container(
+                            padding: EdgeInsets.all(50),
+                            child: Text(
+                              'Sin Plantas para seleccionar',
+                              style: TextStyle(
+                                fontSize: size.width / 30,
+                                color: (currentTheme.customTheme)
+                                    ? Colors.white54
+                                    : Colors.black54,
+                              ),
+                            )),
+                      ); // image is ready
+              } else {
+                return _buildLoadingWidget(); // placeholder
+              }
+            },
+          ),
+        ),
+      ]),
+    );
+  }
+
+  SliverList makeListPlantsRoom(context) {
+    final currentTheme = Provider.of<ThemeChanger>(context);
+    final size = MediaQuery.of(context).size;
+
+    return SliverList(
+      delegate: SliverChildListDelegate([
+        Container(
+          child: FutureBuilder(
+            future: this.plantService.getPlantsRoom(widget.room.id),
             initialData: null,
             builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
               if (snapshot.hasData) {

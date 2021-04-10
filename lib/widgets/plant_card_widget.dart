@@ -30,7 +30,6 @@ class _CardPlantState extends State<CardPlant> {
     super.dispose();
     countSelect = 0;
     platsSelected = [];
-    //plantBloc.plantsSelected.sink.add(platsSelected);
   }
 
   bool findPersonUsingFirstWhere(List<Plant> plants, String plantId) {
@@ -56,11 +55,9 @@ class _CardPlantState extends State<CardPlant> {
           : [];
     });
 
-    //   final productService = Provider.of<PlantService>(context, listen: false);
     final isPlantSelected =
         findPersonUsingFirstWhere(platsSelected, widget.plant.id);
 
-    print(isPlantSelected);
     return (widget.isSelected)
         ? Stack(
             children: [
@@ -75,8 +72,6 @@ class _CardPlantState extends State<CardPlant> {
                       platsSelected.add(widget.plant);
                       plantBloc.plantsSelected.sink.add(platsSelected);
                     }
-
-                    print(countSelect);
                   });
                 },
                 child: AnimatedContainer(

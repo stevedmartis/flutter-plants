@@ -124,7 +124,8 @@ class _RecipeImagePageState extends State<RecipeImagePage> {
     final profile = authService.profile;
 
     final pickedFile = await picker.getImage(
-        source: (isCamera) ? ImageSource.camera : ImageSource.gallery);
+        source: (isCamera) ? ImageSource.camera : ImageSource.gallery,
+        imageQuality: 50);
 
     if (pickedFile != null) {
       imageRecipe = File(pickedFile.path);
@@ -147,7 +148,7 @@ class _RecipeImagePageState extends State<RecipeImagePage> {
           setState(() {
             //  plantBlo
 
-            //profile.imageRecipe = resp;
+            profile.imageRecipe = resp;
 
             loadingImage = false;
           });

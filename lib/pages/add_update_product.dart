@@ -716,20 +716,26 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
             : false;
         final countSelection = (isSelected) ? snapshot.data.length : 0;
 
-        final isPlantsOrigenChange = plantOrigenInitialCount != countSelection;
+        final isPlantsOrigenChange = (widget.isEdit)
+            ? plantOrigenInitialCount != countSelection
+            : plantOrigenInitialCount > 0;
         return GestureDetector(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Center(
-                child: Text(
-                  (widget.isEdit) ? 'Guardar' : 'Crear',
-                  style: TextStyle(
-                      color: (isControllerChange && !errorRequired ||
-                              isPlantsOrigenChange)
-                          ? currentTheme.accentColor
-                          : Colors.grey,
-                      fontSize: 18),
-                ),
+                child: Text((widget.isEdit) ? 'Guardar' : 'Crear',
+                    style: (widget.isEdit)
+                        ? TextStyle(
+                            color: (isControllerChange && !errorRequired ||
+                                    isPlantsOrigenChange)
+                                ? currentTheme.accentColor
+                                : Colors.grey,
+                            fontSize: 18)
+                        : TextStyle(
+                            color: (isControllerChange && !errorRequired)
+                                ? currentTheme.accentColor
+                                : Colors.grey,
+                            fontSize: 18)),
               ),
             ),
             onTap: isControllerChange && !errorRequired && !loading ||

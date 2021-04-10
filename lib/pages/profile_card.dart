@@ -68,6 +68,8 @@ class _ProfileCardState extends State<ProfileCard> {
 
   SocketService socketService;
 
+  final subscriptionBlocUser = new SubscribeBloc();
+
   @override
   void initState() {
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -78,7 +80,7 @@ class _ProfileCardState extends State<ProfileCard> {
     super.initState();
 
     if (!widget.isUserAuth) {
-      subscriptionBloc.getSubscription(
+      subscriptionBlocUser.getSubscription(
           profileMyUser.user.uid, widget.profile.user.uid);
     }
 
@@ -145,7 +147,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                     ),
                                   )))),
                     )))),
-        (!widget.isUserAuth && profileMyUser.isClub)
+        (!widget.isUserAuth && profileMyUser.isClub && !profileUser.isClub)
             ? FadeIn(
                 duration: Duration(milliseconds: 500),
                 child: Container(
@@ -208,7 +210,7 @@ class _ProfileCardState extends State<ProfileCard> {
               )
             : Container(),
         StreamBuilder(
-            stream: subscriptionBloc.subscription.stream,
+            stream: subscriptionBlocUser.subscription.stream,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               isData = snapshot.hasData;
 
@@ -411,7 +413,7 @@ class _ProfileCardState extends State<ProfileCard> {
                   style: TextStyle(color: Colors.white54, fontSize: 20),
                 ),
                 content: StreamBuilder(
-                    stream: subscriptionBloc.subscription.stream,
+                    stream: subscriptionBlocUser.subscription.stream,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       final isHasData = snapshot.hasData;
 
@@ -518,7 +520,7 @@ class _ProfileCardState extends State<ProfileCard> {
                     }),
                 actions: <Widget>[
                   StreamBuilder(
-                      stream: subscriptionBloc.subscription.stream,
+                      stream: subscriptionBlocUser.subscription.stream,
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         isData = snapshot.hasData;
 
@@ -568,7 +570,7 @@ class _ProfileCardState extends State<ProfileCard> {
                 style: TextStyle(color: Colors.white54, fontSize: 20),
               ),
               content: StreamBuilder(
-                  stream: subscriptionBloc.subscription.stream,
+                  stream: subscriptionBlocUser.subscription.stream,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     final isHasData = snapshot.hasData;
 
@@ -671,7 +673,7 @@ class _ProfileCardState extends State<ProfileCard> {
                   }),
               actions: <Widget>[
                 StreamBuilder(
-                    stream: subscriptionBloc.subscription.stream,
+                    stream: subscriptionBlocUser.subscription.stream,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       isData = snapshot.hasData;
 
@@ -743,9 +745,7 @@ class _ProfileCardState extends State<ProfileCard> {
                               style: TextStyle(color: color, fontSize: 15),
                             ),
                             onPressed: () => (loadSub)
-                                ? unSubscription(
-                                    context,
-                                  )
+                                ? unSubscription(context, subscriptionBlocUser)
                                 : null),
                         CupertinoDialogAction(
                             isDestructiveAction: true,
@@ -779,9 +779,7 @@ class _ProfileCardState extends State<ProfileCard> {
                             style: TextStyle(color: color, fontSize: 15),
                           ),
                           onPressed: () => (loadSub)
-                              ? unSubscription(
-                                  context,
-                                )
+                              ? unSubscription(context, subscriptionBlocUser)
                               : null),
                       CupertinoDialogAction(
                           isDestructiveAction: true,
@@ -800,7 +798,7 @@ class _ProfileCardState extends State<ProfileCard> {
     bool isCamera,
   ) async {
     final awsService = Provider.of<AwsService>(context, listen: false);
-    final subscription = subscriptionBloc.subscription.value;
+    final subscription = subscriptionBlocUser.subscription.value;
 
     final pickedFile = await picker.getImage(
         source: (isCamera) ? ImageSource.camera : ImageSource.gallery);
@@ -820,7 +818,7 @@ class _ProfileCardState extends State<ProfileCard> {
         imageRecipe: resp,
       );
       setState(() {
-        subscriptionBloc.subscription.sink.add(newSubscription);
+        subscriptionBlocUser.subscription.sink.add(newSubscription);
       });
     } else {
       print('No image selected.');
@@ -830,7 +828,7 @@ class _ProfileCardState extends State<ProfileCard> {
   void addSubscription(
     context,
   ) async {
-    Subscription subscription = subscriptionBloc.subscription.value;
+    Subscription subscription = subscriptionBlocUser.subscription.value;
 
     final subscriptionService =
         Provider.of<SubscriptionService>(context, listen: false);
@@ -838,7 +836,7 @@ class _ProfileCardState extends State<ProfileCard> {
     final resp = await subscriptionService.createSubscription(subscription);
 
     if (resp.ok) {
-      subscriptionBloc.getSubscription(
+      subscriptionBlocUser.getSubscription(
           resp.subscription.subscriptor, resp.subscription.club);
 
       this.socketService.emit('principal-notification', {
@@ -850,8 +848,8 @@ class _ProfileCardState extends State<ProfileCard> {
   }
 }
 
-void unSubscription(context) async {
-  final subscription = subscriptionBloc.subscription.value;
+void unSubscription(context, SubscribeBloc subscriptionBlocUser) async {
+  final subscription = subscriptionBlocUser.subscription.value;
 
   final subscriptionService =
       Provider.of<SubscriptionService>(context, listen: false);
@@ -859,7 +857,7 @@ void unSubscription(context) async {
   final resp = await subscriptionService.unSubscription(subscription);
 
   if (resp.ok) {
-    subscriptionBloc.getSubscription(
+    subscriptionBlocUser.getSubscription(
         resp.subscription.subscriptor, resp.subscription.club);
   }
   Navigator.pop(context);
