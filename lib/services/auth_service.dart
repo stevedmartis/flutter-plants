@@ -265,7 +265,6 @@ class AuthService with ChangeNotifier {
     if (resp.statusCode == 200) {
       final profileResponse = profileResponseFromJson(resp.body);
 
-      print(profileResponse);
       this.profile.imageRecipe = profileResponse.profile.imageRecipe;
 
       return profileResponse;
