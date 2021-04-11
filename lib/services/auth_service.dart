@@ -78,7 +78,6 @@ class AuthService with ChangeNotifier {
     notifyListeners();
   }
 
-  // Getters del token de forma estática
   static Future<String> getToken() async {
     final _storage = new FlutterSecureStorage();
     final token = await _storage.read(key: 'token');
@@ -169,16 +168,11 @@ class AuthService with ChangeNotifier {
       this.profile = loginResponse.profile;
 
       await this._guardarToken(loginResponse.token);
-      // this.authenticated = true;
-
-      // await getProfileByUserId(this.profile.user.uid);
 
       return true;
     } else {
       return false;
     }
-
-    // await getProfileByUserId(this.profile.user.uid);
   }
 
   static Future signOut() async {
@@ -186,8 +180,6 @@ class AuthService with ChangeNotifier {
   }
 
   Future register(String username, String email, String password) async {
-    // this.authenticated = true;
-
     final data = {'username': username, 'email': email, 'password': password};
 
     final urlFinal = Uri.https('${Environment.apiUrl}', '/api/login/new');
@@ -202,7 +194,6 @@ class AuthService with ChangeNotifier {
 
       this.profile = loginResponse.profile;
 
-      //this.profile = loginResponse.profile;
       await this._guardarToken(loginResponse.token);
 
       return true;
@@ -246,8 +237,6 @@ class AuthService with ChangeNotifier {
   }
 
   Future editImageRecipe(String imageRecipe, String uid) async {
-    // this.authenticated = true;
-
     final urlFinal =
         Uri.https('${Environment.apiUrl}', '/api/profile/image_recipe/edit');
 
@@ -278,7 +267,6 @@ class AuthService with ChangeNotifier {
     var urlFinal = Uri.https('${Environment.apiUrl}', '/api/login/renew');
 
     final token = await this._storage.read(key: 'token');
-    //this.logout();
     final resp = await http.get(urlFinal,
         headers: {'Content-Type': 'application/json', 'x-token': token});
     if (resp.statusCode == 200) {

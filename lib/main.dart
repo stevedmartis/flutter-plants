@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
 
     final currentTheme = Provider.of<ThemeChanger>(context);
 
-    changeStatusLight();
+    //   changeStatusLight();
 
     return CustomProvider(
       child: MaterialApp(

@@ -133,8 +133,6 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   ValueChanged<double> onScroll;
   int initPosition;
 
-  final productBlocUser = new ProductBloc();
-
   @override
   void initState() {
     _scrollController = ScrollController()..addListener(() => setState(() {}));
@@ -222,6 +220,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
       result = data;
 
       itemCount = result.catalogosProducts.length;
+
       tabBuilder =
           (context, index) => Tab(text: result.catalogosProducts[index].name);
 
@@ -247,10 +246,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   void fetchUserCatalogos() async {
     var result;
 
-    productBlocUser.getCatalogosUserProducts(
+    productBloc.getCatalogosUserProducts(
         widget.profile.user.uid, profile.user.uid);
 
-    productBlocUser.catalogosProductsUser.listen((data) {
+    productBloc.catalogosProductsUser.listen((data) {
       result = data;
 
       itemCount = result.catalogosProducts.length;
@@ -538,9 +537,19 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                   ? TabBarView(
                       controller: controller,
                       children: List.generate(
-                        itemCount,
-                        (index) => pageBuilder(context, index),
-                      ),
+                          itemCount,
+                          (index) => Stack(children: [
+                                Container(
+                                    padding: EdgeInsets.only(
+                                        left: 20, top: 20, bottom: 50),
+                                    child: Text(
+                                      'Tratamientos',
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                pageBuilder(context, index)
+                              ])),
                     )
                   : Container())),
     );
@@ -702,55 +711,43 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
               final product = products[index];
 
-              return Stack(
-                children: [
-                  Container(
-                      padding: EdgeInsets.only(left: 20, top: 10, bottom: 20),
-                      child: Text(
-                        'Tratamientos',
-                        style: TextStyle(
-                            color: Colors.grey, fontWeight: FontWeight.bold),
-                      )),
-                  FadeIn(
-                    delay: Duration(milliseconds: 100 * index),
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          top: 40, left: 20, right: 20, bottom: 0.0),
-                      child: OpenContainer(
-                          closedElevation: 5,
-                          openElevation: 5,
-                          closedColor: currentTheme.scaffoldBackgroundColor,
-                          openColor: currentTheme.scaffoldBackgroundColor,
-                          transitionType: ContainerTransitionType.fade,
-                          openShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(20.0),
-                                topLeft: Radius.circular(10.0),
-                                bottomRight: Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0)),
-                          ),
-                          closedShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(20.0),
-                                topLeft: Radius.circular(10.0),
-                                bottomRight: Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0)),
-                          ),
-                          openBuilder: (_, closeContainer) {
-                            return ProductDetailPage(
-                                product: product,
-                                isUserAuth: widget.isUserAuth);
-                          },
-                          closedBuilder: (_, openContainer) {
-                            return Stack(children: [
-                              CardProduct(product: product),
-                              buildCircleFavoriteProductProfile(
-                                  context, product.isLike),
-                            ]);
-                          }),
-                    ),
-                  ),
-                ],
+              return FadeIn(
+                delay: Duration(milliseconds: 100 * index),
+                child: Container(
+                  padding: EdgeInsets.only(
+                      top: 50, left: 20, right: 20, bottom: 0.0),
+                  child: OpenContainer(
+                      closedElevation: 5,
+                      openElevation: 5,
+                      closedColor: currentTheme.scaffoldBackgroundColor,
+                      openColor: currentTheme.scaffoldBackgroundColor,
+                      transitionType: ContainerTransitionType.fade,
+                      openShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(20.0),
+                            topLeft: Radius.circular(10.0),
+                            bottomRight: Radius.circular(10.0),
+                            bottomLeft: Radius.circular(10.0)),
+                      ),
+                      closedShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(20.0),
+                            topLeft: Radius.circular(10.0),
+                            bottomRight: Radius.circular(10.0),
+                            bottomLeft: Radius.circular(10.0)),
+                      ),
+                      openBuilder: (_, closeContainer) {
+                        return ProductDetailPage(
+                            product: product, isUserAuth: widget.isUserAuth);
+                      },
+                      closedBuilder: (_, openContainer) {
+                        return Stack(children: [
+                          CardProduct(product: product),
+                          buildCircleFavoriteProductProfile(
+                              context, product.isLike),
+                        ]);
+                      }),
+                ),
               );
             }),
       ),

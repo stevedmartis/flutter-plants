@@ -123,7 +123,6 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
     profile = authService.profile;
 
     plantProductBloc.getPlantsOrigen(widget.productProfile.product.id);
-    plantBloc.getPlantsOrigen(widget.productProfile.product.id);
   }
 
   @override

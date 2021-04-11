@@ -836,7 +836,6 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   return Column(
                     children: [
                       Container(
-                          margin: EdgeInsets.only(bottom: 0),
                           alignment: Alignment.center,
                           child: Text(
                               (plants.length == 1)

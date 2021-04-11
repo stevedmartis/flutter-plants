@@ -180,7 +180,6 @@ class _CollapsingListState extends State<CollapsingList>
         ),
         makeHeaderSpacerShort(context),
         makeListClubes(context),
-        // makelistCarouselMyPlants(context),
         makeListCarouselMyVisits(context),
         makeListProducts(context)
       ],

@@ -22,7 +22,6 @@ class _HeaderImagePageState extends State<HeaderImagePage> {
   File imageHeader;
   final picker = ImagePicker();
   bool loadImage = false;
-  // AwsService authService;
 
   @override
   void dispose() {
@@ -56,8 +55,6 @@ class _HeaderImagePageState extends State<HeaderImagePage> {
               Navigator.pop(context);
             }),
           },
-
-          //  Navigator.pushReplacementNamed(context, '/profile-edit'),
           color: Colors.white,
         ),
         actions: [
