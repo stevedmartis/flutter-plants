@@ -1,4 +1,3 @@
-import 'package:chat/helpers/ui_overlay_style.dart';
 import 'package:chat/models/notification.dart';
 import 'package:chat/models/shoes.dart';
 import 'package:chat/pages/principal_page.dart';
