@@ -6,18 +6,29 @@ import 'package:chat/services/socket_service.dart';
 import 'package:chat/services/auth_service.dart';
 
 import 'package:chat/pages/principal_page.dart';
+import 'package:upgrader/upgrader.dart';
 
 class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Upgrader().clearSavedSettings(); // Remove this for release builds
+
+    final appcastURL =
+        'https://github.com/DavidMarsCodes/flutter-plants/blob/flutter-2/lib/appcast_leafety.xml';
+    final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
+
     return Scaffold(
-      body: FutureBuilder(
-        future: checkLoginState(context),
-        builder: (context, snapshot) {
-          return Center(
-            child: _buildLoadingWidget(context),
-          );
-        },
+      body: UpgradeAlert(
+        appcastConfig: cfg,
+        debugLogging: true,
+        child: FutureBuilder(
+          future: checkLoginState(context),
+          builder: (context, snapshot) {
+            return Center(
+              child: _buildLoadingWidget(context),
+            );
+          },
+        ),
       ),
     );
   }

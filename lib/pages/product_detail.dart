@@ -50,10 +50,12 @@ class ProductDetailPage extends StatefulWidget {
     this.title,
     this.products,
     @required this.product,
+    this.productUserBloc,
     this.isUserAuth,
   }) : super(key: key);
 
   final String title;
+  final ProductBloc productUserBloc;
 
   final Product product;
   final List<Product> products;
@@ -463,8 +465,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
 
     (widget.isUserAuth)
         ? productBloc.getCatalogosProducts(profile.user.uid)
-        : productBloc.getCatalogosUserProducts(
-            profileFor.user.uid, profile.user.uid);
+        : widget.productUserBloc
+            .getCatalogosUserProducts(profileFor.user.uid, profile.user.uid);
 
     return isLikedSave;
   }
@@ -799,14 +801,6 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     ),
                   ],
                 ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Divider(
-                thickness: 2.0,
-                height: 1.0,
-                color: Colors.grey,
               ),
               SizedBox(
                 height: 20.0,

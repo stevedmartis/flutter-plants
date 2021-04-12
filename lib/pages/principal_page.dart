@@ -118,12 +118,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
     final appTheme = Provider.of<ThemeChanger>(context);
     final authService = Provider.of<AuthService>(context);
 
-    Upgrader().clearSavedSettings(); // Remove this for release builds
-
-    final appcastURL =
-        'https://raw.githubusercontent.com/larryaasen/upgrader/master/test/testappcast.xml';
-    final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
-
     var brightness = MediaQuery.of(context).platformBrightness;
     bool darkModeOn = brightness == Brightness.dark;
 
@@ -134,24 +128,20 @@ class _PrincipalPageState extends State<PrincipalPage> {
     return SafeArea(
         child: Scaffold(
       endDrawer: PrincipalMenu(),
-      body: UpgradeAlert(
-        appcastConfig: cfg,
-        debugLogging: true,
-        child: PageTransitionSwitcher(
-          duration: Duration(milliseconds: 500),
-          reverse: !_onFirstPage,
-          transitionBuilder: (Widget child, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
-            return SharedAxisTransition(
-              fillColor: currentTheme.currentTheme.scaffoldBackgroundColor,
-              transitionType: SharedAxisTransitionType.horizontal,
-              animation: animation,
-              secondaryAnimation: secondaryAnimation,
-              child: child,
-            );
-          },
-          child: pageRouter[currentPage].page,
-        ),
+      body: PageTransitionSwitcher(
+        duration: Duration(milliseconds: 500),
+        reverse: !_onFirstPage,
+        transitionBuilder: (Widget child, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return SharedAxisTransition(
+            fillColor: currentTheme.currentTheme.scaffoldBackgroundColor,
+            transitionType: SharedAxisTransitionType.horizontal,
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          );
+        },
+        child: pageRouter[currentPage].page,
       ),
 
       //CollapsingList(_hideBottomNavController),

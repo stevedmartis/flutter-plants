@@ -133,6 +133,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   ValueChanged<double> onScroll;
   int initPosition;
 
+  final productUserBloc = ProductBloc();
+
   @override
   void initState() {
     _scrollController = ScrollController()..addListener(() => setState(() {}));
@@ -225,8 +227,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
           (context, index) => Tab(text: result.catalogosProducts[index].name);
 
       pageBuilder = (context, index) => _buildWidgetProducts(
-            result.catalogosProducts[index].products,
-          );
+          result.catalogosProducts[index].products, productUserBloc);
 
       if (mounted) setState(() {});
 
@@ -246,10 +247,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   void fetchUserCatalogos() async {
     var result;
 
-    productBloc.getCatalogosUserProducts(
+    productUserBloc.getCatalogosUserProducts(
         widget.profile.user.uid, profile.user.uid);
 
-    productBloc.catalogosProductsUser.listen((data) {
+    productUserBloc.catalogosProductsUser.listen((data) {
       result = data;
 
       itemCount = result.catalogosProducts.length;
@@ -257,8 +258,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
           (context, index) => Tab(text: result.catalogosProducts[index].name);
 
       pageBuilder = (context, index) => _buildWidgetProducts(
-            result.catalogosProducts[index].products,
-          );
+          result.catalogosProducts[index].products, productUserBloc);
 
       if (mounted) setState(() {});
 
@@ -697,7 +697,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildWidgetProducts(List<Product> products) {
+  Widget _buildWidgetProducts(
+      List<Product> products, ProductBloc productUserBloc) {
     final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
     return Container(
@@ -738,7 +739,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                       ),
                       openBuilder: (_, closeContainer) {
                         return ProductDetailPage(
-                            product: product, isUserAuth: widget.isUserAuth);
+                          product: product,
+                          isUserAuth: widget.isUserAuth,
+                          productUserBloc: productUserBloc,
+                        );
                       },
                       closedBuilder: (_, openContainer) {
                         return Stack(children: [

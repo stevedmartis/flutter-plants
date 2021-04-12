@@ -989,17 +989,6 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                   ),
                 ),
               ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Divider(
-                thickness: 2.0,
-                height: 1.0,
-                color: Colors.grey,
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
             ],
           ),
         ),

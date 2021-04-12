@@ -178,7 +178,7 @@ class _CollapsingListState extends State<CollapsingList>
             [FadeIn(child: BannerSlide())],
           ),
         ),
-        makeHeaderSpacerShort(context),
+        makeHeaderSpacerMedium(context),
         makeListClubes(context),
         makeListCarouselMyVisits(context),
         makeListProducts(context)
@@ -374,6 +374,20 @@ class _CollapsingListState extends State<CollapsingList>
   }
 
   SliverPersistentHeader makeHeaderSpacerShort(context) {
+    //   final roomModel = Provider.of<Room>(context);
+
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: SliverAppBarDelegate(
+          minHeight: 5.0,
+          maxHeight: 5.0,
+          child: Row(
+            children: [Container()],
+          )),
+    );
+  }
+
+  SliverPersistentHeader makeHeaderSpacerMedium(context) {
     //   final roomModel = Provider.of<Room>(context);
 
     return SliverPersistentHeader(
