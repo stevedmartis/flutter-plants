@@ -2,15 +2,22 @@ import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
+import 'package:chat/api/pdf_api.dart';
+import 'package:chat/api/pdf_invoice.dart';
 import 'package:chat/bloc/catalogo_bloc.dart';
+import 'package:chat/bloc/plant_bloc.dart';
 import 'package:chat/bloc/product_bloc.dart';
 import 'package:chat/bloc/room_bloc.dart';
+import 'package:chat/bloc/visit_bloc.dart';
 import 'package:chat/models/catalogo.dart';
 import 'package:chat/models/catalogos_response.dart';
+import 'package:chat/models/invoice.dart';
+import 'package:chat/models/plant.dart';
 import 'package:chat/models/products.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/models/room.dart';
 import 'package:chat/models/rooms_response.dart';
+import 'package:chat/models/visit.dart';
 import 'package:chat/pages/chat_page.dart';
 import 'package:chat/pages/principalCustom_page.dart';
 import 'package:chat/pages/principal_page.dart';
@@ -21,6 +28,7 @@ import 'package:chat/pages/room_list_page.dart';
 import 'package:chat/providers/catalogos_provider.dart';
 import 'package:chat/providers/products_provider.dart';
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/plant_services.dart';
 import 'package:chat/services/room_services.dart';
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/card_product.dart';
@@ -104,6 +112,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
   int currentIndexTab = 0;
 
+  bool loadinReport = false;
+
   List<Catalogo> catalogos;
 
   List<Product> products;
@@ -133,7 +143,12 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   ValueChanged<double> onScroll;
   int initPosition;
 
+  List<Room> myRooms = [];
+  List<Plant> myPlants = [];
+  List<Visit> myVisits = [];
+
   final productUserBloc = ProductBloc();
+  final plantService = new PlantService();
 
   @override
   void initState() {
@@ -143,14 +158,40 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
     profile = authService.profile;
 
-    /*  productBloc.produtsProfiles.listen((data) async {
-     
-    });
- */
+    if (widget.isUserAuth) _chargeMyRooms();
+    if (widget.isUserAuth) _chargeMyLastPlantsByUser();
+    if (widget.isUserAuth) _chargeMyLastVisitByUser();
 
     (widget.isUserAuth) ? fetchMyCatalogos() : fetchUserCatalogos();
 
     super.initState();
+  }
+
+  _chargeMyRooms() async {
+    roomBloc.getMyRooms(profile.user.uid);
+
+    roomBloc.myRooms.listen((rooms) {
+      myRooms = rooms.rooms;
+      if (mounted) setState(() {});
+    });
+  }
+
+  _chargeMyLastPlantsByUser() async {
+    plantBloc.getPlantsByUser(profile.user.uid);
+
+    plantBloc.plantsUser.listen((plants) {
+      myPlants = plants.plants;
+      if (mounted) setState(() {});
+    });
+  }
+
+  _chargeMyLastVisitByUser() async {
+    visitBloc.getVisitsByUser(profile.user.uid);
+
+    visitBloc.visitsUser.listen((visits) {
+      myVisits = visits.visits;
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -940,7 +981,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     return SliverToBoxAdapter(
       child: FadeIn(
         child: Container(
-          padding: EdgeInsets.only(top: 10.0, bottom: 25),
+          padding: EdgeInsets.only(top: 10.0, bottom: 15),
           color: currentTheme.currentTheme.scaffoldBackgroundColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -1008,11 +1049,11 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                 ),
               if (!this.widget.isUserEdit)
                 Expanded(
-                  flex: -2,
+                  flex: -1,
                   child: Container(
                       width: size.width - 1.10,
                       padding: EdgeInsets.only(
-                          left: size.width / 20.0, top: 5.0, bottom: 10),
+                          left: size.width / 20.0, top: 0.0, bottom: 10),
                       //margin: EdgeInsets.only(left: size.width / 6, top: 10),
 
                       child: Text('@' + username,
@@ -1041,44 +1082,243 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                         : null),
               ),
               (widget.isUserAuth)
-                  ? Expanded(
-                      flex: 0,
-                      child: GestureDetector(
-                        onTap: () => {
-                          Navigator.of(context).push(PageRouteBuilder(
-                            transitionDuration: Duration(milliseconds: 200),
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
+                  ? Row(
+                      children: [
+                        Expanded(
+                          flex: 0,
+                          child: GestureDetector(
+                            onTap: () => {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                transitionDuration: Duration(milliseconds: 200),
+                                pageBuilder: (context, animation,
+                                        secondaryAnimation) =>
                                     RecipeImagePage(profile: widget.profile),
-                          ))
-                        },
-                        child: Container(
-                          padding:
-                              EdgeInsets.only(left: size.width / 20, top: 10),
-                          child: Container(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                FaIcon(
-                                  FontAwesomeIcons.notesMedical,
-                                  size: 20,
-                                  color: currentTheme.currentTheme.accentColor,
+                              ))
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                  left: size.width / 20, top: 10),
+                              child: Container(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.notesMedical,
+                                      size: 20,
+                                      color:
+                                          currentTheme.currentTheme.accentColor,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      'Mi Receta',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey),
+                                    )
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  'Mi receta',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: currentTheme
-                                          .currentTheme.accentColor),
-                                )
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        Expanded(
+                          flex: 0,
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (!loadinReport) {
+                                setState(() {
+                                  loadinReport = true;
+                                });
+
+                                final date = DateTime.now();
+                                final dueDate = date.add(Duration(days: 7));
+                                final regex = RegExp(
+                                    "(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])");
+
+                                final about =
+                                    profile.about.replaceAll(regex, '');
+
+                                final numberId = profile.id.substring(11, 15);
+
+                                final imageAvatarPath = profile.imageAvatar
+                                    .replaceAll(
+                                        'https://images-cdn-br.s3.sa-east-1.amazonaws.com',
+                                        '');
+
+                                final report = Report(
+                                    profile: Profile(
+                                      rutClub: profile.rutClub,
+                                      name: profile.name,
+                                      about: about,
+                                      username: profile.user.username,
+                                      email: profile.user.email,
+                                      imageAvatar: imageAvatarPath,
+                                      siteInfo: 'https://leafety.com',
+                                    ),
+                                    customer: Customer(
+                                      name: 'Leafety Holding, SPA.',
+                                      email: 'leafety@contacto.com',
+                                    ),
+                                    info: InvoiceInfo(
+                                      date: date,
+                                      dueDate: dueDate,
+                                      description: '$about',
+                                      number:
+                                          '${DateTime.now().year}-$numberId',
+                                    ),
+                                    rooms: List<RoomsItem>.generate(
+                                        myRooms.length, (int index) {
+                                      final room = myRooms[index];
+
+                                      final nameRoom =
+                                          room.name.replaceAll(regex, '');
+
+                                      return RoomsItem(
+                                        name: nameRoom,
+                                        date: room.createdAt,
+                                        totalPlants: room.totalPlants,
+                                        totalLights: room.totalLights,
+                                        totalAirs: room.totalAirs,
+                                      );
+                                    }),
+                                    plants: List<PlantsItem>.generate(
+                                        myPlants.length, (int index) {
+                                      final plant = myPlants[index];
+
+                                      final namePlant =
+                                          plant.name.replaceAll(regex, '');
+
+                                      return PlantsItem(
+                                          name: namePlant,
+                                          date: plant.createdAt,
+                                          quantity: plant.quantity,
+                                          cbd: plant.cbd,
+                                          thc: plant.thc,
+                                          germination: plant.germinated,
+                                          floration: plant.flowering);
+                                    }),
+                                    visits: List<VisitsItem>.generate(
+                                        myVisits.length, (int index) {
+                                      final visit = myVisits[index];
+
+                                      final description = visit.description
+                                          .replaceAll(regex, '');
+
+                                      return VisitsItem(
+                                          description: description,
+                                          date: visit.createdAt,
+                                          degrees: visit.degrees,
+                                          ml: visit.ml,
+                                          ph: visit.ph,
+                                          electro: visit.electro,
+                                          nameAbono: visit.nameAbono,
+                                          mlAbono: visit.mlAbono,
+                                          grams: (visit.grams != null)
+                                              ? visit.grams
+                                              : '0');
+                                    })
+
+                                    /* [
+                                    InvoiceItem(
+                                      description: 'Coffee',
+                                      date: DateTime.now(),
+                                      quantity: 3,
+                                      vat: 0.19,
+                                      unitPrice: 5.99,
+                                    ),
+                                    InvoiceItem(
+                                      description: 'Water',
+                                      date: DateTime.now(),
+                                      quantity: 8,
+                                      vat: 0.19,
+                                      unitPrice: 0.99,
+                                    ),
+                                    InvoiceItem(
+                                      description: 'Orange',
+                                      date: DateTime.now(),
+                                      quantity: 3,
+                                      vat: 0.19,
+                                      unitPrice: 2.99,
+                                    ),
+                                    InvoiceItem(
+                                      description: 'Apple',
+                                      date: DateTime.now(),
+                                      quantity: 8,
+                                      vat: 0.19,
+                                      unitPrice: 3.99,
+                                    ),
+                                    InvoiceItem(
+                                      description: 'Mango',
+                                      date: DateTime.now(),
+                                      quantity: 1,
+                                      vat: 0.19,
+                                      unitPrice: 1.59,
+                                    ),
+                                    InvoiceItem(
+                                      description: 'Blue Berries',
+                                      date: DateTime.now(),
+                                      quantity: 5,
+                                      vat: 0.19,
+                                      unitPrice: 0.99,
+                                    ),
+                                    InvoiceItem(
+                                      description: 'Lemon',
+                                      date: DateTime.now(),
+                                      quantity: 4,
+                                      vat: 0.19,
+                                      unitPrice: 1.29,
+                                    ),
+                                  ], */
+                                    );
+
+                                final pdfFile =
+                                    await PdfInvoiceApi.generate(report);
+
+                                print(pdfFile);
+
+                                if (pdfFile.path.length > 0) {
+                                  setState(() {
+                                    loadinReport = false;
+                                  });
+
+                                  PdfApi.openFile(pdfFile);
+                                }
+                              }
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                  left: size.width / 20, top: 10),
+                              child: Container(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.filePdf,
+                                      size: 20,
+                                      color:
+                                          currentTheme.currentTheme.accentColor,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      'Mi Reporte',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: (loadinReport)
+                                              ? currentTheme
+                                                  .currentTheme.accentColor
+                                              : Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     )
                   : Container(),
             ],

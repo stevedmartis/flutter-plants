@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Labels(
                         rute: 'register',
                         title: "¿No tienes una cuenta?",
-                        subTitulo: 'Registate aquí',
+                        subTitulo: 'Regístrate aquí',
                         colortText1: Colors.grey,
                         colortText2: currentTheme.accentColor,
                       ),

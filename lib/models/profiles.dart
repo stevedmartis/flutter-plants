@@ -13,6 +13,7 @@ String profilesToJson(Profiles data) => json.encode(data.toJson());
 class Profiles {
   Profiles(
       {this.id,
+      this.rutClub,
       this.name,
       this.lastName,
       this.createdAt,
@@ -31,6 +32,8 @@ class Profiles {
 
   String id;
   String name;
+
+  String rutClub;
   String lastName;
   DateTime createdAt;
   DateTime updatedAt;
@@ -62,7 +65,8 @@ class Profiles {
       subId: json["subId"],
       isClub: json["isClub"],
       subscribeApproved: json["subscribeApproved"],
-      subscribeActive: json["subscribeActive"]);
+      subscribeActive: json["subscribeActive"],
+      rutClub: json["rutClub"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -80,7 +84,8 @@ class Profiles {
         "subId": subId,
         "isClub": isClub,
         "subscribeApproved": subscribeApproved,
-        "subscribeActive": subscribeActive
+        "subscribeActive": subscribeActive,
+        "rutClub": rutClub
       };
 
   getAvatarImg() {
