@@ -803,7 +803,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                 ),
               ),
               SizedBox(
-                height: 20.0,
+                height: 10.0,
               ),
             ],
           ),
@@ -827,14 +827,14 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               if (snapshot.hasData) {
                 final plants = snapshot.data;
                 if (plants.length > 0) {
-                  return Column(
+                  return Stack(
                     children: [
                       Container(
                           alignment: Alignment.center,
                           child: Text(
                               (plants.length == 1)
-                                  ? 'Planta de origen'
-                                  : 'Plantas de origen',
+                                  ? 'Planta Madre'
+                                  : 'Plantas Madre',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -850,7 +850,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     child: Container(
                         padding: EdgeInsets.all(50),
                         child: Text(
-                          'Sin Plantas de origen',
+                          'Sin Plantas Madre',
                           style: TextStyle(
                             fontSize: size.width / 30,
                             color: (currentTheme.customTheme)
@@ -872,65 +872,59 @@ class _ProductDetailPageState extends State<ProductDetailPage>
 
   Widget _buildWidgetPlant(plants) {
     final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
+    final size = MediaQuery.of(context).size;
     return Container(
-      child: SizedBox(
-        child: ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: plants.length,
-            itemBuilder: (BuildContext ctxt, int index) {
-              final plant = plants[index];
+      child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: plants.length,
+          itemBuilder: (BuildContext ctxt, int index) {
+            final plant = plants[index];
 
-              return Stack(
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(
-                        top: 0, left: 20, right: 20, bottom: 20.0),
-                    child: OpenContainer(
-                        closedElevation: 5,
-                        openElevation: 5,
-                        closedColor: currentTheme.scaffoldBackgroundColor,
-                        openColor: currentTheme.scaffoldBackgroundColor,
-                        transitionType: ContainerTransitionType.fade,
-                        openShape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20.0),
-                              topLeft: Radius.circular(10.0),
-                              bottomRight: Radius.circular(10.0),
-                              bottomLeft: Radius.circular(10.0)),
-                        ),
-                        closedShape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20.0),
-                              topLeft: Radius.circular(10.0),
-                              bottomRight: Radius.circular(10.0),
-                              bottomLeft: Radius.circular(10.0)),
-                        ),
-                        openBuilder: (_, closeContainer) {
-                          return PlantDetailPage(
-                            plant: plant,
-                            isUserAuth: widget.isUserAuth,
-                          );
-                        },
-                        closedBuilder: (_, openContainer) {
-                          return FadeIn(
-                            child: Stack(children: [
-                              CardPlant(plant: plant),
-                              (widget.isUserAuth)
-                                  ? Container(
-                                      child: buildCircleQuantityPlantDash(
-                                          plant.quantity, context),
-                                    )
-                                  : Container(),
-                            ]),
-                          );
-                        }),
+            return Container(
+              padding: EdgeInsets.only(
+                  left: 20, right: 20, bottom: 10.0, top: size.height / 35),
+              child: OpenContainer(
+                  closedElevation: 5,
+                  openElevation: 5,
+                  closedColor: currentTheme.scaffoldBackgroundColor,
+                  openColor: currentTheme.scaffoldBackgroundColor,
+                  transitionType: ContainerTransitionType.fade,
+                  openShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        topLeft: Radius.circular(10.0),
+                        bottomRight: Radius.circular(10.0),
+                        bottomLeft: Radius.circular(10.0)),
                   ),
-                ],
-              );
-            }),
-      ),
+                  closedShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        topLeft: Radius.circular(10.0),
+                        bottomRight: Radius.circular(10.0),
+                        bottomLeft: Radius.circular(10.0)),
+                  ),
+                  openBuilder: (_, closeContainer) {
+                    return PlantDetailPage(
+                      plant: plant,
+                      isUserAuth: widget.isUserAuth,
+                    );
+                  },
+                  closedBuilder: (_, openContainer) {
+                    return FadeIn(
+                      child: Stack(children: [
+                        CardPlant(plant: plant),
+                        (widget.isUserAuth)
+                            ? Container(
+                                child: buildCircleQuantityPlantDash(
+                                    plant.quantity, context),
+                              )
+                            : Container(),
+                      ]),
+                    );
+                  }),
+            );
+          }),
     );
   }
 

@@ -582,7 +582,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                           (index) => Stack(children: [
                                 Container(
                                     padding: EdgeInsets.only(
-                                        left: 20, top: 20, bottom: 50),
+                                        left: 20, top: 20, bottom: 0),
                                     child: Text(
                                       'Tratamientos',
                                       style: TextStyle(
@@ -757,7 +757,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                 delay: Duration(milliseconds: 100 * index),
                 child: Container(
                   padding: EdgeInsets.only(
-                      top: 50, left: 20, right: 20, bottom: 0.0),
+                      top: 20, left: 20, right: 20, bottom: 0.0),
                   child: OpenContainer(
                       closedElevation: 5,
                       openElevation: 5,
@@ -1144,11 +1144,12 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
                                 final imageAvatarPath = profile.imageAvatar
                                     .replaceAll(
-                                        'https://images-cdn-br.s3.sa-east-1.amazonaws.com',
+                                        'https://leafety-images.s3.us-east-2.amazonaws.com',
                                         '');
 
                                 final report = Report(
                                     profile: Profile(
+                                      isClub: profile.isClub,
                                       rutClub: profile.rutClub,
                                       name: profile.name,
                                       about: about,

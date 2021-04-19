@@ -440,7 +440,6 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                     ? Stack(
                         children: [
                           Container(
-                              margin: EdgeInsets.only(top: 0),
                               alignment: Alignment.center,
                               child: Text(
                                   (visits.length == 1) ? 'Visita' : 'Visitas',
@@ -452,7 +451,8 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                                         : Colors.black54,
                                   ))),
                           Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
+                              margin:
+                                  EdgeInsets.only(left: 10, right: 10, top: 15),
                               child: _buildWidgetVisits(visits)),
                         ],
                       )
@@ -936,14 +936,6 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                     child: (about.length > 0)
                         ? convertHashtag(about, context)
                         : Container()),
-                SizedBox(
-                  height: 40.0,
-                ),
-                Divider(
-                  thickness: 2.0,
-                  height: 1.0,
-                  color: Colors.grey,
-                ),
                 SizedBox(
                   height: 20.0,
                 ),

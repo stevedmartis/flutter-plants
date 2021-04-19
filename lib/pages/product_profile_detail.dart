@@ -596,9 +596,6 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                   height: 30,
                 ),
                 //_createDescription(bloc),
-                SizedBox(
-                  height: 40,
-                ),
               ],
             ),
           ),
@@ -623,12 +620,11 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                   return Stack(
                     children: [
                       Container(
-                          margin: EdgeInsets.only(bottom: 0),
                           alignment: Alignment.center,
                           child: Text(
                               (plants.length == 1)
-                                  ? 'Planta de origen'
-                                  : 'Plantas de origen',
+                                  ? 'Planta Madre'
+                                  : 'Plantas Madre',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -666,6 +662,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
 
   Widget _buildWidgetPlant(plants) {
     final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+    final size = MediaQuery.of(context).size;
 
     return Container(
       child: SizedBox(
@@ -680,7 +677,10 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                 children: [
                   Container(
                     padding: EdgeInsets.only(
-                        top: 10, left: 20, right: 20, bottom: 20.0),
+                        left: 20,
+                        right: 20,
+                        bottom: 0.0,
+                        top: size.height / 35),
                     child: OpenContainer(
                         closedElevation: 5,
                         openElevation: 5,
@@ -951,7 +951,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                 },
                 child: Container(
                   padding: EdgeInsets.only(
-                      top: 10, left: size.width / 5, bottom: 5.0),
+                      top: 10, left: size.width / 5, bottom: 20.0),
                   child: Row(
                     children: [
                       Container(

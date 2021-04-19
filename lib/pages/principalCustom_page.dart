@@ -825,7 +825,9 @@ void _launchURL() async =>
 final List<Widget> imageSliders = getBanners
     .map((item) => Container(
           child: GestureDetector(
-            onTap: () => {_launchURL()},
+            onTap: () => {
+              // _launchURL()
+            },
             child: Container(
               margin: EdgeInsets.all(5.0),
               child: ClipRRect(

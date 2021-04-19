@@ -102,7 +102,7 @@ class Visit {
   getCoverImg() {
     if (coverImage == "") {
       var imageDefault =
-          "https://images-cdn-br.s3-sa-east-1.amazonaws.com/default_banner.jpeg";
+          "https://leafety-images.s3.us-east-2.amazonaws.com/global/default_banner.jpeg";
       return imageDefault;
     } else {
       return coverImage;

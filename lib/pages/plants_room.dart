@@ -542,7 +542,7 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
                         child: Text(
                           (isSelected)
                               ? '$countSelection Seleccionadas'
-                              : 'Seleccione planta de origen',
+                              : 'Seleccione planta madre',
                           style: TextStyle(color: Colors.grey, fontSize: 18),
                         ),
                       );

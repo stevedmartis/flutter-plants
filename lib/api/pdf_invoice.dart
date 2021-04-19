@@ -20,8 +20,8 @@ class PdfInvoiceApi {
     String nameImage = report.profile.imageAvatar.replaceAll('/avatar', '');
     File file = new File('$tempPath' + (nameImage));
 
-    final urlImage = Uri.https(
-        'images-cdn-br.s3.sa-east-1.amazonaws.com', report.profile.imageAvatar);
+    final urlImage = Uri.https('leafety-images.s3.us-east-2.amazonaws.com',
+        report.profile.imageAvatar);
     final response = await http.get(urlImage);
 
     await file.writeAsBytes(response.bodyBytes);
@@ -35,14 +35,14 @@ class PdfInvoiceApi {
         buildHeader(report, image),
         SizedBox(height: 1.5 * PdfPageFormat.cm),
         buildTitle(report),
-        buildTitleRooms(),
-        buildRooms(report),
-        buildTitlePlants(),
-        buildPlants(report),
-        buildTitleVisits(),
-        buildVisits(report),
+        if (report.rooms.length > 0) buildTitleRooms(),
+        if (report.rooms.length > 0) buildRooms(report),
+        if (report.plants.length > 0) buildTitlePlants(),
+        if (report.plants.length > 0) buildPlants(report),
+        if (report.visits.length > 0) buildTitleVisits(),
+        if (report.visits.length > 0) buildVisits(report),
         Divider(),
-        buildTotal(report),
+        if (report.visits.length > 0) buildTotal(report),
       ],
       footer: (context) => buildFooter(report),
     ));
@@ -121,8 +121,9 @@ class PdfInvoiceApi {
   static Widget buildSupplierAddress(Profile profile) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(profile.rutClub,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          if (profile.isClub)
+            Text(profile.rutClub,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           SizedBox(height: 2 * PdfPageFormat.mm),
           Text(profile.name,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
