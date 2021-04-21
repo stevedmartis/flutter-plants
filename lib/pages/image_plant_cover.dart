@@ -7,7 +7,6 @@ import 'package:chat/services/plant_services.dart';
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/image_cover_expanded.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
