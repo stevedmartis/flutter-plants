@@ -382,7 +382,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                           centerTitle: true,
                           title: Container(
                               //  margin: EdgeInsets.only(left: 0),
-                              width: size.height / 5,
+                              width: size.height / 3,
                               height: 30,
                               child: Container(
                                 child: Center(

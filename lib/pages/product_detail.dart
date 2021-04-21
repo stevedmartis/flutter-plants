@@ -428,7 +428,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     centerTitle: true,
                     title: Container(
                         //  margin: EdgeInsets.only(left: 0),
-                        width: size.height / 2.5,
+                        width: size.height / 2.0,
                         height: 25,
                         child: Container(
                           child: Center(

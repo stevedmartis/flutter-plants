@@ -43,7 +43,7 @@ class _CardProductState extends State<CardProduct> {
                     productItem(widget.isDispensary),
                     Container(
                       width: 100,
-                      height: 150,
+                      height: (widget.isDispensary) ? 100 : 150,
                       child: ClipRRect(
                           borderRadius: BorderRadius.only(
                               topRight: Radius.circular(10.0),
@@ -110,93 +110,110 @@ class _CardProductState extends State<CardProduct> {
                 cbd: '$cbd',
                 fontSize: 9.0,
               ),
+              if (!isDispensary)
+                SizedBox(
+                  height: 5.0,
+                ),
+              if (!isDispensary)
+                Container(
+                  width: size.width / 3.5,
+                  child: Text(
+                    (about.length > 0) ? about.capitalize() : "Sin descripción",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                    style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 10,
+                        color: Colors.grey),
+                  ),
+                ),
               SizedBox(
-                height: 5.0,
+                height: (about.length < 20 || isDispensary) ? 10 : 0.0,
               ),
-              Container(
-                width: size.width / 3.5,
-                child: Text(
-                  (about.length > 0) ? about.capitalize() : "Sin descripción",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                  style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 10,
-                      color: Colors.grey),
-                ),
-              ),
-              SizedBox(
-                height: (about.length < 20) ? 20 : 10.0,
-              ),
-              Container(
-                width: size.width / 3.0,
-                height: size.height / 20,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 0,
-                ),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    color: currentTheme.currentTheme.scaffoldBackgroundColor),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        color:
-                            currentTheme.currentTheme.scaffoldBackgroundColor,
-                        child: IconButton(
-                          onPressed: () {
-                            if (quantity > 0) {
-                              setState(() {
-                                quantity--;
-                              });
-                            }
-                          },
-                          icon: Icon(
-                            Icons.remove,
-                            color: currentTheme.currentTheme.accentColor,
-                            size: 15,
-                          ),
-                        ),
+              (isDispensary)
+                  ? Container(
+                      width: size.width / 3.0,
+                      height: size.height / 20,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 0,
                       ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(),
-                        child: Text(
-                          quantity.toString(),
-                          style: TextStyle(
-                            color: currentTheme.currentTheme.accentColor,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: currentTheme
+                              .currentTheme.scaffoldBackgroundColor),
+                      child: Row(
+                        children: [
+                          Material(
+                              color: currentTheme
+                                  .currentTheme.scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(10),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(10),
+                                radius: 25,
+                                onTap: () {
+                                  if (quantity > 0) {
+                                    setState(() {
+                                      quantity--;
+                                    });
+                                  }
+                                },
+                                splashColor: Colors.grey,
+                                highlightColor: Colors.grey,
+                                child: Container(
+                                  width: 34,
+                                  height: 34,
+                                  child: Icon(
+                                    Icons.remove,
+                                    color:
+                                        currentTheme.currentTheme.accentColor,
+                                    size: 15,
+                                  ),
+                                ),
+                              )),
+                          SizedBox(
+                            width: 20,
                           ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        color:
-                            currentTheme.currentTheme.scaffoldBackgroundColor,
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              quantity++;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.add,
-                            color: currentTheme.currentTheme.accentColor,
-                            size: 15,
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.only(),
+                              child: Text(
+                                quantity.toString(),
+                                style: TextStyle(
+                                  color: currentTheme.currentTheme.accentColor,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          Material(
+                              color: currentTheme
+                                  .currentTheme.scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(10),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(10),
+                                radius: 25,
+                                onTap: () {
+                                  setState(() {
+                                    quantity++;
+                                  });
+                                },
+                                splashColor: Colors.grey,
+                                highlightColor: Colors.grey,
+                                child: Container(
+                                  width: 34,
+                                  height: 34,
+                                  child: Icon(
+                                    Icons.add,
+                                    color:
+                                        currentTheme.currentTheme.accentColor,
+                                    size: 15,
+                                  ),
+                                ),
+                              )),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
+                    )
+                  : Container(),
+              if (isDispensary) const SizedBox(height: 10),
               (!isDispensary)
                   ? Container(
                       padding: EdgeInsets.only(left: 0, top: 5.0),
