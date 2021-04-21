@@ -35,9 +35,9 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import 'add_update_visit.dart';
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 
-const _url = 'https://leafety.com';
+//const _url = 'https://leafety.com';
 
 class CollapsingList extends StatefulWidget {
   @override
@@ -819,9 +819,9 @@ const List<Banners> getBanners = <Banners>[
       'Suscripciones en línea para pacientes con receta médica'),
 ];
 
-void _launchURL() async =>
+/* void _launchURL() async =>
     await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
-
+ */
 final List<Widget> imageSliders = getBanners
     .map((item) => Container(
           child: GestureDetector(

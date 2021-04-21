@@ -147,6 +147,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   List<Plant> myPlants = [];
   List<Visit> myVisits = [];
 
+  Profiles thisProfile;
+
   final productUserBloc = ProductBloc();
   final plantService = new PlantService();
 
@@ -347,7 +349,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
     final name = (profile.name == "") ? profile.user.username : profile.name;
     setState(() {
-      profile = (widget.isUserAuth && isUserAuth)
+      thisProfile = (widget.isUserAuth && isUserAuth)
           ? authService.profile
           : widget.profile;
     });
@@ -479,7 +481,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                                               : Colors.black,
                                         )))
                                 : Container(),
-                            (_showName && profile.isClub)
+                            (_showName && thisProfile.isClub)
                                 ? FadeIn(
                                     child: Container(
                                       margin: EdgeInsets.only(left: 10),
@@ -517,7 +519,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                         //image: snapshot.data,
                         isUserAuth: widget.isUserAuth,
                         isUserEdit: widget.isUserEdit,
-                        profile: profile,
+                        profile: thisProfile,
                       ),
                       centerTitle: true,
                     ),
@@ -579,18 +581,23 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                       controller: controller,
                       children: List.generate(
                           itemCount,
-                          (index) => Stack(children: [
-                                Container(
-                                    padding: EdgeInsets.only(
-                                        left: 20, top: 20, bottom: 0),
-                                    child: Text(
-                                      'Tratamientos',
-                                      style: TextStyle(
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.bold),
-                                    )),
-                                pageBuilder(context, index)
-                              ])),
+                          (index) => Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        height: 30,
+                                        padding: EdgeInsets.only(
+                                            left: 20, top: 15, bottom: 0),
+                                        child: Text(
+                                          'Tratamientos',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                    Expanded(child: pageBuilder(context, index))
+                                  ])),
                     )
                   : Container())),
     );
@@ -968,13 +975,13 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   SliverToBoxAdapter makeInfoProfile(context) {
     final currentTheme = Provider.of<ThemeChanger>(context);
 
-    final username = profile.user.username.toLowerCase();
+    final username = thisProfile.user.username.toLowerCase();
 
-    final about = (profile.about == null) ? "" : profile.about;
+    final about = (thisProfile.about == null) ? "" : thisProfile.about;
     final size = MediaQuery.of(context).size;
-    final isClub = profile.isClub;
+    final isClub = thisProfile.isClub;
 
-    name = profile.name;
+    name = thisProfile.name;
 
     final nameFinal = name.isEmpty ? "" : name.capitalize();
 
@@ -1081,49 +1088,88 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                             : Container()
                         : null),
               ),
-              (widget.isUserAuth)
-                  ? Row(
-                      children: [
-                        Expanded(
-                          flex: 0,
-                          child: GestureDetector(
-                            onTap: () => {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                transitionDuration: Duration(milliseconds: 200),
-                                pageBuilder: (context, animation,
-                                        secondaryAnimation) =>
+              Row(
+                children: [
+                  if (widget.isUserAuth)
+                    Expanded(
+                      flex: 0,
+                      child: GestureDetector(
+                        onTap: () => {
+                          Navigator.of(context).push(PageRouteBuilder(
+                            transitionDuration: Duration(milliseconds: 200),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
                                     RecipeImagePage(profile: widget.profile),
-                              ))
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  left: size.width / 20, top: 10),
-                              child: Container(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    FaIcon(
-                                      FontAwesomeIcons.notesMedical,
-                                      size: 20,
-                                      color:
-                                          currentTheme.currentTheme.accentColor,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'Mi Receta',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey),
-                                    )
-                                  ],
+                          ))
+                        },
+                        child: Container(
+                          padding:
+                              EdgeInsets.only(left: size.width / 20, top: 10),
+                          child: Container(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.notesMedical,
+                                  size: 20,
+                                  color: currentTheme.currentTheme.accentColor,
                                 ),
-                              ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Mi Receta',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey),
+                                )
+                              ],
                             ),
                           ),
                         ),
-                        Expanded(
+                      ),
+                    ),
+                  if (!widget.isUserAuth && profile.isClub && !isClub)
+                    Expanded(
+                      flex: 0,
+                      child: GestureDetector(
+                        onTap: () => {
+                          Navigator.of(context).push(PageRouteBuilder(
+                            transitionDuration: Duration(milliseconds: 200),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    RecipeImagePage(profile: widget.profile),
+                          ))
+                        },
+                        child: Container(
+                          padding:
+                              EdgeInsets.only(left: size.width / 20, top: 10),
+                          child: Container(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.notesMedical,
+                                  size: 20,
+                                  color: currentTheme.currentTheme.accentColor,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Ver Receta',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  (widget.isUserAuth)
+                      ? Expanded(
                           flex: 0,
                           child: GestureDetector(
                             onTap: () async {
@@ -1149,12 +1195,12 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
                                 final report = Report(
                                     profile: Profile(
-                                      isClub: profile.isClub,
-                                      rutClub: profile.rutClub,
-                                      name: profile.name,
+                                      isClub: isClub,
+                                      rutClub: thisProfile.rutClub,
+                                      name: thisProfile.name,
                                       about: about,
-                                      username: profile.user.username,
-                                      email: profile.user.email,
+                                      username: thisProfile.user.username,
+                                      email: thisProfile.user.email,
                                       imageAvatar: imageAvatarPath,
                                       siteInfo: 'https://leafety.com',
                                     ),
@@ -1319,9 +1365,9 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                             ),
                           ),
                         )
-                      ],
-                    )
-                  : Container(),
+                      : Container()
+                ],
+              )
             ],
           ),
         ),

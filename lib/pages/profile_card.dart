@@ -160,25 +160,13 @@ class _ProfileCardState extends State<ProfileCard> {
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: ButtonSubEditProfile(
-                          color: (currentTheme.customTheme)
-                              ? currentTheme
-                                  .currentTheme.scaffoldBackgroundColor
-                              : Colors.black54,
-                          textColor: Colors.white,
-                          text: 'Ver receta',
+                          isSub: true,
+                          color: currentTheme.currentTheme.accentColor,
+                          textColor: currentTheme.currentTheme.accentColor,
+                          text: 'DISPENSAR',
                           onPressed: () {
-                            (widget.isUserAuth)
-                                ? Navigator.of(context)
-                                    .push(createRouteEditProfile())
-                                : Navigator.of(context).push(PageRouteBuilder(
-                                    transitionDuration:
-                                        Duration(milliseconds: 200),
-                                    pageBuilder: (context, animation,
-                                            secondaryAnimation) =>
-                                        RecipeImagePage(
-                                          profile: profileUser,
-                                          isUserAuth: widget.isUserAuth,
-                                        )));
+                            Navigator.of(context)
+                                .push(createRouteDispensar(profileUser));
                           }),
                     )),
               )

@@ -1,4 +1,5 @@
 import 'package:chat/bloc/plant_bloc.dart';
+import 'package:chat/bloc/product_bloc.dart';
 
 import 'package:chat/models/air.dart';
 import 'package:chat/models/catalogo.dart';
@@ -6,6 +7,7 @@ import 'package:chat/models/light.dart';
 
 import 'package:chat/models/plant.dart';
 import 'package:chat/models/products.dart';
+import 'package:chat/models/products_dispensary.dart';
 import 'package:chat/models/profiles.dart';
 
 import 'package:chat/models/room.dart';
@@ -22,30 +24,26 @@ import 'package:chat/providers/plants_provider.dart';
 import 'package:chat/providers/rooms_provider.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/room_services.dart';
-import 'package:chat/widgets/plant_card_widget.dart';
 
-import '../utils//extension.dart';
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/button_gold.dart';
+import 'package:chat/widgets/product_card.dart';
 import 'package:chat/widgets/room_card.dart';
 import 'package:chat/widgets/sliver_appBar_snap.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PlantsRoomPage extends StatefulWidget {
-  final Room room;
-  final List<Room> rooms;
+class DispensarProductPage extends StatefulWidget {
+  final Profiles profileUser;
 
-  final Product product;
-
-  PlantsRoomPage({@required this.room, this.rooms, this.product});
+  DispensarProductPage({@required this.profileUser});
 
   @override
-  _PlantsRoomPageState createState() => _PlantsRoomPageState();
+  _DispensarProductPageState createState() => _DispensarProductPageState();
 }
 
-class _PlantsRoomPageState extends State<PlantsRoomPage>
+class _DispensarProductPageState extends State<DispensarProductPage>
     with SingleTickerProviderStateMixin {
   ScrollController _scrollController;
 
@@ -76,6 +74,12 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
 
   bool isSelected = false;
 
+  List<Product> dispensaryProductsLikes = [];
+
+  List<Product> dispensaryProductsNotLikes = [];
+
+  final productsLikedBloc = ProductBloc();
+
   @override
   void initState() {
     super.initState();
@@ -89,6 +93,9 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
     final roomService = Provider.of<RoomService>(context, listen: false);
 
     roomService.room = null;
+
+    productsLikedBloc.getDispensaryProducts(
+        profile.user.uid, widget.profileUser.user.uid);
   }
 
   @override
@@ -98,6 +105,8 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
 
     // roomBloc.disposeRoom();
 
+    productsLikedBloc.dispose();
+
     plantBloc?.disposePlants();
   }
 
@@ -105,19 +114,12 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
   Widget build(BuildContext context) {
     final currentTheme = Provider.of<ThemeChanger>(context);
 
-    final roomService = Provider.of<RoomService>(context, listen: false);
-
-    setState(() {
-      room = (roomService.room != null) ? roomService.room : widget.room;
-    });
-    final nameFinal = room.name.isEmpty ? "" : room.name.capitalize();
-
     return Scaffold(
       backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
       appBar: AppBar(
           centerTitle: true,
           title: Text(
-            nameFinal,
+            widget.profileUser.name,
             style: TextStyle(
                 fontSize: 20,
                 color:
@@ -146,10 +148,10 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
             //  makeHeaderInfo(context),
 
             makeHeaderTabs(context),
-
-            (widget.product.id != null)
+            makeListProducts(
+                context) /*  (widget.product.id != null)
                 ? makeListPlants(context)
-                : makeListPlantsRoom(context)
+                : makeListPlantsRoom(context) */
           ]),
     );
   }
@@ -384,7 +386,7 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
     return exist;
   }
 
-  Widget _buildWidgetPlant(plants) {
+/*   Widget _buildWidgetPlant(plants) {
     return Container(
       child: SizedBox(
         child: ListView.builder(
@@ -404,7 +406,7 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
             }),
       ),
     );
-  }
+  } */
 
   Route createRouteNewProduct(Product product, Catalogo catalogo, bool isEdit) {
     return PageRouteBuilder(
@@ -431,46 +433,111 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
     );
   }
 
-  SliverList makeListPlants(context) {
+  SliverList makeListProducts(context) {
     final currentTheme = Provider.of<ThemeChanger>(context);
-    final size = MediaQuery.of(context).size;
 
     return SliverList(
       delegate: SliverChildListDelegate([
-        Container(
-          child: FutureBuilder(
-            future: this.plantService.getPlantsRoomSelectedProduct(
-                widget.room.id, widget.product.id),
-            initialData: null,
-            builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-              if (snapshot.hasData) {
-                plants = snapshot.data;
-                return (plants.length > 0)
-                    ? Container(child: _buildWidgetPlant(plants))
-                    : Center(
-                        child: Container(
-                            padding: EdgeInsets.all(50),
-                            child: Text(
-                              'Sin Plantas para seleccionar',
-                              style: TextStyle(
-                                fontSize: size.width / 30,
-                                color: (currentTheme.customTheme)
-                                    ? Colors.white54
-                                    : Colors.black54,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                padding: EdgeInsets.only(top: 20),
+                child: StreamBuilder<DispensaryProductsResponse>(
+                  stream: productsLikedBloc.dispensaryProducts.stream,
+                  builder: (context,
+                      AsyncSnapshot<DispensaryProductsResponse> snapshot) {
+                    if (snapshot.hasData) {
+                      dispensaryProductsLikes = snapshot.data.products
+                          .where((i) => i.isLike)
+                          .toList();
+
+                      dispensaryProductsNotLikes = snapshot.data.products
+                          .where((i) => !i.isLike)
+                          .toList();
+
+                      return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (dispensaryProductsLikes.length > 0)
+                              Container(
+                                padding: EdgeInsets.only(
+                                    top: 0, left: 20, bottom: 15),
+                                child: Text(
+                                  'Favoritos',
+                                  style: TextStyle(
+                                      color: (currentTheme.customTheme)
+                                          ? Colors.white
+                                          : Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
                               ),
-                            )),
-                      ); // image is ready
-              } else {
-                return _buildLoadingWidget(); // placeholder
-              }
-            },
-          ),
+                            if (dispensaryProductsLikes.length > 0)
+                              _buildDispensaryProducts(dispensaryProductsLikes),
+                            if (dispensaryProductsNotLikes.length > 0)
+                              Container(
+                                padding: EdgeInsets.only(
+                                    top: 0, left: 20, bottom: 15),
+                                child: Text(
+                                  'En Stock',
+                                  style: TextStyle(
+                                      color: (currentTheme.customTheme)
+                                          ? Colors.white
+                                          : Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
+                              ),
+                            if (dispensaryProductsNotLikes.length > 0)
+                              _buildDispensaryProducts(
+                                  dispensaryProductsNotLikes)
+                          ]);
+                    } else if (snapshot.hasError) {
+                      return _buildErrorWidget(snapshot.error);
+                    } else {
+                      return _buildLoadingWidget();
+                    }
+                  },
+                )),
+          ],
         ),
       ]),
     );
   }
 
-  SliverList makeListPlantsRoom(context) {
+  Widget _buildErrorWidget(String error) {
+    return Center(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Error occured: $error"),
+      ],
+    ));
+  }
+
+  Widget _buildDispensaryProducts(products) {
+    return Container(
+      child: SizedBox(
+        child: ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: products.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              final product = products[index];
+
+              return Container(
+                  padding: EdgeInsets.only(bottom: 20, left: 20, right: 10),
+                  child: CardProduct(
+                    product: product,
+                    isDispensary: true,
+                  ));
+            }),
+      ),
+    );
+  }
+
+/*   SliverList makeListPlantsRoom(context) {
     final currentTheme = Provider.of<ThemeChanger>(context);
     final size = MediaQuery.of(context).size;
 
@@ -506,7 +573,7 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
         ),
       ]),
     );
-  }
+  } */
 
   SliverPersistentHeader makeHeaderTabs(context) {
     final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
@@ -541,8 +608,8 @@ class _PlantsRoomPageState extends State<PlantsRoomPage>
                       return Tab(
                         child: Text(
                           (isSelected)
-                              ? '$countSelection Seleccionadas'
-                              : 'Seleccione planta madre',
+                              ? '$countSelection Seleccionados'
+                              : 'Dispensar tratamiento ',
                           style: TextStyle(color: Colors.grey, fontSize: 18),
                         ),
                       );

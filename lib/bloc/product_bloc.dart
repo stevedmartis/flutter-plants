@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:chat/bloc/validators.dart';
 import 'package:chat/models/catalogos_products_response.dart';
 import 'package:chat/models/products.dart';
+import 'package:chat/models/products_dispensary.dart';
 import 'package:chat/models/products_profiles_response.dart';
 import 'package:chat/providers/catalogos_provider.dart';
 import 'package:chat/repository/products_repository.dart';
@@ -25,6 +26,9 @@ class ProductBloc with Validators {
   final BehaviorSubject<CatalogosProductsResponse> _catalogosProducts =
       BehaviorSubject<CatalogosProductsResponse>();
 
+  final BehaviorSubject<DispensaryProductsResponse> _dispensaryProducts =
+      BehaviorSubject<DispensaryProductsResponse>();
+
   final BehaviorSubject<CatalogosProductsResponse> _catalogosUserProducts =
       BehaviorSubject<CatalogosProductsResponse>();
 
@@ -40,6 +44,12 @@ class ProductBloc with Validators {
     CatalogosProductsResponse response =
         await _service.getMyCatalogosProducts(uid);
     if (!_catalogosProducts.isClosed) _catalogosProducts.sink.add(response);
+  }
+
+  getDispensaryProducts(String profileClubId, String profileUserId) async {
+    DispensaryProductsResponse response =
+        await _service.getDispensaryProducts(profileClubId, profileUserId);
+    if (!_dispensaryProducts.isClosed) _dispensaryProducts.sink.add(response);
   }
 
   getCatalogosUserProducts(String uidUser, String uid) async {
@@ -59,6 +69,9 @@ class ProductBloc with Validators {
 
   BehaviorSubject<CatalogosProductsResponse> get catalogosProducts =>
       _catalogosProducts;
+
+  BehaviorSubject<DispensaryProductsResponse> get dispensaryProducts =>
+      _dispensaryProducts;
 
   BehaviorSubject<CatalogosProductsResponse> get catalogosProductsUser =>
       _catalogosUserProducts;
@@ -109,6 +122,7 @@ class ProductBloc with Validators {
 
   disposeProductsUser() {
     _catalogosUserProducts.close();
+    _dispensaryProducts.close();
   }
 }
 

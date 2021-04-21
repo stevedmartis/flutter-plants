@@ -3,6 +3,7 @@ import 'package:chat/models/catalogo.dart';
 import 'package:chat/models/catalogo_response.dart';
 import 'package:chat/models/catalogos_products_response.dart';
 import 'package:chat/models/catalogos_response.dart';
+import 'package:chat/models/products_dispensary.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -63,6 +64,27 @@ class CatalogosApiProvider {
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
       return CatalogosProductsResponse.withError("$error");
+    }
+  }
+
+  Future<DispensaryProductsResponse> getDispensaryProducts(
+      String clubId, String userId) async {
+    final urlFinal = Uri.https('${Environment.apiUrl}',
+        '/api/product/dispensary/products/club/$clubId/user/$userId');
+
+    final token = await this._storage.read(key: 'token');
+
+    try {
+      final resp = await http.get(urlFinal,
+          headers: {'Content-Type': 'application/json', 'x-token': token});
+
+      final dispensaryProductsResponse =
+          dispensaryProductsResponseFromJson(resp.body);
+
+      return dispensaryProductsResponse;
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return DispensaryProductsResponse.withError("$error");
     }
   }
 

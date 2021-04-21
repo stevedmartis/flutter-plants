@@ -1,6 +1,7 @@
 import 'package:chat/models/profiles.dart';
 import 'package:chat/pages/avatar_image.dart';
 import 'package:chat/pages/chat_page.dart';
+import 'package:chat/pages/dispensar_products.dart';
 import 'package:chat/pages/my_profile.dart';
 import 'package:chat/pages/profile_edit.dart';
 import 'package:chat/theme/theme.dart';
@@ -200,6 +201,25 @@ Route createRouteMyProfile() {
 Route createRouteEditProfile() {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => EditProfilePage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.fastLinearToSlowEaseIn;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
+Route createRouteDispensar(Profiles profile) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        DispensarProductPage(profileUser: profile),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;

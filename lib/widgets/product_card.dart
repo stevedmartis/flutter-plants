@@ -7,8 +7,9 @@ import '../utils/extension.dart';
 
 class CardProduct extends StatefulWidget {
   final Product product;
+  final bool isDispensary;
 
-  CardProduct({this.product});
+  CardProduct({this.product, this.isDispensary = false});
   @override
   _CardProductState createState() => _CardProductState();
 }
@@ -22,34 +23,47 @@ class _CardProductState extends State<CardProduct> {
     return Column(
       children: <Widget>[
         Container(
-          color: (currentTheme.customTheme)
-              ? currentTheme.currentTheme.cardColor
-              : Colors.white,
+          decoration: BoxDecoration(
+              color: (currentTheme.customTheme)
+                  ? currentTheme.currentTheme.cardColor
+                  : Colors.white,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                  topLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0))),
+
           // padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5.0),
           width: size.height / 1.5,
           child: FittedBox(
-            child: Row(
-              children: <Widget>[
-                productItem(),
-                Container(
-                  width: 100,
-                  height: 150,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10.0),
-                          topLeft: Radius.circular(10.0),
-                          bottomRight: Radius.circular(0.0),
-                          bottomLeft: Radius.circular(10.0)),
-                      child: Material(
-                        type: MaterialType.transparency,
-                        child: (widget.product.coverImage != "")
-                            ? cachedNetworkImage(widget.product.getCoverImg())
-                            : FadeInImage(
-                                image:
-                                    AssetImage('assets/images/empty_image.png'),
-                                placeholder: AssetImage('assets/loading2.gif'),
-                                fit: BoxFit.cover),
-                      )),
+            child: Stack(
+              children: [
+                Row(
+                  children: <Widget>[
+                    productItem(widget.isDispensary),
+                    Container(
+                      width: 100,
+                      height: 150,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10.0),
+                              topLeft: Radius.circular(10.0),
+                              bottomRight: Radius.circular(0.0),
+                              bottomLeft: Radius.circular(10.0)),
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: (widget.product.coverImage != "")
+                                ? cachedNetworkImage(
+                                    widget.product.getCoverImg())
+                                : FadeInImage(
+                                    image: AssetImage(
+                                        'assets/images/empty_image.png'),
+                                    placeholder:
+                                        AssetImage('assets/loading2.gif'),
+                                    fit: BoxFit.cover),
+                          )),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -59,7 +73,9 @@ class _CardProductState extends State<CardProduct> {
     );
   }
 
-  Widget productItem() {
+  int quantity = 0;
+
+  Widget productItem(bool isDispensary) {
     final size = MediaQuery.of(context).size;
     final currentTheme = Provider.of<ThemeChanger>(context);
     final thc = (widget.product.thc.isEmpty) ? '0' : widget.product.thc;
@@ -70,9 +86,8 @@ class _CardProductState extends State<CardProduct> {
     var ratingDouble = double.parse('$rating');
 
     return Column(
-      //mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-
       children: [
         SizedBox(height: 5.0),
         Container(
@@ -111,72 +126,143 @@ class _CardProductState extends State<CardProduct> {
                 ),
               ),
               SizedBox(
-                height: (about.length < 20) ? 20 : 5.0,
+                height: (about.length < 20) ? 20 : 10.0,
               ),
               Container(
-                padding: EdgeInsets.only(left: 0, top: 5.0),
+                width: size.width / 3.0,
+                height: size.height / 20,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                ),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: currentTheme.currentTheme.scaffoldBackgroundColor),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    (ratingDouble >= 1)
-                        ? Icon(
-                            Icons.star,
+                  children: [
+                    Expanded(
+                      child: Material(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        color:
+                            currentTheme.currentTheme.scaffoldBackgroundColor,
+                        child: IconButton(
+                          onPressed: () {
+                            if (quantity > 0) {
+                              setState(() {
+                                quantity--;
+                              });
+                            }
+                          },
+                          icon: Icon(
+                            Icons.remove,
+                            color: currentTheme.currentTheme.accentColor,
                             size: 15,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 15,
-                            color: Colors.grey,
                           ),
-                    (ratingDouble >= 2)
-                        ? Icon(
-                            Icons.star,
-                            size: 15,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 15,
-                            color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(),
+                        child: Text(
+                          quantity.toString(),
+                          style: TextStyle(
+                            color: currentTheme.currentTheme.accentColor,
                           ),
-                    (ratingDouble >= 3)
-                        ? Icon(
-                            Icons.star,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Material(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        color:
+                            currentTheme.currentTheme.scaffoldBackgroundColor,
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              quantity++;
+                            });
+                          },
+                          icon: Icon(
+                            Icons.add,
+                            color: currentTheme.currentTheme.accentColor,
                             size: 15,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 15,
-                            color: Colors.grey,
                           ),
-                    (ratingDouble >= 4)
-                        ? Icon(
-                            Icons.star,
-                            size: 15,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 15,
-                            color: Colors.grey,
-                          ),
-                    (ratingDouble == 5)
-                        ? Icon(
-                            Icons.star,
-                            size: 15,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 15,
-                            color: Colors.grey,
-                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
+              (!isDispensary)
+                  ? Container(
+                      padding: EdgeInsets.only(left: 0, top: 5.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          (ratingDouble >= 1)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                          (ratingDouble >= 2)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                          (ratingDouble >= 3)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                          (ratingDouble >= 4)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                          (ratingDouble == 5)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                        ],
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),
