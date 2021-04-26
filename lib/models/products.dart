@@ -24,7 +24,8 @@ class Product {
       this.cbd = "",
       this.thc = "",
       this.isLike = false,
-      this.countLikes = 0
+      this.countLikes = 0,
+      this.quantityDispensary = 0
       //this.products
       });
   String id;
@@ -42,6 +43,7 @@ class Product {
   String thc;
   bool isLike;
   int countLikes;
+  int quantityDispensary;
 
   String coverImage;
 
@@ -60,7 +62,8 @@ class Product {
       thc: json["thc"],
       price: json["price"],
       isLike: json["isLike"],
-      countLikes: json["countLikes"]);
+      countLikes: json["countLikes"],
+      quantityDispensary: json["quantityDispensary"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -77,6 +80,7 @@ class Product {
         "price": price,
         "isLike": isLike,
         "countLikes": countLikes,
+        "quantityDispensary": quantityDispensary
       };
 
   getCoverImg() {

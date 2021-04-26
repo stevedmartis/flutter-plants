@@ -4,6 +4,7 @@ import 'package:chat/pages/principal_page.dart';
 import 'package:chat/services/air_service.dart';
 import 'package:chat/services/aws_service.dart';
 import 'package:chat/services/catalogo_service.dart';
+import 'package:chat/services/dispensary_service.dart';
 import 'package:chat/services/light_service.dart';
 import 'package:chat/services/notification_service.dart';
 import 'package:chat/services/plant_services.dart';
@@ -42,6 +43,7 @@ void main() => runApp(MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => CatalogoService()),
       ChangeNotifierProvider(create: (_) => ProductService()),
       ChangeNotifierProvider(create: (_) => NotificationService()),
+      ChangeNotifierProvider(create: (_) => DispensaryService()),
     ], child: MyApp()));
 
 class MyApp extends StatelessWidget {

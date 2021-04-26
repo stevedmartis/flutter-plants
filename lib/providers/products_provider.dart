@@ -65,6 +65,24 @@ class ProductsApiProvider {
     }
   }
 
+  Future<List<Product>> getProductsDispensary(String productId) async {
+    final urlFinal =
+        Uri.https('${Environment.apiUrl}', '/api/product/product/$productId');
+
+    final token = await this._storage.read(key: 'token');
+
+    try {
+      final resp = await http.get(urlFinal,
+          headers: {'Content-Type': 'application/json', 'x-token': token});
+
+      final plantResponse = productsResponseFromJson(resp.body);
+      return plantResponse.products;
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return [];
+    }
+  }
+
   Future deleteProduct(String productId) async {
     final token = await this._storage.read(key: 'token');
 

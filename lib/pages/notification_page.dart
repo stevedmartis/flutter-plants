@@ -177,8 +177,8 @@ class _NotificationsPageState extends State<NotificationsPage>
                                   _showSnackBar(
                                       context,
                                       actionType == SlideActionType.primary
-                                          ? 'Aprobado!, se agrego en "Mis pacientes"'
-                                          : 'Suscripción cancelada.'),
+                                          ? 'Aprobado!, se agrego en "Miembros"'
+                                          : 'Suscripción anulada.'),
                                   setState(() {
                                     profiles.removeAt(index);
                                   }),
@@ -559,8 +559,10 @@ class _NotificationsPageState extends State<NotificationsPage>
   }
 
   void _showSnackBar(BuildContext context, String text) {
+    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.black,
+        backgroundColor: currentTheme.canvasColor,
         content: Text(text,
             style: TextStyle(
               color: Colors.white54,

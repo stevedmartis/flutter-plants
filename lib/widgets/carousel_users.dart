@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/services/chat_service.dart';
+import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/avatar_user_chat.dart';
 import 'package:chat/widgets/myprofile.dart';
 import 'package:flutter/material.dart';
@@ -327,6 +328,8 @@ class UserItem extends StatefulWidget {
 class _UserItemState extends State<UserItem> {
   @override
   Widget build(BuildContext context) {
+    final currentTheme = Provider.of<ThemeChanger>(context);
+
     return Stack(
       children: [
         Container(
@@ -335,6 +338,11 @@ class _UserItemState extends State<UserItem> {
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(100.0)),
                 child: Container(
+                  padding: const EdgeInsets.all(2.0),
+                  decoration: new BoxDecoration(
+                    color: currentTheme.currentTheme.cardColor, // border color
+                    shape: BoxShape.circle,
+                  ),
                   width: 100,
                   height: 100,
                   child: Hero(

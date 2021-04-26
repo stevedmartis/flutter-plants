@@ -1,8 +1,13 @@
+import 'dart:async';
+
+import 'package:chat/bloc/dispensary_bloc.dart';
 import 'package:chat/bloc/plant_bloc.dart';
 import 'package:chat/bloc/product_bloc.dart';
+import 'package:chat/helpers/mostrar_alerta.dart';
 
 import 'package:chat/models/air.dart';
 import 'package:chat/models/catalogo.dart';
+import 'package:chat/models/dispensary.dart';
 import 'package:chat/models/light.dart';
 
 import 'package:chat/models/plant.dart';
@@ -23,21 +28,27 @@ import 'package:chat/providers/light_provider.dart';
 import 'package:chat/providers/plants_provider.dart';
 import 'package:chat/providers/rooms_provider.dart';
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/dispensary_service.dart';
 import 'package:chat/services/room_services.dart';
 
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/button_gold.dart';
+import 'package:chat/widgets/productProfile_card.dart';
 import 'package:chat/widgets/product_card.dart';
 import 'package:chat/widgets/room_card.dart';
 import 'package:chat/widgets/sliver_appBar_snap.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../utils/extension.dart';
 
 class DispensarProductPage extends StatefulWidget {
   final Profiles profileUser;
+  final Dispensary dispensary;
 
-  DispensarProductPage({@required this.profileUser});
+  DispensarProductPage({@required this.profileUser, this.dispensary});
 
   @override
   _DispensarProductPageState createState() => _DispensarProductPageState();
@@ -74,11 +85,49 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
   bool isSelected = false;
 
+  bool isDispensaryActive = false;
+  bool isDispensary = false;
+
+  int quantitysTotal = 0;
+
+  bool loadingData = false;
+  bool isEdit = false;
+
   List<Product> dispensaryProductsLikes = [];
+  Dispensary dispensary;
 
   List<Product> dispensaryProductsNotLikes = [];
 
+  List<Product> dispensaryProductsActive = [];
+
   final productsLikedBloc = ProductBloc();
+
+  final gramsRecipeController = TextEditingController();
+
+  String setDateG;
+
+  bool isGramChange = false;
+  bool errorRequired = false;
+  int initialQuantity = 0;
+
+  DateTime selectedDateG = DateTime.now();
+  TextEditingController _dateGController = TextEditingController();
+
+  final productsUserDispensaryBloc = new ProductDispensaryBloc();
+
+  Future<Null> _selectDateGermina(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDateG,
+        initialDatePickerMode: DatePickerMode.day,
+        firstDate: DateTime(2015),
+        lastDate: DateTime(2101));
+    if (picked != null)
+      setState(() {
+        selectedDateG = picked;
+        _dateGController.text = DateFormat('dd/MM/yyyy').format(selectedDateG);
+      });
+  }
 
   @override
   void initState() {
@@ -87,6 +136,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final authService = Provider.of<AuthService>(context, listen: false);
 
     profile = authService.profile;
+
+    getDispensaryActiveByUser();
 
     _tabController = new TabController(vsync: this, length: myTabs.length);
 
@@ -98,11 +149,77 @@ class _DispensarProductPageState extends State<DispensarProductPage>
         profile.user.uid, widget.profileUser.user.uid);
   }
 
+  void getDispensaryActiveByUser() async {
+    final dispensaryService =
+        Provider.of<DispensaryService>(context, listen: false);
+
+    final res = await dispensaryService
+        .getDispensaryActiveProducts(widget.profileUser.user.uid);
+
+    if (res.dispensary != null) {
+      if (res.ok) {
+        dispensary = res.dispensary;
+
+        setState(() {
+          isDispensary = true;
+          loadingData = true;
+          isEdit = dispensary.isEdit;
+        });
+
+        dispensaryProductsActive = res.productsDispensary;
+        isDispensaryActive = true;
+
+        gramsRecipeController.text = (dispensary.gramsRecipe).toString();
+        _dateGController.text = dispensary.dateDelivery;
+        initialQuantity = dispensaryProductsActive
+            .map((Product item) => item.quantityDispensary)
+            .reduce((item1, item2) => item1 + item2);
+
+        if (dispensaryProductsActive.length > 0)
+          quantitysTotal = (isSelected)
+              ? dispensaryProductsActive
+                  .map((Product item) => item.quantityDispensary)
+                  .reduce((item1, item2) => item1 + item2)
+              : 0;
+
+        productsUserDispensaryBloc.productDispensary.sink
+            .add(dispensaryProductsActive);
+
+        productsUserDispensaryBloc.gramsRecipeAdd.sink
+            .add((dispensary.gramsRecipe).toString());
+      }
+    } else {
+      loadingData = true;
+      dispensary = widget.dispensary;
+      gramsRecipeController.text = "0";
+    }
+
+    gramsRecipeController.addListener(() {
+      final gram = (gramsRecipeController.text == "")
+          ? 0
+          : int.parse(gramsRecipeController.text);
+      setState(() {
+        if (gram > 0)
+          this.isGramChange = true;
+        else
+          this.isGramChange = false;
+
+        if (gramsRecipeController.text == "")
+          errorRequired = true;
+        else
+          errorRequired = false;
+      });
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
     _tabController?.dispose();
 
+    productsUserDispensaryBloc.dispose();
+    gramsRecipeController.dispose();
+    productDispensaryBloc.dispose();
     // roomBloc.disposeRoom();
 
     productsLikedBloc.dispose();
@@ -127,7 +244,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           ),
           backgroundColor:
               (currentTheme.customTheme) ? Colors.black : Colors.white,
-          actions: [_createButton(isPlantSelect)],
+          actions: [_createButton()],
           leading: IconButton(
             icon: Icon(
               Icons.chevron_left,
@@ -140,53 +257,87 @@ class _DispensarProductPageState extends State<DispensarProductPage>
             },
             color: Colors.white,
           )),
-      body: CustomScrollView(
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
-          controller: _scrollController,
-          slivers: <Widget>[
-            //  makeHeaderInfo(context),
-
-            makeHeaderTabs(context),
-            makeListProducts(
-                context) /*  (widget.product.id != null)
-                ? makeListPlants(context)
-                : makeListPlantsRoom(context) */
-          ]),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: CustomScrollView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            controller: _scrollController,
+            slivers: <Widget>[
+              //  makeHeaderInfo(context),
+              makeFormDispensary(context),
+              // makeHeaderTabs(context),
+              makeListProducts(
+                  context) /*  (widget.product.id != null)
+                  ? makeListPlants(context)
+                  : makeListPlantsRoom(context) */
+            ]),
+      ),
     );
   }
 
-  Widget _createButton(
-    bool isPlantSelect,
-  ) {
+  Widget _createButton() {
     return StreamBuilder(
-      stream: plantBloc.plantsSelected.stream,
+      stream: productsUserDispensaryBloc.productDispensary.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
         final isSelected = (snapshot.data != null)
-            ? (snapshot.data.length > 0 ||
-                    snapshot.data.length != plants.length)
+            ? (snapshot.data.length > 0)
                 ? true
                 : false
             : false;
+
+        final quantity = (isSelected)
+            ? snapshot.data
+                .map((Product item) => item.quantityDispensary)
+                .reduce((item1, item2) => item1 + item2)
+            : null;
+
+        final isQuantity = (quantity != null) ? quantity : initialQuantity;
+
         return GestureDetector(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Center(
-                child: Text(
-                  'Hecho',
-                  style: TextStyle(
-                      color:
-                          (isSelected) ? currentTheme.accentColor : Colors.grey,
-                      fontSize: 18),
-                ),
-              ),
+              child: (isDispensary && initialQuantity == isQuantity)
+                  ? Center(
+                      child: Text(
+                      'Entregar',
+                      style: TextStyle(
+                          color: currentTheme.accentColor, fontSize: 18),
+                    ))
+                  : (loadingData)
+                      ? Center(
+                          child: (initialQuantity == 0 && !isDispensary)
+                              ? Text('Hecho',
+                                  style: TextStyle(
+                                      color: (!errorRequired && isGramChange)
+                                          ? currentTheme.accentColor
+                                          : Colors.grey,
+                                      fontSize: 18))
+                              : Text(
+                                  'Editar',
+                                  style: TextStyle(
+                                      color: (!errorRequired && isGramChange ||
+                                              initialQuantity != quantity)
+                                          ? currentTheme.accentColor
+                                          : Colors.grey,
+                                      fontSize: 18),
+                                ),
+                        )
+                      : Container(),
             ),
-            onTap: isSelected && !loading
-                ? () =>
-                    {Navigator.pop(context, true), Navigator.pop(context, true)}
-                : null);
+            onTap: () => {
+                  (isDispensary && initialQuantity == quantity)
+                      ? print('Entregar')
+                      : (loadingData)
+                          ? (initialQuantity == 0 && !isDispensary)
+                              ? createUpdateDispensary(false)
+                              : createUpdateDispensary(true)
+                          : null,
+                });
       },
     );
   }
@@ -517,23 +668,399 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   }
 
   Widget _buildDispensaryProducts(products) {
-    return Container(
-      child: SizedBox(
-        child: ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: products.length,
-            itemBuilder: (BuildContext ctxt, int index) {
-              final product = products[index];
+    final size = MediaQuery.of(context).size;
+    final currentTheme = Provider.of<ThemeChanger>(context);
 
-              return Container(
-                  padding: EdgeInsets.only(bottom: 20, left: 20, right: 10),
-                  child: CardProduct(
-                    product: product,
-                    isDispensary: true,
-                  ));
-            }),
-      ),
+    products.sort((Product a, Product b) => b.id.compareTo(a.id));
+
+    return Container(
+      child: StreamBuilder(
+          stream: productsUserDispensaryBloc.productDispensary,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            final isSelected = (snapshot.data != null)
+                ? (snapshot.data != "")
+                    ? (snapshot.data.length > 0)
+                        ? true
+                        : false
+                    : false
+                : false;
+
+            int quantitysTotal = 0;
+
+            quantitysTotal = (isSelected)
+                ? snapshot.data
+                    .map((Product item) => item.quantityDispensary)
+                    .reduce((item1, item2) => item1 + item2)
+                : 0;
+
+            return SizedBox(
+              child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: products.length,
+                  itemBuilder: (BuildContext ctxt, int index) {
+                    final product = products[index];
+
+                    return Container(
+                        padding:
+                            EdgeInsets.only(bottom: 20, left: 20, right: 10),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: (currentTheme.customTheme)
+                                      ? currentTheme.currentTheme.cardColor
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10.0),
+                                      topLeft: Radius.circular(10.0),
+                                      bottomRight: Radius.circular(10.0),
+                                      bottomLeft: Radius.circular(10.0))),
+
+                              // padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5.0),
+                              width: size.height / 1.5,
+                              child: FittedBox(
+                                child: Stack(
+                                  children: [
+                                    Row(
+                                      children: <Widget>[
+                                        productItem(
+                                          true,
+                                          product,
+                                          quantitysTotal,
+                                          productsUserDispensaryBloc,
+                                        ),
+                                        Container(
+                                          width: 100,
+                                          height: 100,
+                                          child: ClipRRect(
+                                              borderRadius: BorderRadius.only(
+                                                  topRight:
+                                                      Radius.circular(10.0),
+                                                  topLeft:
+                                                      Radius.circular(10.0),
+                                                  bottomRight:
+                                                      Radius.circular(0.0),
+                                                  bottomLeft:
+                                                      Radius.circular(10.0)),
+                                              child: Material(
+                                                type: MaterialType.transparency,
+                                                child: (product.coverImage !=
+                                                        "")
+                                                    ? cachedNetworkImage(
+                                                        product.getCoverImg())
+                                                    : FadeInImage(
+                                                        image: AssetImage(
+                                                            'assets/images/empty_image.png'),
+                                                        placeholder: AssetImage(
+                                                            'assets/loading2.gif'),
+                                                        fit: BoxFit.cover),
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+
+                        /*  CardProduct(
+                          product: product,
+                          isDispensary: true,
+                          quantitysTotal: quantitysTotal,
+                          productsUserDispensaryBloc:
+                              productsUserDispensaryBloc,
+                          isActive: isDispensaryActive,
+                        ) */
+                        );
+                  }),
+            );
+          }),
+    );
+  }
+
+  Widget productItem(bool isDispensary, Product product, int quantitysTotal,
+      ProductDispensaryBloc productsUserDispensaryBloc) {
+    final size = MediaQuery.of(context).size;
+    final currentTheme = Provider.of<ThemeChanger>(context);
+    final thc = (product.thc.isEmpty) ? '0' : product.thc;
+    final cbd = (product.cbd.isEmpty) ? '0' : product.cbd;
+    final rating = product.ratingInit;
+    final about = product.description;
+
+    var ratingDouble = double.parse('$rating');
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 5.0),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                child: Text(
+                  product.name.capitalize(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: currentTheme.currentTheme.accentColor),
+                ),
+              ),
+              CbdthcRow(
+                thc: '$thc',
+                cbd: '$cbd',
+                fontSize: 9.0,
+              ),
+              if (!isDispensary)
+                SizedBox(
+                  height: 5.0,
+                ),
+              if (!isDispensary)
+                Container(
+                  width: size.width / 3.5,
+                  child: Text(
+                    (about.length > 0) ? about.capitalize() : "Sin descripción",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                    style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 10,
+                        color: Colors.grey),
+                  ),
+                ),
+              SizedBox(
+                height: (about.length < 20 || isDispensary) ? 10 : 0.0,
+              ),
+              (isDispensary)
+                  ? StreamBuilder(
+                      stream: productsUserDispensaryBloc.gramsStream,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        final isSelected = (snapshot.data != null)
+                            ? (snapshot.data != "")
+                                ? true
+                                : false
+                            : false;
+
+                        final gram =
+                            (isSelected) ? int.parse(snapshot.data) : 0;
+
+                        if (!isDispensaryActive) if (gram == 0 ||
+                            gram < product.quantityDispensary) {
+                          product.quantityDispensary = 0;
+                          dispensaryProductsActive = [];
+
+                          productsUserDispensaryBloc.productDispensary.sink
+                              .add(dispensaryProductsActive);
+                        }
+
+                        Timer(Duration(seconds: 1),
+                            () => {isDispensaryActive = false});
+
+                        return Container(
+                          width: size.width / 3.5,
+                          height: size.height / 25,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 0,
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: currentTheme
+                                  .currentTheme.scaffoldBackgroundColor),
+                          child: Row(
+                            children: [
+                              Material(
+                                color: currentTheme
+                                    .currentTheme.scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(10),
+                                  radius: 25,
+                                  onTap: () {
+                                    if (product.quantityDispensary > 0) {
+                                      setState(() {
+                                        product.quantityDispensary--;
+                                        FocusScope.of(context)
+                                            .requestFocus(new FocusNode());
+
+                                        final item =
+                                            dispensaryProductsActive.firstWhere(
+                                                (item) => item.id == product.id,
+                                                orElse: () => null);
+                                        if (item != null) {
+                                          setState(() => {
+                                                item.quantityDispensary =
+                                                    product.quantityDispensary,
+                                                productsUserDispensaryBloc
+                                                    .productDispensary.sink
+                                                    .add(
+                                                        dispensaryProductsActive)
+                                              });
+                                        }
+                                      });
+                                    }
+                                  },
+                                  splashColor: Colors.grey,
+                                  highlightColor: Colors.grey,
+                                  child: Container(
+                                    width: 34,
+                                    height: 34,
+                                    child: Icon(
+                                      Icons.remove,
+                                      color:
+                                          currentTheme.currentTheme.accentColor,
+                                      size: 15,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.only(),
+                                  child: Text(
+                                    product.quantityDispensary.toString(),
+                                    style: TextStyle(
+                                      color:
+                                          currentTheme.currentTheme.accentColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Material(
+                                  color: currentTheme
+                                      .currentTheme.scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(10),
+                                    radius: 25,
+                                    onTap: () {
+                                      if (product.quantityDispensary < gram &&
+                                          gram != quantitysTotal) {
+                                        setState(() {
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
+
+                                          product.quantityDispensary++;
+
+                                          final findItem =
+                                              dispensaryProductsActive
+                                                  .firstWhere(
+                                                      (item) =>
+                                                          item.id == product.id,
+                                                      orElse: () => null);
+
+                                          if (findItem == null) {
+                                            dispensaryProductsActive
+                                                .add(product);
+
+                                            productsUserDispensaryBloc
+                                                .productDispensary.sink
+                                                .add(dispensaryProductsActive);
+                                          } else {
+                                            findItem.quantityDispensary =
+                                                product.quantityDispensary;
+                                            productsUserDispensaryBloc
+                                                .productDispensary.sink
+                                                .add(dispensaryProductsActive);
+                                          }
+                                        });
+                                      }
+                                    },
+                                    splashColor: Colors.grey,
+                                    highlightColor: Colors.grey,
+                                    child: Container(
+                                      width: 34,
+                                      height: 34,
+                                      child: Icon(
+                                        Icons.add,
+                                        color: currentTheme
+                                            .currentTheme.accentColor,
+                                        size: 15,
+                                      ),
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        );
+                      })
+                  : Container(),
+              if (isDispensary) const SizedBox(height: 10),
+              (!isDispensary)
+                  ? Container(
+                      padding: EdgeInsets.only(left: 0, top: 5.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          (ratingDouble >= 1)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                          (ratingDouble >= 2)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                          (ratingDouble >= 3)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                          (ratingDouble >= 4)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                          (ratingDouble == 5)
+                              ? Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.orangeAccent,
+                                )
+                              : Icon(
+                                  Icons.star,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                        ],
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -575,6 +1102,204 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     );
   } */
 
+  SliverToBoxAdapter makeFormDispensary(context) {
+    final currentTheme = Provider.of<ThemeChanger>(context);
+
+    return SliverToBoxAdapter(
+        child: Container(
+      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+      child: Column(
+        children: [
+          Container(
+            child: _createGramsRecipe(),
+          ),
+          GestureDetector(
+            onTap: () => _selectDateGermina(context),
+            child: AbsorbPointer(
+              child: TextFormField(
+                style: TextStyle(
+                  color: (currentTheme.customTheme)
+                      ? Colors.white54
+                      : Colors.black54,
+                ),
+                controller: _dateGController,
+                keyboardType: TextInputType.datetime,
+                decoration: InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: (currentTheme.customTheme)
+                          ? Colors.white54
+                          : Colors.black54,
+                    ),
+                  ),
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  labelStyle: TextStyle(
+                    color: (currentTheme.customTheme)
+                        ? Colors.white54
+                        : Colors.black54,
+                  ),
+                  // icon: Icon(Icons.perm_identity),
+                  //  fillColor: currentTheme.accentColor,
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: currentTheme.currentTheme.accentColor,
+                        width: 2.0),
+                  ),
+                  labelText: 'Fecha Entrega',
+
+                  suffixIcon: Icon(Icons.event,
+                      color: (currentTheme.customTheme)
+                          ? Colors.white54
+                          : Colors.black54),
+
+                  //labelText: 'Ancho *',
+
+                  //counterText: snapshot.data,
+                ),
+              ),
+            ),
+          ),
+          (isDispensary)
+              ? Container(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: [
+                      Chip(
+                        avatar: CircleAvatar(
+                            backgroundColor: Colors.black,
+                            child: Icon(Icons.pending)),
+                        label: Text('En Curso'),
+                      ),
+                      SizedBox(width: 10),
+                      (isEdit)
+                          ? Chip(
+                              avatar: CircleAvatar(
+                                  backgroundColor: Colors.black,
+                                  child: Icon(Icons.edit_rounded)),
+                              label: Text('Editado'),
+                            )
+                          : Container(),
+                      Spacer(),
+                      StreamBuilder(
+                        stream:
+                            productsUserDispensaryBloc.productDispensary.stream,
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          final isSelected = (snapshot.data != null)
+                              ? (snapshot.data.length > 0)
+                                  ? true
+                                  : false
+                              : false;
+                          final quantitysTotalNew = (isSelected)
+                              ? snapshot.data
+                                  .map(
+                                      (Product item) => item.quantityDispensary)
+                                  .reduce((item1, item2) => item1 + item2)
+                              : 0;
+
+                          return Row(
+                            children: [
+                              Container(
+                                child: Text(
+                                  (isSelected) ? 'Total: ' : 'Dispensar ',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 18),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                child: Text(
+                                  (isSelected) ? '$quantitysTotalNew' : ' ',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      )
+                      /*  SizedBox(
+                        width: 20,
+                      ),
+                      Chip(
+                        backgroundColor: currentTheme.currentTheme.accentColor,
+                        avatar: CircleAvatar(
+                            backgroundColor: Colors.black,
+                            child: Icon(Icons.check_rounded)),
+                        label: Text(
+                          'Entregar',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ), */
+                    ],
+                  ),
+                )
+              : Container(),
+        ],
+      ),
+    ));
+  }
+
+  Widget _createGramsRecipe() {
+    return StreamBuilder(
+      stream: productsUserDispensaryBloc.productDispensary.stream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        final currentTheme = Provider.of<ThemeChanger>(context);
+
+        return Container(
+          child: TextField(
+            style: TextStyle(
+              color: (currentTheme.customTheme) ? Colors.white : Colors.black,
+            ),
+            onTap: () => {
+              if (gramsRecipeController.text == "0")
+                gramsRecipeController.text = "",
+              setState(() {})
+            },
+            controller: gramsRecipeController,
+            inputFormatters: <TextInputFormatter>[
+              LengthLimitingTextInputFormatter(3),
+            ],
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: (currentTheme.customTheme)
+                        ? Colors.white54
+                        : Colors.black54,
+                  ),
+                ),
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                labelStyle: TextStyle(
+                  color: (currentTheme.customTheme)
+                      ? Colors.white54
+                      : Colors.black54,
+                ),
+                // icon: Icon(Icons.perm_identity),
+                //  fillColor: currentTheme.accentColor,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: currentTheme.currentTheme.accentColor, width: 2.0),
+                ),
+                hintText: '',
+                labelText: 'Gramos recetados *',
+                //counterText: snapshot.data,
+                errorText: snapshot.error),
+            onChanged: productsUserDispensaryBloc.changeGrams,
+          ),
+        );
+      },
+    );
+  }
+
   SliverPersistentHeader makeHeaderTabs(context) {
     final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
     final size = MediaQuery.of(context).size;
@@ -596,20 +1321,24 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                 indicatorColor: Colors.grey,
                 tabs: [
                   StreamBuilder(
-                    stream: plantBloc.plantsSelected.stream,
+                    stream: productsUserDispensaryBloc.productDispensary.stream,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       final isSelected = (snapshot.data != null)
                           ? (snapshot.data.length > 0)
                               ? true
                               : false
                           : false;
-                      final countSelection =
-                          (isSelected) ? snapshot.data.length : 0;
+                      final quantitysTotalNew = (isSelected)
+                          ? snapshot.data
+                              .map((Product item) => item.quantityDispensary)
+                              .reduce((item1, item2) => item1 + item2)
+                          : 0;
+
                       return Tab(
                         child: Text(
                           (isSelected)
-                              ? '$countSelection Seleccionados'
-                              : 'Dispensar tratamiento ',
+                              ? 'Total Dispensar: $quantitysTotalNew'
+                              : 'Dispensar Tratamiento ',
                           style: TextStyle(color: Colors.grey, fontSize: 18),
                         ),
                       );
@@ -622,6 +1351,63 @@ class _DispensarProductPageState extends State<DispensarProductPage>
         ),
       ),
     );
+  }
+
+  createUpdateDispensary(bool isEdit) async {
+    final dispensaryService =
+        Provider.of<DispensaryService>(context, listen: false);
+
+    final gramRecipe = (productsUserDispensaryBloc.gramsRecipe == null)
+        ? widget.dispensary.gramsRecipe
+        : productsUserDispensaryBloc.gramsRecipe;
+
+    final dateDelivery = _dateGController.text;
+
+    final dispensaryPost = Dispensary(
+        id: dispensary.id,
+        subscriptor: widget.profileUser.user.uid,
+        club: profile.user.uid,
+        gramsRecipe: int.parse(gramRecipe),
+        dateDelivery: dateDelivery);
+
+    final productsDispensary =
+        productsUserDispensaryBloc.productDispensary.value;
+
+    if (!isEdit) {
+      final createDispensary = await dispensaryService.createDispensary(
+          dispensaryPost, productsDispensary);
+
+      if (createDispensary != null) {
+        if (createDispensary.ok) {
+          loading = false;
+
+          Navigator.pop(context);
+          setState(() {});
+        } else {
+          mostrarAlerta(context, 'Error', createDispensary.msg);
+        }
+      } else {
+        mostrarAlerta(
+            context, 'Error del servidor', 'lo sentimos, Intentelo mas tarde');
+      }
+    } else {
+      final updateDispensary = await dispensaryService.updateDispensary(
+          dispensaryPost, productsDispensary);
+
+      if (updateDispensary != null) {
+        if (updateDispensary.ok) {
+          loading = false;
+
+          Navigator.pop(context);
+          setState(() {});
+        } else {
+          mostrarAlerta(context, 'Error', updateDispensary.msg);
+        }
+      } else {
+        mostrarAlerta(
+            context, 'Error del servidor', 'lo sentimos, Intentelo mas tarde');
+      }
+    }
   }
 }
 
@@ -732,4 +1518,64 @@ Route createRoutePlantDetail(Plant plant, bool isEdit) {
     },
     transitionDuration: Duration(milliseconds: 400),
   );
+}
+
+class CbdthcRow extends StatelessWidget {
+  const CbdthcRow(
+      {Key key, @required this.thc, @required this.cbd, this.fontSize = 15})
+      : super(key: key);
+
+  final String thc;
+  final String cbd;
+  final double fontSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 5.0),
+      child: Row(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5.0),
+            child: Container(
+              padding: EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: Color(0xffF12937E),
+                //color: Theme.of(context).accentColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                "THC: $thc %",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: fontSize,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Container(
+            padding: EdgeInsets.all(5.0),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              //color: Theme.of(context).accentColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              "CBD: $cbd %",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: fontSize,
+                  color: Colors.white),
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+        ],
+      ),
+    );
+  }
 }

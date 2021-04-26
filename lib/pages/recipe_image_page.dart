@@ -12,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class RecipeImagePage extends StatefulWidget {
-  RecipeImagePage({this.profile, this.isUserAuth = true});
+  RecipeImagePage({this.profile, this.isUserAuth = false});
   final Profiles profile;
   final bool isUserAuth;
 

@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:chat/bloc/subscribe_bloc.dart';
+import 'package:chat/models/dispensary.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/models/subscribe.dart';
 import 'package:chat/pages/chat_page.dart';
@@ -111,6 +112,7 @@ class _ProfileCardState extends State<ProfileCard> {
     final chatService = Provider.of<ChatService>(context, listen: false);
     profileUser = (widget.isUserAuth) ? widget.profile : chatService.userFor;
 
+    final dispensary = new Dispensary();
     return Stack(
       children: [
         Hero(
@@ -165,8 +167,8 @@ class _ProfileCardState extends State<ProfileCard> {
                           textColor: currentTheme.currentTheme.accentColor,
                           text: 'DISPENSAR',
                           onPressed: () {
-                            Navigator.of(context)
-                                .push(createRouteDispensar(profileUser));
+                            Navigator.of(context).push(
+                                createRouteDispensar(profileUser, dispensary));
                           }),
                     )),
               )
@@ -571,6 +573,7 @@ class _ProfileCardState extends State<ProfileCard> {
                           !snapshot.data.subscribeApproved &&
                           !snapshot.data.subscribeActive) {
                         return Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               'Subir mi receta',
@@ -593,11 +596,12 @@ class _ProfileCardState extends State<ProfileCard> {
                                     : () => {_selectImage(true)}),
                           ],
                         );
-                      } else if (isHasData &&
+                      } else if (isHasData ||
                           imageRecipe &&
-                          !snapshot.data.subscribeApproved &&
-                          !snapshot.data.subscribeActive) {
+                              !snapshot.data.subscribeApproved &&
+                              !snapshot.data.subscribeActive) {
                         return Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             GestureDetector(
                               onTap: () => {

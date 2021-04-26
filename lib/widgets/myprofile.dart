@@ -1099,7 +1099,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                             transitionDuration: Duration(milliseconds: 200),
                             pageBuilder:
                                 (context, animation, secondaryAnimation) =>
-                                    RecipeImagePage(profile: widget.profile),
+                                    RecipeImagePage(
+                              profile: widget.profile,
+                              isUserAuth: widget.isUserAuth,
+                            ),
                           ))
                         },
                         child: Container(

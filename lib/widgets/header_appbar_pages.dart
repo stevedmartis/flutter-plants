@@ -67,7 +67,11 @@ class _CustomAppBarHeaderState extends State<CustomAppBarHeaderPages> {
                       }
                     },
                     child: Container(
-                      padding: EdgeInsets.all(5.0),
+                      /* decoration: new BoxDecoration(
+                        color: Colors.black, // border color
+                        shape: BoxShape.circle,
+                      ), */
+                      padding: EdgeInsets.all(10.0),
                       margin: EdgeInsets.only(left: 10),
                       child: Hero(
                         tag: profile.user.uid,

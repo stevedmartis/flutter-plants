@@ -30,8 +30,8 @@ class _ImageUserChatState extends State<ImageUserChat> {
     final currentTheme = Provider.of<ThemeChanger>(context);
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(100)),
-      ),
+          borderRadius: BorderRadius.all(Radius.circular(100)),
+          color: Colors.black),
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(100.0)),
         child: (widget.profile.imageAvatar != "")
@@ -41,7 +41,7 @@ class _ImageUserChatState extends State<ImageUserChat> {
                 foregroundColor:
                     (currentTheme.customTheme) ? Colors.black : Colors.white,
                 child: Container(
-                  color: Colors.white,
+                  color: Colors.black,
                   width: widget.width,
                   height: widget.height,
                   child: cachedNetworkImage(widget.profile.getAvatarImg()),

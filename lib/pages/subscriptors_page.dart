@@ -111,8 +111,7 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
             slivers: <Widget>[
-              makeHeaderCustom(
-                  (profile.isClub) ? 'Mis Pacientes' : 'Mis clubes'),
+              makeHeaderCustom((profile.isClub) ? 'Miembros' : 'Mis clubes'),
               makeListNotifications(context)
             ]),
         // bottomNavigationBar: BottomNavigation(isVisible: _isVisible),
@@ -264,7 +263,8 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        backgroundColor: Colors.black,
+                                        backgroundColor:
+                                            currentTheme.currentTheme.cardColor,
                                         title: Text(
                                           'Eliminar Suscripción',
                                           style:
@@ -272,7 +272,7 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                         ),
                                         content: Text(
                                           (profile.isClub)
-                                              ? 'Se anulara la suscripción de este paciente'
+                                              ? 'Se anulara la suscripción de este miembro'
                                               : 'Se anulara tu suscripción a club',
                                           style:
                                               TextStyle(color: Colors.white54),
@@ -353,6 +353,7 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
       pageBuilder: (context, animation, secondaryAnimation) => MyProfile(
         title: '',
         profile: profile,
+        isUserAuth: false,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(1.0, 0.0);

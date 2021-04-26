@@ -1,3 +1,4 @@
+import 'package:chat/models/dispensary.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/pages/avatar_image.dart';
 import 'package:chat/pages/chat_page.dart';
@@ -216,10 +217,10 @@ Route createRouteEditProfile() {
   );
 }
 
-Route createRouteDispensar(Profiles profile) {
+Route createRouteDispensar(Profiles profile, Dispensary dispensary) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) =>
-        DispensarProductPage(profileUser: profile),
+        DispensarProductPage(profileUser: profile, dispensary: dispensary),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;

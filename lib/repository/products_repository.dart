@@ -12,4 +12,8 @@ class ProductsRepository {
   Future<Product> getProduct(String productId) {
     return _apiProvider.getProduct(productId);
   }
+
+  Future<List<Product>> getProductsDispensary(String productId) {
+    return _apiProvider.getProductsDispensary(productId);
+  }
 }
