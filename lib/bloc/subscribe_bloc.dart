@@ -1,4 +1,5 @@
 import 'package:chat/bloc/validators.dart';
+import 'package:chat/models/profilesDispensaries_response.dart';
 import 'package:chat/models/profiles_response.dart';
 import 'package:chat/models/subscribe.dart';
 import 'package:chat/repository/subscription_repository.dart';
@@ -12,8 +13,8 @@ class SubscribeBloc with Validators {
   final BehaviorSubject<ProfilesResponse> _subscriptionsPending =
       BehaviorSubject<ProfilesResponse>();
 
-  final BehaviorSubject<ProfilesResponse> _subscriptionsApprove =
-      BehaviorSubject<ProfilesResponse>();
+  final BehaviorSubject<ProfilesDispensariesResponse> _subscriptionsApprove =
+      BehaviorSubject<ProfilesDispensariesResponse>();
 
   final BehaviorSubject<ProfilesResponse> _subscriptionsApproveNotifi =
       BehaviorSubject<ProfilesResponse>();
@@ -34,13 +35,6 @@ class SubscribeBloc with Validators {
     _subscriptionsPending.sink.add(response);
   }
 
-  getSubscriptionsClubsApprove(String subId) async {
-    ProfilesResponse response =
-        await _repository.getProfilesSubsciptionsApprove(subId);
-
-    _subscriptionsApproveBySubId.sink.add(response);
-  }
-
   getSubscriptionsNotifi(String subId) async {
     ProfilesResponse response =
         await _repository.getProfilesSubsciptionsApproveNotifi(subId);
@@ -49,7 +43,7 @@ class SubscribeBloc with Validators {
   }
 
   getSubscriptionsApprove(String subId) async {
-    ProfilesResponse response =
+    ProfilesDispensariesResponse response =
         await _repository.getProfilesSubsciptionsApprove(subId);
 
     _subscriptionsApprove.sink.add(response);
@@ -68,7 +62,7 @@ class SubscribeBloc with Validators {
   BehaviorSubject<ProfilesResponse> get subscriptionsApproveBySubId =>
       _subscriptionsApproveBySubId;
 
-  BehaviorSubject<ProfilesResponse> get subscriptionsApprove =>
+  BehaviorSubject<ProfilesDispensariesResponse> get subscriptionsApprove =>
       _subscriptionsApprove;
 
   BehaviorSubject<ProfilesResponse> get subscriptionsApproveNotifi =>

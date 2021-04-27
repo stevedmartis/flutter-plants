@@ -15,7 +15,7 @@ class Dispensary {
       this.gramsRecipe = 0,
       this.isUpload = false,
       this.isActive = false,
-      this.isDelivery = false,
+      this.isDelivered = false,
       this.isCancel = false,
       this.isClubNotifi = false,
       this.isUserNotifi = false,
@@ -30,7 +30,7 @@ class Dispensary {
   String club;
   bool isUpload;
   bool isActive;
-  bool isDelivery;
+  bool isDelivered;
   int gramsRecipe;
 
   bool isCancel;
@@ -47,7 +47,7 @@ class Dispensary {
         club: json["club"],
         subscriptor: json["subscriptor"],
         isActive: json["isActive"],
-        isDelivery: json["isDelivery"],
+        isDelivered: json["isDelivered"],
         isClubNotifi: json["isClubNotifi"],
         isUserNotifi: json["isUserNotifi"],
         isCancel: json["isCancel"],
@@ -66,7 +66,7 @@ class Dispensary {
         "id": id,
         "club": club,
         "isActive": isActive,
-        "isDelivery": isDelivery,
+        "isDelivered": isDelivered,
         "subscriptor": subscriptor,
         "isCancel": isCancel,
         "gramsRecipe": gramsRecipe,

@@ -1,3 +1,4 @@
+import 'package:chat/models/profilesDispensaries_response.dart';
 import 'package:chat/models/profiles_response.dart';
 import 'package:chat/models/subscribe.dart';
 
@@ -14,7 +15,8 @@ class SubscriptionRepository {
     return _apiProvider.getProfilesSubscriptionsByUser(userId);
   }
 
-  Future<ProfilesResponse> getProfilesSubsciptionsApprove(String userId) {
+  Future<ProfilesDispensariesResponse> getProfilesSubsciptionsApprove(
+      String userId) {
     return _apiProvider.getProfilesSubsciptionsApprove(userId);
   }
 

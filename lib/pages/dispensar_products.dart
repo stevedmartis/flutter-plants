@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:chat/bloc/dispensary_bloc.dart';
 import 'package:chat/bloc/plant_bloc.dart';
 import 'package:chat/bloc/product_bloc.dart';
+import 'package:chat/bloc/subscribe_bloc.dart';
 import 'package:chat/helpers/mostrar_alerta.dart';
 
 import 'package:chat/models/air.dart';
@@ -88,6 +89,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
   bool isDispensaryActive = false;
   bool isDispensary = false;
+  bool isDispensaryDelivered = false;
 
   int quantitysTotal = 0;
 
@@ -167,6 +169,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           isDispensary = true;
           loadingData = true;
           isEdit = dispensary.isEdit;
+          isDispensaryDelivered = dispensary.isDelivered;
         });
 
         dispensaryProductsActive = res.productsDispensary;
@@ -1332,7 +1335,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
             padding: EdgeInsets.only(top: 10),
             child: Row(
               children: [
-                if (isDispensary)
+                if (isDispensary && !isDispensaryDelivered)
                   Chip(
                     avatar: CircleAvatar(
                         backgroundColor: Colors.black,
@@ -1560,6 +1563,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           loading = false;
 
           Navigator.pop(context);
+          subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
 
           _showSnackBar(context, 'Pedido en Curso y Notificado 👍');
           setState(() {});
@@ -1579,6 +1583,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           loading = false;
 
           Navigator.pop(context);
+          subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
 
           _showSnackBar(context, 'Pedido Editado y Notificado 👍');
           setState(() {});
@@ -1604,6 +1609,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     if (createDispensary != null) {
       if (createDispensary.ok) {
         Navigator.pop(context);
+
+        subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
 
         _showSnackBar(context, 'Pedido Entregado y Notificado 👍');
       } else {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:chat/global/environment.dart';
 
 import 'package:chat/models/message_error.dart';
+import 'package:chat/models/profilesDispensaries_response.dart';
 import 'package:chat/models/profiles_response.dart';
 import 'package:chat/models/subscribe.dart';
 import 'package:chat/models/subscription_response.dart';
@@ -104,7 +105,8 @@ class SubscriptionApiProvider {
     }
   }
 
-  Future<ProfilesResponse> getProfilesSubsciptionsApprove(String subId) async {
+  Future<ProfilesDispensariesResponse> getProfilesSubsciptionsApprove(
+      String subId) async {
     try {
       final urlFinal = Uri.https('${Environment.apiUrl}',
           '/api/notification/profiles/subscriptions/approve/user/$subId');
@@ -117,11 +119,11 @@ class SubscriptionApiProvider {
         },
       );
 
-      final profilesResponse = profilesResponseFromJson(resp.body);
+      final profilesResponse = profilesDispensariesResponseFromJson(resp.body);
 
       return profilesResponse;
     } catch (error) {
-      return ProfilesResponse.withError("$error");
+      return ProfilesDispensariesResponse.withError("$error");
     }
   }
 

@@ -1,7 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:chat/bloc/subscribe_bloc.dart';
+import 'package:chat/models/profile_dispensary.dart';
 import 'package:chat/models/profiles.dart';
-import 'package:chat/models/profiles_response.dart';
+import 'package:chat/models/profilesDispensaries_response.dart';
 import 'package:chat/pages/principalCustom_page.dart';
 import 'package:chat/pages/recipe_image_page.dart';
 import 'package:chat/providers/notifications_provider.dart';
@@ -41,7 +42,7 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
   AuthService authService;
   Profiles profile;
   List<ChatMessage> _messages = [];
-  List<Profiles> profiles = [];
+  List<ProfileDispensary> profiles = [];
   SlidableController slidableController;
 
   @protected
@@ -151,11 +152,11 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
   Widget _buildList(BuildContext context, Axis direction) {
     final currentTheme = Provider.of<ThemeChanger>(context);
 
-    return StreamBuilder<ProfilesResponse>(
+    return StreamBuilder<ProfilesDispensariesResponse>(
       stream: subscriptionBloc.subscriptionsApprove.stream,
-      builder: (context, AsyncSnapshot<ProfilesResponse> snapshot) {
+      builder: (context, AsyncSnapshot<ProfilesDispensariesResponse> snapshot) {
         if (snapshot.hasData) {
-          profiles = snapshot.data.profiles;
+          profiles = snapshot.data.profilesDispensaries;
 
           if (profiles.length > 0) {
             return ListView.builder(
@@ -165,19 +166,29 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
               itemBuilder: (BuildContext ctxt, int index) {
                 var item = profiles[index];
 
-                final DateTime dateMessage = item.messageDate;
+                final DateTime dateMessage = item.profile.messageDate;
+
+                final DateTime dateDelivered = item.dispensary.updatedAt;
 
                 final DateFormat formatter = DateFormat('dd MMM - kk:mm a');
                 final String formatted = formatter.format(dateMessage);
-                final nameSub =
-                    (item.name == "") ? item.user.username : item.name;
+
+                final DateFormat formatterDispensary =
+                    DateFormat('dd MMM - kk:mm');
+                final String dateDeliveredFormatter =
+                    formatterDispensary.format(dateDelivered);
+                final nameSub = (item.profile.name == "")
+                    ? item.profile.user.username
+                    : item.profile.name;
+
+                // final gramsRecipe = item.dispensary.gramsRecipe;
                 return Column(
                   children: [
                     //final int t = index;
                     FadeInLeft(
                       delay: Duration(milliseconds: 300 * index),
                       child: Slidable.builder(
-                        key: Key(item.id),
+                        key: Key(item.profile.id),
                         controller: slidableController,
                         direction: Axis.horizontal,
                         actionPane: _getActionPane(index),
@@ -192,42 +203,122 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                               leading: ImageUserChat(
                                   width: 100,
                                   height: 100,
-                                  profile: item,
+                                  profile: item.profile,
                                   fontsize: 20),
-                              title: Text(nameSub,
-                                  style: TextStyle(
-                                      color: (currentTheme.customTheme)
-                                          ? Colors.white
-                                          : Colors.black,
-                                      fontSize: 18)),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    child: Text(nameSub,
+                                        style: TextStyle(
+                                            color: (currentTheme.customTheme)
+                                                ? Colors.white
+                                                : Colors.black,
+                                            fontSize: 18)),
+                                  ),
+                                  /* if (item.dispensary.isActive &&
+                                      item.dispensary.isDelivered)
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 10, right: 0),
+                                          child: Text(
+                                            'Recetados:',
+                                            style: TextStyle(
+                                                color:
+                                                    (currentTheme.customTheme)
+                                                        ? Colors.white54
+                                                        : Colors.black54,
+                                                fontSize: 15),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 10, right: 0),
+                                          child: Text(
+                                            '$gramsRecipe',
+                                            style: TextStyle(
+                                                color:
+                                                    (currentTheme.customTheme)
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                fontSize: 15),
+                                          ),
+                                        ),
+                                      ],
+                                    ) */
+                                ],
+                              ),
                               subtitle: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    child: Text(
-                                      'Aprobado: $formatted',
-                                      style: TextStyle(
-                                          color: (currentTheme.customTheme)
-                                              ? Colors.white54
-                                              : Colors.black54,
-                                          fontSize: 15),
+                                  if (!item.dispensary.isActive &&
+                                      !item.dispensary.isDelivered)
+                                    Container(
+                                      child: Text(
+                                        'Aprobado: $formatted',
+                                        style: TextStyle(
+                                            color: (currentTheme.customTheme)
+                                                ? Colors.white54
+                                                : Colors.black54,
+                                            fontSize: 15),
+                                      ),
                                     ),
-                                  ),
-                                  Container(
-                                    child: Text(
-                                      'SUSCRITO',
-                                      style: TextStyle(
-                                          color: currentTheme
+                                  if (item.dispensary.isActive &&
+                                      !item.dispensary.isDelivered)
+                                    Chip(
+                                      avatar: CircleAvatar(
+                                          backgroundColor: Colors.black,
+                                          child: Icon(Icons.pending)),
+                                      label: Text('En Curso'),
+                                    ),
+                                  if (item.dispensary.isActive &&
+                                      item.dispensary.isDelivered)
+                                    Row(
+                                      children: [
+                                        Chip(
+                                          backgroundColor: currentTheme
                                               .currentTheme.accentColor,
-                                          fontSize: 14),
-                                    ),
-                                  ),
+                                          avatar: CircleAvatar(
+                                              backgroundColor: Colors.black,
+                                              child: Icon(
+                                                Icons.check,
+                                                color: currentTheme
+                                                    .currentTheme.accentColor,
+                                              )),
+                                          label: Text(
+                                            'Entregado',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        if (item.dispensary.isActive &&
+                                            item.dispensary.isDelivered)
+                                          Container(
+                                            child: Text(
+                                              '$dateDeliveredFormatter',
+                                              style: TextStyle(
+                                                  color:
+                                                      (currentTheme.customTheme)
+                                                          ? Colors.white54
+                                                          : Colors.black54,
+                                                  fontSize: 14),
+                                            ),
+                                          ),
+                                      ],
+                                    )
                                 ],
                               ),
                               trailing: Container(
-                                padding: EdgeInsets.all(10),
+                                margin: EdgeInsets.only(top: 10),
                                 child: Icon(
                                   Icons.chevron_right,
                                   color: currentTheme.currentTheme.accentColor,
@@ -238,10 +329,10 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                 final chatService = Provider.of<ChatService>(
                                     context,
                                     listen: false);
-                                chatService.userFor = item;
+                                chatService.userFor = item.profile;
 
-                                Navigator.of(context)
-                                    .push(createRouteProfileSelect(item));
+                                Navigator.of(context).push(
+                                    createRouteProfileSelect(item.profile));
                               },
                             ),
                           ),
@@ -296,7 +387,7 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                             ),
                                             onPressed: () =>
                                                 _deleteSubscription(
-                                                    item.subId, index),
+                                                    item.profile.subId, index),
                                           ),
                                         ],
                                       );
