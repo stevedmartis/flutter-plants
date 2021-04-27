@@ -12,7 +12,7 @@ mostrarAlerta(BuildContext context, String titulo, String subtitulo) {
               content: Text(subtitulo),
               actions: <Widget>[
                 MaterialButton(
-                    child: Text('Ok'),
+                    child: Text('Aceptar'),
                     elevation: 5,
                     textColor: Colors.blue,
                     onPressed: () => Navigator.pop(context))
@@ -28,7 +28,7 @@ mostrarAlerta(BuildContext context, String titulo, String subtitulo) {
             actions: <Widget>[
               CupertinoDialogAction(
                 isDefaultAction: true,
-                child: Text('Ok'),
+                child: Text('Aceptar'),
                 onPressed: () => Navigator.pop(context),
               )
             ],

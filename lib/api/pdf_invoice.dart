@@ -16,37 +16,58 @@ class PdfInvoiceApi {
 
     Directory tempDir = await getApplicationDocumentsDirectory();
     String tempPath = tempDir.path;
+    bool imageUpload = (report.profile.imageAvatar != "") ? true : false;
+    String nameImage = (imageUpload)
+        ? report.profile.imageAvatar.replaceAll('/avatar', '')
+        : "";
 
-    String nameImage = report.profile.imageAvatar.replaceAll('/avatar', '');
-    File file = new File('$tempPath' + (nameImage));
+    if (imageUpload) {
+      File file = new File('$tempPath' + (nameImage));
 
-    final urlImage = Uri.https('leafety-images.s3.us-east-2.amazonaws.com',
-        report.profile.imageAvatar);
-    final response = await http.get(urlImage);
+      final urlImage = Uri.https('leafety-images.s3.us-east-2.amazonaws.com',
+          report.profile.imageAvatar);
+      final response = await http.get(urlImage);
 
-    await file.writeAsBytes(response.bodyBytes);
+      await file.writeAsBytes(response.bodyBytes);
 
-    final image = pw.MemoryImage(
-      File(file.path).readAsBytesSync(),
-    );
+      final image = pw.MemoryImage(
+        File(file.path).readAsBytesSync(),
+      );
 
-    pdf.addPage(MultiPage(
-      build: (context) => [
-        buildHeader(report, image),
-        SizedBox(height: 1.5 * PdfPageFormat.cm),
-        buildTitle(report),
-        if (report.rooms.length > 0) buildTitleRooms(),
-        if (report.rooms.length > 0) buildRooms(report),
-        if (report.plants.length > 0) buildTitlePlants(),
-        if (report.plants.length > 0) buildPlants(report),
-        if (report.visits.length > 0) buildTitleVisits(),
-        if (report.visits.length > 0) buildVisits(report),
-        Divider(),
-        if (report.visits.length > 0) buildTotal(report),
-      ],
-      footer: (context) => buildFooter(report),
-    ));
-
+      pdf.addPage(MultiPage(
+        build: (context) => [
+          buildHeader(report, image),
+          SizedBox(height: 1.5 * PdfPageFormat.cm),
+          buildTitle(report),
+          if (report.rooms.length > 0) buildTitleRooms(),
+          if (report.rooms.length > 0) buildRooms(report),
+          if (report.plants.length > 0) buildTitlePlants(),
+          if (report.plants.length > 0) buildPlants(report),
+          if (report.visits.length > 0) buildTitleVisits(),
+          if (report.visits.length > 0) buildVisits(report),
+          Divider(),
+          if (report.visits.length > 0) buildTotal(report),
+        ],
+        footer: (context) => buildFooter(report),
+      ));
+    } else {
+      pdf.addPage(MultiPage(
+        build: (context) => [
+          buildHeaderNotImage(report),
+          SizedBox(height: 1.5 * PdfPageFormat.cm),
+          buildTitle(report),
+          if (report.rooms.length > 0) buildTitleRooms(),
+          if (report.rooms.length > 0) buildRooms(report),
+          if (report.plants.length > 0) buildTitlePlants(),
+          if (report.plants.length > 0) buildPlants(report),
+          if (report.visits.length > 0) buildTitleVisits(),
+          if (report.visits.length > 0) buildVisits(report),
+          Divider(),
+          if (report.visits.length > 0) buildTotal(report),
+        ],
+        footer: (context) => buildFooter(report),
+      ));
+    }
     return PdfApi.saveDocument(name: 'mi_reporte.pdf', pdf: pdf);
   }
 
@@ -84,6 +105,50 @@ class PdfInvoiceApi {
         ],
       );
 
+  static Widget buildHeaderNotImage(Report invoice) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Container(
+                width: 100,
+                height: 100,
+                decoration: pw.BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: new Border.all(
+                    width: 1,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    invoice.profile.username.substring(0, 2).toUpperCase(),
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ),
+              ),
+              buildSupplierAddress(invoice.profile),
+              Container(
+                height: 100,
+                width: 100,
+                child: BarcodeWidget(
+                  barcode: Barcode.qrCode(),
+                  data: 'https://leafety.com/',
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 1 * PdfPageFormat.cm),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              buildCustomerAddress(invoice.customer),
+              buildInvoiceInfo(invoice.info),
+            ],
+          ),
+        ],
+      );
   static Widget buildCustomerAddress(Customer customer) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -141,7 +206,7 @@ class PdfInvoiceApi {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Reporte Oficial',
+            'Reporte de Siembra',
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 0.5 * PdfPageFormat.cm),

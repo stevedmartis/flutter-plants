@@ -44,7 +44,7 @@ class ChatMessage extends StatelessWidget {
         margin: EdgeInsets.only(right: 5, bottom: 5, left: 50),
         child: EmojiText(
             text: this.text,
-            style: TextStyle(color: Colors.white, fontSize: 15),
+            style: TextStyle(color: Colors.black, fontSize: 15),
             emojiFontMultiplier: 2),
         decoration: BoxDecoration(
             color: currentTheme.currentTheme.accentColor,
@@ -61,7 +61,7 @@ class ChatMessage extends StatelessWidget {
         margin: EdgeInsets.only(left: 5, bottom: 5, right: 50),
         child: EmojiText(
             text: this.text,
-            style: TextStyle(color: Colors.white, fontSize: 15),
+            style: TextStyle(color: Colors.black, fontSize: 15),
             emojiFontMultiplier: 2),
         decoration: BoxDecoration(
             color: Color(0xff969B9B), borderRadius: BorderRadius.circular(50)),

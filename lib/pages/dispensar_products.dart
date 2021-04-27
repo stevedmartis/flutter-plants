@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:chat/bloc/dispensary_bloc.dart';
 import 'package:chat/bloc/plant_bloc.dart';
@@ -34,7 +35,6 @@ import 'package:chat/services/room_services.dart';
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/button_gold.dart';
 import 'package:chat/widgets/productProfile_card.dart';
-import 'package:chat/widgets/product_card.dart';
 import 'package:chat/widgets/room_card.dart';
 import 'package:chat/widgets/sliver_appBar_snap.dart';
 import 'package:flutter/cupertino.dart';
@@ -331,15 +331,154 @@ class _DispensarProductPageState extends State<DispensarProductPage>
             ),
             onTap: () => {
                   (isDispensary && initialQuantity == quantity)
-                      ? print('Entregar')
+                      ? showAlertDispesary(
+                          'Entregar Pedido',
+                          'Se Cambiara el Estado a Entregado y se notificara al Miembro.',
+                          false,
+                          true)
                       : (loadingData)
                           ? (initialQuantity == 0 && !isDispensary)
-                              ? createUpdateDispensary(false)
-                              : createUpdateDispensary(true)
+                              ? {
+                                  showAlertDispesary(
+                                      'Crear Pedido',
+                                      'Se Creara con Estado En Curso y se notificara al Miembro',
+                                      false,
+                                      false)
+                                }
+                              : showAlertDispesary(
+                                  'Editar Pedido',
+                                  'Se Editara y se notificara al Miembro',
+                                  true,
+                                  false)
                           : null,
                 });
       },
     );
+  }
+
+  void _showSnackBar(BuildContext context, String text) {
+    final currentTheme =
+        Provider.of<ThemeChanger>(context, listen: false).currentTheme;
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: currentTheme.canvasColor,
+        content: Text(text,
+            style: TextStyle(
+              color: Colors.white54,
+            ))));
+  }
+
+  alertToCreateDispensary(
+      String title, String subTitle, bool isEdit, bool isDelivered) {
+    final currentTheme =
+        Provider.of<ThemeChanger>(context, listen: false).currentTheme;
+
+    return AlertDialog(
+      backgroundColor: currentTheme.cardColor,
+      title: Text(
+        title,
+        style: TextStyle(color: Colors.white54),
+      ),
+      content: Text(
+        subTitle,
+        style: TextStyle(color: Colors.white54),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text(
+            'Cancelar',
+            style: TextStyle(color: Colors.white54),
+          ),
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
+        TextButton(
+            child: Text(
+              'Aceptar',
+              style: TextStyle(color: currentTheme.accentColor),
+            ),
+            onPressed: () => {
+                  (!isDelivered)
+                      ? createUpdateDispensary(isEdit)
+                      : dispensaryDelivered(context)
+                }),
+      ],
+    );
+  }
+
+  showAlertDispesary(
+      String title, String subTitle, bool isEdit, bool isDelivered) {
+    final currentTheme =
+        Provider.of<ThemeChanger>(context, listen: false).currentTheme;
+
+    if (Platform.isAndroid) {
+      return showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                backgroundColor: currentTheme.cardColor,
+                title: Text(
+                  title,
+                  style: TextStyle(color: Colors.white),
+                ),
+                content: Text(
+                  subTitle,
+                  style: TextStyle(color: Colors.white54),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                      'Cancelar',
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(false),
+                  ),
+                  TextButton(
+                      child: Text(
+                        'Aceptar',
+                        style: TextStyle(color: currentTheme.accentColor),
+                      ),
+                      onPressed: () => {
+                            (!isDelivered)
+                                ? createUpdateDispensary(isEdit)
+                                : dispensaryDelivered(context)
+                          }),
+                ],
+              ));
+    }
+
+    showCupertinoDialog(
+        context: context,
+        builder: (_) => CupertinoAlertDialog(
+              title: Text(
+                title,
+                style: TextStyle(color: Colors.white),
+              ),
+              content: Text(
+                subTitle,
+                style: TextStyle(color: Colors.white54),
+              ),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  isDefaultAction: false,
+                  child: Text(
+                    'Cancelar',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  onPressed: () => {Navigator.pop(context)},
+                ),
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  child: Text(
+                    'Aceptar',
+                    style: TextStyle(color: currentTheme.accentColor),
+                  ),
+                  onPressed: () => {
+                    (!isDelivered)
+                        ? createUpdateDispensary(isEdit)
+                        : dispensaryDelivered(context)
+                  },
+                ),
+              ],
+            ));
   }
 
   Widget _buildLoadingWidget() {
@@ -1161,70 +1300,71 @@ class _DispensarProductPageState extends State<DispensarProductPage>
               ),
             ),
           ),
-          (isDispensary)
-              ? Container(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: [
-                      Chip(
-                        avatar: CircleAvatar(
-                            backgroundColor: Colors.black,
-                            child: Icon(Icons.pending)),
-                        label: Text('En Curso'),
-                      ),
-                      SizedBox(width: 10),
-                      (isEdit)
-                          ? Chip(
-                              avatar: CircleAvatar(
-                                  backgroundColor: Colors.black,
-                                  child: Icon(Icons.edit_rounded)),
-                              label: Text('Editado'),
-                            )
-                          : Container(),
-                      Spacer(),
-                      StreamBuilder(
-                        stream:
-                            productsUserDispensaryBloc.productDispensary.stream,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          final isSelected = (snapshot.data != null)
-                              ? (snapshot.data.length > 0)
-                                  ? true
-                                  : false
-                              : false;
-                          final quantitysTotalNew = (isSelected)
-                              ? snapshot.data
-                                  .map(
-                                      (Product item) => item.quantityDispensary)
-                                  .reduce((item1, item2) => item1 + item2)
-                              : 0;
+          Container(
+            padding: EdgeInsets.only(top: 10),
+            child: Row(
+              children: [
+                if (isDispensary)
+                  Chip(
+                    avatar: CircleAvatar(
+                        backgroundColor: Colors.black,
+                        child: Icon(Icons.pending)),
+                    label: Text('En Curso'),
+                  ),
+                if (isDispensary) SizedBox(width: 10),
+                if (isDispensary)
+                  (isEdit)
+                      ? Chip(
+                          avatar: CircleAvatar(
+                              backgroundColor: Colors.black,
+                              child: Icon(Icons.edit_rounded)),
+                          label: Text('Editado'),
+                        )
+                      : Container(),
+                if (!isDispensary)
+                  Container(
+                      child: Text('Dispensar ',
+                          style: TextStyle(color: Colors.grey, fontSize: 18))),
+                Spacer(),
+                StreamBuilder(
+                  stream: productsUserDispensaryBloc.productDispensary.stream,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    final isSelected = (snapshot.data != null)
+                        ? (snapshot.data.length > 0)
+                            ? true
+                            : false
+                        : false;
+                    final quantitysTotalNew = (isSelected)
+                        ? snapshot.data
+                            .map((Product item) => item.quantityDispensary)
+                            .reduce((item1, item2) => item1 + item2)
+                        : 0;
 
-                          return Row(
-                            children: [
-                              Container(
-                                child: Text(
-                                  (isSelected) ? 'Total: ' : 'Dispensar ',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 18),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                child: Text(
-                                  (isSelected) ? '$quantitysTotalNew' : ' ',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      )
-                      /*  SizedBox(
+                    return Row(
+                      children: [
+                        Container(
+                          child: Text(
+                            (isSelected) ? 'Total: ' : 'Dispensar ',
+                            style: TextStyle(color: Colors.grey, fontSize: 18),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          child: Text(
+                            (isSelected) ? '$quantitysTotalNew' : ' ',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                )
+                /*  SizedBox(
                         width: 20,
                       ),
                       Chip(
@@ -1237,10 +1377,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                           style: TextStyle(color: Colors.black),
                         ),
                       ), */
-                    ],
-                  ),
-                )
-              : Container(),
+              ],
+            ),
+          )
         ],
       ),
     ));
@@ -1357,6 +1496,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final dispensaryService =
         Provider.of<DispensaryService>(context, listen: false);
 
+    setState(() {
+      loading = true;
+    });
+
+    Navigator.pop(context);
+
     final gramRecipe = (productsUserDispensaryBloc.gramsRecipe == null)
         ? widget.dispensary.gramsRecipe
         : productsUserDispensaryBloc.gramsRecipe;
@@ -1382,6 +1527,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           loading = false;
 
           Navigator.pop(context);
+
+          _showSnackBar(context, 'Pedido En Curso y notificado al Miembro 👍');
           setState(() {});
         } else {
           mostrarAlerta(context, 'Error', createDispensary.msg);
@@ -1399,6 +1546,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           loading = false;
 
           Navigator.pop(context);
+
+          _showSnackBar(context, 'Pedido Editado y notificado al Miembro 👍');
           setState(() {});
         } else {
           mostrarAlerta(context, 'Error', updateDispensary.msg);
@@ -1407,6 +1556,25 @@ class _DispensarProductPageState extends State<DispensarProductPage>
         mostrarAlerta(
             context, 'Error del servidor', 'lo sentimos, Intentelo mas tarde');
       }
+    }
+  }
+
+  dispensaryDelivered(context) async {
+    final dispensaryService =
+        Provider.of<DispensaryService>(context, listen: false);
+
+    final createDispensary =
+        await dispensaryService.deliveredDispensary(dispensary.id);
+
+    if (createDispensary != null) {
+      if (createDispensary.ok) {
+        Navigator.pop(context);
+      } else {
+        mostrarAlerta(context, 'Error', createDispensary.msg);
+      }
+    } else {
+      mostrarAlerta(
+          context, 'Error del servidor', 'lo sentimos, Intentelo mas tarde');
     }
   }
 }

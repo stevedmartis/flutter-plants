@@ -111,7 +111,7 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
             slivers: <Widget>[
-              makeHeaderCustom((profile.isClub) ? 'Miembros' : 'Mis clubes'),
+              makeHeaderCustom((profile.isClub) ? 'Miembros' : 'Mis Clubs'),
               makeListNotifications(context)
             ]),
         // bottomNavigationBar: BottomNavigation(isVisible: _isVisible),
@@ -197,8 +197,8 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                               title: Text(nameSub,
                                   style: TextStyle(
                                       color: (currentTheme.customTheme)
-                                          ? Colors.white54
-                                          : Colors.black54,
+                                          ? Colors.white
+                                          : Colors.black,
                                       fontSize: 18)),
                               subtitle: Column(
                                 mainAxisAlignment:
@@ -221,7 +221,7 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                       style: TextStyle(
                                           color: currentTheme
                                               .currentTheme.accentColor,
-                                          fontSize: 15),
+                                          fontSize: 14),
                                     ),
                                   ),
                                 ],

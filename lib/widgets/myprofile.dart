@@ -1191,10 +1191,12 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
                                 final numberId = profile.id.substring(11, 15);
 
-                                final imageAvatarPath = profile.imageAvatar
-                                    .replaceAll(
+                                final imageAvatarPath = (profile.imageAvatar !=
+                                        "")
+                                    ? profile.imageAvatar.replaceAll(
                                         'https://leafety-images.s3.us-east-2.amazonaws.com',
-                                        '');
+                                        '')
+                                    : "";
 
                                 final report = Report(
                                     profile: Profile(

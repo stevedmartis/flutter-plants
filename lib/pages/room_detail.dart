@@ -326,7 +326,7 @@ class _RoomDetailPageState extends State<RoomDetailPage>
                     child: ButtonSubEditProfile(
                         isSecond: true,
                         color: currentTheme.currentTheme.accentColor,
-                        textColor: Colors.white,
+                        textColor: Colors.black,
                         text: 'Editar',
                         onPressed: () {
                           Navigator.of(context)

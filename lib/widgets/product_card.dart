@@ -1,7 +1,6 @@
 import 'package:chat/bloc/dispensary_bloc.dart';
 import 'package:chat/models/products.dart';
 import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/plant_card_widget.dart';
 import 'package:chat/widgets/productProfile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

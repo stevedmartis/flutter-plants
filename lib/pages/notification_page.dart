@@ -205,8 +205,8 @@ class _NotificationsPageState extends State<NotificationsPage>
                                         style: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             color: (currentTheme.customTheme)
-                                                ? Colors.white54
-                                                : Colors.black54,
+                                                ? Colors.white
+                                                : Colors.black,
                                             fontSize: 18)),
                                     subtitle: Column(
                                       mainAxisAlignment:
@@ -377,8 +377,8 @@ class _NotificationsPageState extends State<NotificationsPage>
                                   title: Text(nameSub,
                                       style: TextStyle(
                                           color: (currentTheme.customTheme)
-                                              ? Colors.white54
-                                              : Colors.black54,
+                                              ? Colors.white
+                                              : Colors.black,
                                           fontSize: 18)),
                                   subtitle: Column(
                                     mainAxisAlignment:

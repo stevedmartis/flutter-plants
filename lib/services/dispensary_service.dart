@@ -4,7 +4,6 @@ import 'package:chat/models/dispensary_response.dart';
 import 'package:chat/models/message_error.dart';
 import 'package:chat/models/plant.dart';
 import 'package:chat/models/plant_response.dart';
-import 'package:chat/models/plants_response.dart';
 import 'package:chat/models/products.dart';
 
 import 'package:chat/models/room.dart';
@@ -38,6 +37,30 @@ class DispensaryService with ChangeNotifier {
 
     final resp = await http.post(urlFinal,
         body: json.encode(data),
+        headers: {'Content-Type': 'application/json', 'x-token': token});
+
+    if (resp.statusCode == 200) {
+      // final roomResponse = roomsResponseFromJson(resp.body);
+      final dispensaryResponse = dispensaryResponseFromJson(resp.body);
+      // this.rooms = roomResponse.rooms;
+
+      return dispensaryResponse;
+    } else {
+      final respBody = errorMessageResponseFromJson(resp.body);
+
+      return respBody;
+    }
+  }
+
+  Future deliveredDispensary(String dispensaryId) async {
+    // this.authenticated = true;
+
+    final token = await this._storage.read(key: 'token');
+
+    final urlFinal = Uri.https('${Environment.apiUrl}',
+        '/api/dispensary/update-delivered-dispensary/$dispensaryId');
+
+    final resp = await http.get(urlFinal,
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
     if (resp.statusCode == 200) {
