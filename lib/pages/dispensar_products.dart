@@ -37,6 +37,7 @@ import 'package:chat/widgets/button_gold.dart';
 import 'package:chat/widgets/productProfile_card.dart';
 import 'package:chat/widgets/room_card.dart';
 import 'package:chat/widgets/sliver_appBar_snap.dart';
+import 'package:chat/widgets/text_emoji.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,6 +108,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   String setDateG;
 
   bool isGramChange = false;
+
+  bool isDateChange = false;
   bool errorRequired = false;
   int initialQuantity = 0;
 
@@ -171,9 +174,11 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
         gramsRecipeController.text = (dispensary.gramsRecipe).toString();
         _dateGController.text = dispensary.dateDelivery;
-        initialQuantity = dispensaryProductsActive
-            .map((Product item) => item.quantityDispensary)
-            .reduce((item1, item2) => item1 + item2);
+        initialQuantity = (dispensaryProductsActive.length > 0)
+            ? dispensaryProductsActive
+                .map((Product item) => item.quantityDispensary)
+                .reduce((item1, item2) => item1 + item2)
+            : 0;
 
         if (dispensaryProductsActive.length > 0)
           quantitysTotal = (isSelected)
@@ -199,7 +204,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           ? 0
           : int.parse(gramsRecipeController.text);
       setState(() {
-        if (gram > 0)
+        if (gram != dispensary.gramsRecipe)
           this.isGramChange = true;
         else
           this.isGramChange = false;
@@ -210,12 +215,23 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           errorRequired = false;
       });
     });
+
+    _dateGController.addListener(() {
+      setState(() {
+        if (_dateGController.text != dispensary.dateDelivery)
+          this.isDateChange = true;
+        else
+          this.isDateChange = false;
+      });
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
     _tabController?.dispose();
+
+    dispensary = null;
 
     productsUserDispensaryBloc.dispose();
     gramsRecipeController.dispose();
@@ -297,11 +313,14 @@ class _DispensarProductPageState extends State<DispensarProductPage>
             : null;
 
         final isQuantity = (quantity != null) ? quantity : initialQuantity;
-
         return GestureDetector(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: (isDispensary && initialQuantity == isQuantity)
+              child: (isDispensary &&
+                      initialQuantity == isQuantity &&
+                      !isGramChange &&
+                      isQuantity > 0 &&
+                      !isDateChange)
                   ? Center(
                       child: Text(
                       'Entregar',
@@ -317,23 +336,28 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                           ? currentTheme.accentColor
                                           : Colors.grey,
                                       fontSize: 18))
-                              : Text(
-                                  'Editar',
-                                  style: TextStyle(
-                                      color: (!errorRequired && isGramChange ||
-                                              initialQuantity != quantity)
-                                          ? currentTheme.accentColor
-                                          : Colors.grey,
-                                      fontSize: 18),
-                                ),
+                              : (isQuantity > 0 && isDispensary ||
+                                      isGramChange ||
+                                      initialQuantity != isQuantity ||
+                                      isDateChange)
+                                  ? Text(
+                                      'Editar',
+                                      style: TextStyle(
+                                          color: currentTheme.accentColor,
+                                          fontSize: 18),
+                                    )
+                                  : Container(),
                         )
                       : Container(),
             ),
             onTap: () => {
-                  (isDispensary && initialQuantity == quantity)
+                  (isDispensary &&
+                          initialQuantity == isQuantity &&
+                          !isGramChange &&
+                          !isDateChange)
                       ? showAlertDispesary(
                           'Entregar Pedido',
-                          'Se Cambiara el Estado a Entregado y se notificara al Miembro.',
+                          'Se Cambiara el estado a Entregado y se notificara al miembro.',
                           false,
                           true)
                       : (loadingData)
@@ -341,15 +365,20 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                               ? {
                                   showAlertDispesary(
                                       'Crear Pedido',
-                                      'Se Creara con Estado En Curso y se notificara al Miembro',
+                                      'Se Creara con estado en curso y se notificara al miembro',
                                       false,
                                       false)
                                 }
-                              : showAlertDispesary(
-                                  'Editar Pedido',
-                                  'Se Editara y se notificara al Miembro',
-                                  true,
-                                  false)
+                              : (isDispensary ||
+                                      isGramChange ||
+                                      initialQuantity != isQuantity ||
+                                      isDateChange)
+                                  ? showAlertDispesary(
+                                      'Editar Pedido',
+                                      'Se Editara y se notificara al miembro',
+                                      true,
+                                      false)
+                                  : null
                           : null,
                 });
       },
@@ -357,15 +386,17 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   }
 
   void _showSnackBar(BuildContext context, String text) {
-    final currentTheme =
-        Provider.of<ThemeChanger>(context, listen: false).currentTheme;
+    final currentTheme = Provider.of<ThemeChanger>(context, listen: false);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: currentTheme.canvasColor,
-        content: Text(text,
-            style: TextStyle(
-              color: Colors.white54,
-            ))));
+      backgroundColor: currentTheme.currentTheme.cardColor,
+      content: EmojiText(
+          text: text,
+          style: TextStyle(
+              color: (currentTheme.customTheme) ? Colors.white : Colors.black,
+              fontSize: 15),
+          emojiFontMultiplier: 1.5),
+    ));
   }
 
   alertToCreateDispensary(
@@ -772,9 +803,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                 child: Text(
                                   'En Stock',
                                   style: TextStyle(
-                                      color: (currentTheme.customTheme)
-                                          ? Colors.white
-                                          : Colors.black,
+                                      color: Colors.grey,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),
                                 ),
@@ -1257,9 +1286,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
             child: AbsorbPointer(
               child: TextFormField(
                 style: TextStyle(
-                  color: (currentTheme.customTheme)
-                      ? Colors.white54
-                      : Colors.black54,
+                  color:
+                      (currentTheme.customTheme) ? Colors.white : Colors.black,
                 ),
                 controller: _dateGController,
                 keyboardType: TextInputType.datetime,
@@ -1323,8 +1351,13 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                       : Container(),
                 if (!isDispensary)
                   Container(
-                      child: Text('Dispensar ',
-                          style: TextStyle(color: Colors.grey, fontSize: 18))),
+                      child: Text('Tratamientos ',
+                          style: TextStyle(
+                              color: (currentTheme.customTheme)
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16))),
                 Spacer(),
                 StreamBuilder(
                   stream: productsUserDispensaryBloc.productDispensary.stream,
@@ -1344,8 +1377,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                       children: [
                         Container(
                           child: Text(
-                            (isSelected) ? 'Total: ' : 'Dispensar ',
-                            style: TextStyle(color: Colors.grey, fontSize: 18),
+                            (isSelected) ? 'Total: ' : ' ',
+                            style: TextStyle(color: Colors.grey, fontSize: 16),
                           ),
                         ),
                         SizedBox(
@@ -1528,7 +1561,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
           Navigator.pop(context);
 
-          _showSnackBar(context, 'Pedido En Curso y notificado al Miembro 👍');
+          _showSnackBar(context, 'Pedido en Curso y Notificado 👍');
           setState(() {});
         } else {
           mostrarAlerta(context, 'Error', createDispensary.msg);
@@ -1547,7 +1580,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
           Navigator.pop(context);
 
-          _showSnackBar(context, 'Pedido Editado y notificado al Miembro 👍');
+          _showSnackBar(context, 'Pedido Editado y Notificado 👍');
           setState(() {});
         } else {
           mostrarAlerta(context, 'Error', updateDispensary.msg);
@@ -1560,6 +1593,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   }
 
   dispensaryDelivered(context) async {
+    Navigator.pop(context);
+
     final dispensaryService =
         Provider.of<DispensaryService>(context, listen: false);
 
@@ -1569,6 +1604,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     if (createDispensary != null) {
       if (createDispensary.ok) {
         Navigator.pop(context);
+
+        _showSnackBar(context, 'Pedido Entregado y Notificado 👍');
       } else {
         mostrarAlerta(context, 'Error', createDispensary.msg);
       }

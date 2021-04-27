@@ -187,6 +187,12 @@ class _CardProductState extends State<CardProductProfile> {
                 child: Row(
                   children: [
                     Container(
+                      padding: const EdgeInsets.all(1.0),
+                      decoration: new BoxDecoration(
+                        color: currentTheme
+                            .currentTheme.accentColor, // border color
+                        shape: BoxShape.circle,
+                      ),
                       width: 30,
                       height: 30,
                       child: ImageUserChat(

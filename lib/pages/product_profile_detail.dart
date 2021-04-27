@@ -955,6 +955,12 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                   child: Row(
                     children: [
                       Container(
+                        padding: const EdgeInsets.all(2.0),
+                        decoration: new BoxDecoration(
+                          color: currentTheme
+                              .currentTheme.accentColor, // border color
+                          shape: BoxShape.circle,
+                        ),
                         child: ImageUserChat(
                             width: 100,
                             height: 100,
