@@ -1,4 +1,5 @@
-import 'package:chat/models/dispensary.dart';
+import 'package:chat/bloc/dispensary_bloc.dart';
+import 'package:chat/models/dispensaries_products_response%20copy.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/pages/avatar_image.dart';
 import 'package:chat/pages/chat_page.dart';
@@ -217,10 +218,15 @@ Route createRouteEditProfile() {
   );
 }
 
-Route createRouteDispensar(Profiles profile, Dispensary dispensary) {
+Route createRouteDispensar(Profiles profile, DispensariesProduct dispensary,
+    ProductDispensaryBloc productsDispensaryBloc) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) =>
-        DispensarProductPage(profileUser: profile, dispensary: dispensary),
+        DispensarProductPage(
+      profileUser: profile,
+      dispensaryProducts: dispensary,
+      productsDispensaryBloc: productsDispensaryBloc,
+    ),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;

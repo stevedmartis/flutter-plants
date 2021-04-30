@@ -9,6 +9,7 @@ import 'package:chat/helpers/mostrar_alerta.dart';
 
 import 'package:chat/models/air.dart';
 import 'package:chat/models/catalogo.dart';
+import 'package:chat/models/dispensaries_products_response%20copy.dart';
 import 'package:chat/models/dispensary.dart';
 import 'package:chat/models/light.dart';
 
@@ -48,9 +49,13 @@ import '../utils/extension.dart';
 
 class DispensarProductPage extends StatefulWidget {
   final Profiles profileUser;
-  final Dispensary dispensary;
+  final DispensariesProduct dispensaryProducts;
+  final ProductDispensaryBloc productsDispensaryBloc;
 
-  DispensarProductPage({@required this.profileUser, this.dispensary});
+  DispensarProductPage(
+      {@required this.profileUser,
+      this.dispensaryProducts,
+      @required this.productsDispensaryBloc});
 
   @override
   _DispensarProductPageState createState() => _DispensarProductPageState();
@@ -97,7 +102,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   bool isEdit = false;
 
   List<Product> dispensaryProductsLikes = [];
-  Dispensary dispensary;
+  DispensariesProduct dispensaryProducts;
 
   List<Product> dispensaryProductsNotLikes = [];
 
@@ -117,8 +122,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
   DateTime selectedDateG = DateTime.now();
   TextEditingController _dateGController = TextEditingController();
-
-  final productsUserDispensaryBloc = new ProductDispensaryBloc();
 
   Future<Null> _selectDateGermina(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -141,6 +144,20 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final authService = Provider.of<AuthService>(context, listen: false);
 
     profile = authService.profile;
+    dispensaryProductsActive =
+        (widget.dispensaryProducts.productsDispensary != null)
+            ? widget.dispensaryProducts.productsDispensary
+            : [];
+
+    print(dispensaryProductsActive);
+/*     dispensary = new Dispensary(
+      id: widget.dispensary.id,
+      club: widget.dispensary.club,
+      subscriptor: widget.dispensary.subscriptor,
+      gramsRecipe: widget.dispensary.gramsRecipe,
+      isEdit: widget.dispensary.
+
+    ) */
 
     getDispensaryActiveByUser();
 
@@ -150,64 +167,48 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
     roomService.room = null;
 
-    productsLikedBloc.getDispensaryProducts(
-        profile.user.uid, widget.profileUser.user.uid);
+    productsLikedBloc.getDispensaryProducts(profile.user.uid,
+        widget.profileUser.user.uid, widget.dispensaryProducts.id);
   }
 
   void getDispensaryActiveByUser() async {
-    final dispensaryService =
-        Provider.of<DispensaryService>(context, listen: false);
-
-    final res = await dispensaryService
-        .getDispensaryActiveProducts(widget.profileUser.user.uid);
-
-    if (res.dispensary != null) {
-      if (res.ok) {
-        dispensary = res.dispensary;
-
-        setState(() {
-          isDispensary = true;
-          loadingData = true;
-          isEdit = dispensary.isEdit;
-          isDispensaryDelivered = dispensary.isDelivered;
-        });
-
-        dispensaryProductsActive = res.productsDispensary;
-        isDispensaryActive = true;
-
-        gramsRecipeController.text = (dispensary.gramsRecipe).toString();
-        _dateGController.text = dispensary.dateDelivery;
-        initialQuantity = (dispensaryProductsActive.length > 0)
-            ? dispensaryProductsActive
-                .map((Product item) => item.quantityDispensary)
-                .reduce((item1, item2) => item1 + item2)
-            : 0;
-
-        if (dispensaryProductsActive.length > 0)
-          quantitysTotal = (isSelected)
-              ? dispensaryProductsActive
-                  .map((Product item) => item.quantityDispensary)
-                  .reduce((item1, item2) => item1 + item2)
-              : 0;
-
-        productsUserDispensaryBloc.productDispensary.sink
-            .add(dispensaryProductsActive);
-
-        productsUserDispensaryBloc.gramsRecipeAdd.sink
-            .add((dispensary.gramsRecipe).toString());
-      }
-    } else {
+    setState(() {
+      isDispensary = widget.dispensaryProducts.isActive;
       loadingData = true;
-      dispensary = widget.dispensary;
-      gramsRecipeController.text = "0";
-    }
+      isEdit = widget.dispensaryProducts.isEdit;
+      isDispensaryDelivered = widget.dispensaryProducts.isDelivered;
+    });
+
+    isDispensaryActive = widget.dispensaryProducts.isActive;
+
+    gramsRecipeController.text =
+        (widget.dispensaryProducts.gramsRecipe).toString();
+    _dateGController.text = widget.dispensaryProducts.dateDelivery;
+    initialQuantity = (dispensaryProductsActive.length > 0)
+        ? dispensaryProductsActive
+            .map((Product item) => item.quantityDispensary)
+            .reduce((item1, item2) => item1 + item2)
+        : 0;
+
+    if (dispensaryProductsActive.length > 0)
+      quantitysTotal = (isSelected)
+          ? dispensaryProductsActive
+              .map((Product item) => item.quantityDispensary)
+              .reduce((item1, item2) => item1 + item2)
+          : 0;
+
+    widget.productsDispensaryBloc.productDispensary.sink
+        .add(dispensaryProductsActive);
+
+    widget.productsDispensaryBloc.gramsRecipeAdd.sink
+        .add((widget.dispensaryProducts.gramsRecipe).toString());
 
     gramsRecipeController.addListener(() {
       final gram = (gramsRecipeController.text == "")
           ? 0
           : int.parse(gramsRecipeController.text);
       setState(() {
-        if (gram != dispensary.gramsRecipe)
+        if (gram != widget.dispensaryProducts.gramsRecipe)
           this.isGramChange = true;
         else
           this.isGramChange = false;
@@ -221,7 +222,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
     _dateGController.addListener(() {
       setState(() {
-        if (_dateGController.text != dispensary.dateDelivery)
+        if (_dateGController.text != widget.dispensaryProducts.dateDelivery)
           this.isDateChange = true;
         else
           this.isDateChange = false;
@@ -234,11 +235,13 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     super.dispose();
     _tabController?.dispose();
 
-    dispensary = null;
+    dispensaryProducts = null;
+    dispensaryProductsActive = [];
 
-    productsUserDispensaryBloc.dispose();
+    //  widget.productsDispensaryBloc.dispose();
     gramsRecipeController.dispose();
-    productDispensaryBloc.dispose();
+    //productDispensaryBloc.dispose();
+
     // roomBloc.disposeRoom();
 
     productsLikedBloc.dispose();
@@ -299,7 +302,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
   Widget _createButton() {
     return StreamBuilder(
-      stream: productsUserDispensaryBloc.productDispensary.stream,
+      stream: widget.productsDispensaryBloc.productDispensary.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
@@ -316,74 +319,77 @@ class _DispensarProductPageState extends State<DispensarProductPage>
             : null;
 
         final isQuantity = (quantity != null) ? quantity : initialQuantity;
-        return GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: (isDispensary &&
-                      initialQuantity == isQuantity &&
-                      !isGramChange &&
-                      isQuantity > 0 &&
-                      !isDateChange)
-                  ? Center(
-                      child: Text(
-                      'Entregar',
-                      style: TextStyle(
-                          color: currentTheme.accentColor, fontSize: 18),
-                    ))
-                  : (loadingData)
-                      ? Center(
-                          child: (initialQuantity == 0 && !isDispensary)
-                              ? Text('Hecho',
-                                  style: TextStyle(
-                                      color: (!errorRequired && isGramChange)
-                                          ? currentTheme.accentColor
-                                          : Colors.grey,
-                                      fontSize: 18))
-                              : (isQuantity > 0 && isDispensary ||
-                                      isGramChange ||
-                                      initialQuantity != isQuantity ||
-                                      isDateChange)
-                                  ? Text(
-                                      'Editar',
-                                      style: TextStyle(
-                                          color: currentTheme.accentColor,
-                                          fontSize: 18),
-                                    )
-                                  : Container(),
-                        )
-                      : Container(),
-            ),
-            onTap: () => {
-                  (isDispensary &&
+        return (!isDispensaryDelivered)
+            ? GestureDetector(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: (isDispensary &&
                           initialQuantity == isQuantity &&
                           !isGramChange &&
+                          isQuantity > 0 &&
                           !isDateChange)
-                      ? showAlertDispesary(
-                          'Entregar Pedido',
-                          'Se Cambiara el estado a Entregado y se notificara al miembro.',
-                          false,
-                          true)
+                      ? Center(
+                          child: Text(
+                          'Entregar',
+                          style: TextStyle(
+                              color: currentTheme.accentColor, fontSize: 18),
+                        ))
                       : (loadingData)
-                          ? (initialQuantity == 0 && !isDispensary)
-                              ? {
-                                  showAlertDispesary(
-                                      'Crear Pedido',
-                                      'Se Creara con estado en curso y se notificara al miembro',
-                                      false,
-                                      false)
-                                }
-                              : (isDispensary ||
-                                      isGramChange ||
-                                      initialQuantity != isQuantity ||
-                                      isDateChange)
-                                  ? showAlertDispesary(
-                                      'Editar Pedido',
-                                      'Se Editara y se notificara al miembro',
-                                      true,
-                                      false)
-                                  : null
-                          : null,
-                });
+                          ? Center(
+                              child: (initialQuantity == 0 && !isDispensary)
+                                  ? Text('Hecho',
+                                      style: TextStyle(
+                                          color:
+                                              (!errorRequired && isGramChange)
+                                                  ? currentTheme.accentColor
+                                                  : Colors.grey,
+                                          fontSize: 18))
+                                  : (isQuantity > 0 && isDispensary ||
+                                          isGramChange ||
+                                          initialQuantity != isQuantity ||
+                                          isDateChange)
+                                      ? Text(
+                                          'Editar',
+                                          style: TextStyle(
+                                              color: currentTheme.accentColor,
+                                              fontSize: 18),
+                                        )
+                                      : Container(),
+                            )
+                          : Container(),
+                ),
+                onTap: () => {
+                      (isDispensary &&
+                              initialQuantity == isQuantity &&
+                              !isGramChange &&
+                              !isDateChange)
+                          ? showAlertDispesary(
+                              'Entregar Pedido',
+                              'Se Cambiara el estado a Entregado y se notificara al miembro.',
+                              false,
+                              true)
+                          : (loadingData)
+                              ? (initialQuantity == 0 && !isDispensary)
+                                  ? {
+                                      showAlertDispesary(
+                                          'Crear Pedido',
+                                          'Se Creara con estado en curso y se notificara al miembro',
+                                          false,
+                                          false)
+                                    }
+                                  : (isDispensary ||
+                                          isGramChange ||
+                                          initialQuantity != isQuantity ||
+                                          isDateChange)
+                                      ? showAlertDispesary(
+                                          'Editar Pedido',
+                                          'Se Editara y se notificara al miembro',
+                                          true,
+                                          false)
+                                      : null
+                              : null,
+                    })
+            : Container();
       },
     );
   }
@@ -846,7 +852,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
     return Container(
       child: StreamBuilder(
-          stream: productsUserDispensaryBloc.productDispensary,
+          stream: widget.productsDispensaryBloc.productDispensary,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             final isSelected = (snapshot.data != null)
                 ? (snapshot.data != "")
@@ -899,7 +905,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                           true,
                                           product,
                                           quantitysTotal,
-                                          productsUserDispensaryBloc,
                                         ),
                                         Container(
                                           width: 100,
@@ -952,8 +957,11 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     );
   }
 
-  Widget productItem(bool isDispensary, Product product, int quantitysTotal,
-      ProductDispensaryBloc productsUserDispensaryBloc) {
+  Widget productItem(
+    bool isDispensary,
+    Product product,
+    int quantitysTotal,
+  ) {
     final size = MediaQuery.of(context).size;
     final currentTheme = Provider.of<ThemeChanger>(context);
     final thc = (product.thc.isEmpty) ? '0' : product.thc;
@@ -1010,7 +1018,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
               ),
               (isDispensary)
                   ? StreamBuilder(
-                      stream: productsUserDispensaryBloc.gramsStream,
+                      stream: widget.productsDispensaryBloc.gramsStream,
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         final isSelected = (snapshot.data != null)
                             ? (snapshot.data != "")
@@ -1026,7 +1034,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                           product.quantityDispensary = 0;
                           dispensaryProductsActive = [];
 
-                          productsUserDispensaryBloc.productDispensary.sink
+                          widget.productsDispensaryBloc.productDispensary.sink
                               .add(dispensaryProductsActive);
                         }
 
@@ -1067,7 +1075,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                           setState(() => {
                                                 item.quantityDispensary =
                                                     product.quantityDispensary,
-                                                productsUserDispensaryBloc
+                                                widget.productsDispensaryBloc
                                                     .productDispensary.sink
                                                     .add(
                                                         dispensaryProductsActive)
@@ -1130,15 +1138,18 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                             dispensaryProductsActive
                                                 .add(product);
 
-                                            productsUserDispensaryBloc
+                                            widget.productsDispensaryBloc
                                                 .productDispensary.sink
                                                 .add(dispensaryProductsActive);
                                           } else {
                                             findItem.quantityDispensary =
                                                 product.quantityDispensary;
-                                            productsUserDispensaryBloc
+                                            widget.productsDispensaryBloc
                                                 .productDispensary.sink
                                                 .add(dispensaryProductsActive);
+
+                                            print(widget.dispensaryProducts
+                                                .productsDispensary);
                                           }
                                         });
                                       }
@@ -1363,7 +1374,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                               fontSize: 16))),
                 Spacer(),
                 StreamBuilder(
-                  stream: productsUserDispensaryBloc.productDispensary.stream,
+                  stream:
+                      widget.productsDispensaryBloc.productDispensary.stream,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     final isSelected = (snapshot.data != null)
                         ? (snapshot.data.length > 0)
@@ -1423,7 +1435,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
   Widget _createGramsRecipe() {
     return StreamBuilder(
-      stream: productsUserDispensaryBloc.productDispensary.stream,
+      stream: widget.productsDispensaryBloc.productDispensary.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context);
 
@@ -1468,7 +1480,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                 labelText: 'Gramos recetados *',
                 //counterText: snapshot.data,
                 errorText: snapshot.error),
-            onChanged: productsUserDispensaryBloc.changeGrams,
+            onChanged: widget.productsDispensaryBloc.changeGrams,
           ),
         );
       },
@@ -1496,7 +1508,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                 indicatorColor: Colors.grey,
                 tabs: [
                   StreamBuilder(
-                    stream: productsUserDispensaryBloc.productDispensary.stream,
+                    stream:
+                        widget.productsDispensaryBloc.productDispensary.stream,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       final isSelected = (snapshot.data != null)
                           ? (snapshot.data.length > 0)
@@ -1538,21 +1551,21 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
     Navigator.pop(context);
 
-    final gramRecipe = (productsUserDispensaryBloc.gramsRecipe == null)
-        ? widget.dispensary.gramsRecipe
-        : productsUserDispensaryBloc.gramsRecipe;
+    final gramRecipe = (widget.productsDispensaryBloc.gramsRecipe == null)
+        ? widget.dispensaryProducts.gramsRecipe
+        : widget.productsDispensaryBloc.gramsRecipe;
 
     final dateDelivery = _dateGController.text;
 
     final dispensaryPost = Dispensary(
-        id: dispensary.id,
+        id: widget.dispensaryProducts.id,
         subscriptor: widget.profileUser.user.uid,
         club: profile.user.uid,
         gramsRecipe: int.parse(gramRecipe),
         dateDelivery: dateDelivery);
 
     final productsDispensary =
-        productsUserDispensaryBloc.productDispensary.value;
+        widget.productsDispensaryBloc.productDispensary.value;
 
     if (!isEdit) {
       final createDispensary = await dispensaryService.createDispensary(
@@ -1561,10 +1574,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
       if (createDispensary != null) {
         if (createDispensary.ok) {
           loading = false;
-
-          Navigator.pop(context);
           subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
 
+          widget.productsDispensaryBloc.getDispensariesProducts(
+              profile.user.uid, widget.profileUser.user.uid);
+
+          Navigator.pop(context);
           _showSnackBar(context, 'Pedido en Curso y Notificado 👍');
           setState(() {});
         } else {
@@ -1581,9 +1596,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
       if (updateDispensary != null) {
         if (updateDispensary.ok) {
           loading = false;
+          subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
+
+          widget.productsDispensaryBloc.getDispensariesProducts(
+              profile.user.uid, widget.profileUser.user.uid);
 
           Navigator.pop(context);
-          subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
 
           _showSnackBar(context, 'Pedido Editado y Notificado 👍');
           setState(() {});
@@ -1604,14 +1622,16 @@ class _DispensarProductPageState extends State<DispensarProductPage>
         Provider.of<DispensaryService>(context, listen: false);
 
     final createDispensary =
-        await dispensaryService.deliveredDispensary(dispensary.id);
+        await dispensaryService.deliveredDispensary(dispensaryProducts.id);
 
     if (createDispensary != null) {
       if (createDispensary.ok) {
-        Navigator.pop(context);
-
         subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
 
+        widget.productsDispensaryBloc.getDispensariesProducts(
+            profile.user.uid, widget.profileUser.user.uid);
+
+        Navigator.pop(context);
         _showSnackBar(context, 'Pedido Entregado y Notificado 👍');
       } else {
         mostrarAlerta(context, 'Error', createDispensary.msg);

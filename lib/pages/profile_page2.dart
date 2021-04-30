@@ -1,3 +1,4 @@
+import 'package:chat/bloc/dispensary_bloc.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,8 @@ class ProfilePage extends StatefulWidget {
       @required this.profile,
       this.loading = false,
       this.isEmpty = false,
-      this.image});
+      this.image,
+      @required this.productsDispensaryBloc});
   final bool isUserAuth;
   final bool isUserEdit;
   final Profiles profile;
@@ -22,6 +24,7 @@ class ProfilePage extends StatefulWidget {
   final loading;
 
   final ui.Image image;
+  final ProductDispensaryBloc productsDispensaryBloc;
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -37,6 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Container(
         color: currentTheme.scaffoldBackgroundColor,
         child: ProfileCard(
+            productsDispensaryBloc: widget.productsDispensaryBloc,
             loading: widget.loading,
             image: widget.image,
             isEmpty: widget.isEmpty,

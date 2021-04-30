@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chat/global/environment.dart';
+import 'package:chat/models/dispensaries_products_response%20copy.dart';
 import 'package:chat/models/favorite_response.dart';
 import 'package:chat/models/product_response.dart';
 import 'package:chat/models/products.dart';
@@ -122,6 +123,25 @@ class ProductsApiProvider {
       return favoriteResponse;
     } else {
       return FavoriteResponse.withError("");
+    }
+  }
+
+  Future<DispensariesProductsResponse> dispensariesProducts(
+      String clubId, subId) async {
+    final urlFinal = Uri.https('${Environment.apiUrl}',
+        '/api/dispensary/dispensaries/products/club/$clubId/user/$subId');
+
+    final token = await this._storage.read(key: 'token');
+
+    try {
+      final resp = await http.get(urlFinal,
+          headers: {'Content-Type': 'application/json', 'x-token': token});
+
+      final catalogosResponse = storeFromJson(resp.body);
+      return catalogosResponse;
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return DispensariesProductsResponse.withError("$error");
     }
   }
 }

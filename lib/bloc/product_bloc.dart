@@ -46,9 +46,10 @@ class ProductBloc with Validators {
     if (!_catalogosProducts.isClosed) _catalogosProducts.sink.add(response);
   }
 
-  getDispensaryProducts(String profileClubId, String profileUserId) async {
-    DispensaryProductsResponse response =
-        await _service.getDispensaryProducts(profileClubId, profileUserId);
+  getDispensaryProducts(
+      String profileClubId, String profileUserId, String dispensaryId) async {
+    DispensaryProductsResponse response = await _service.getDispensaryProducts(
+        profileClubId, profileUserId, dispensaryId);
     if (!_dispensaryProducts.isClosed) _dispensaryProducts.sink.add(response);
   }
 

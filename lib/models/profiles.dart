@@ -99,7 +99,7 @@ class Profiles {
   getHeaderImg() {
     if (imageHeader == "") {
       var imageDefault =
-          "https://leafety-images.s3.us-east-2.amazonaws.com/global/default_banner.jpeg";
+          "https://leafety-images.s3.us-east-2.amazonaws.com/header/default-header.png";
 
       return imageDefault;
     } else {

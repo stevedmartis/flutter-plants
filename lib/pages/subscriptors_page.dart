@@ -271,11 +271,29 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                     ),
                                   if (item.dispensary.isActive &&
                                       !item.dispensary.isDelivered)
-                                    Chip(
-                                      avatar: CircleAvatar(
-                                          backgroundColor: Colors.black,
-                                          child: Icon(Icons.pending)),
-                                      label: Text('En Curso'),
+                                    Row(
+                                      children: [
+                                        Chip(
+                                          avatar: CircleAvatar(
+                                              backgroundColor: Colors.black,
+                                              child: Icon(Icons.pending)),
+                                          label: Text('En Curso'),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Container(
+                                          child: Text(
+                                            '$dateDeliveredFormatter',
+                                            style: TextStyle(
+                                                color:
+                                                    (currentTheme.customTheme)
+                                                        ? Colors.white54
+                                                        : Colors.black54,
+                                                fontSize: 14),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   if (item.dispensary.isActive &&
                                       item.dispensary.isDelivered)
@@ -300,19 +318,17 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        if (item.dispensary.isActive &&
-                                            item.dispensary.isDelivered)
-                                          Container(
-                                            child: Text(
-                                              '$dateDeliveredFormatter',
-                                              style: TextStyle(
-                                                  color:
-                                                      (currentTheme.customTheme)
-                                                          ? Colors.white54
-                                                          : Colors.black54,
-                                                  fontSize: 14),
-                                            ),
+                                        Container(
+                                          child: Text(
+                                            '$dateDeliveredFormatter',
+                                            style: TextStyle(
+                                                color:
+                                                    (currentTheme.customTheme)
+                                                        ? Colors.white54
+                                                        : Colors.black54,
+                                                fontSize: 14),
                                           ),
+                                        ),
                                       ],
                                     )
                                 ],

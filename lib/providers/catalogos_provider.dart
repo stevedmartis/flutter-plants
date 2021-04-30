@@ -68,9 +68,9 @@ class CatalogosApiProvider {
   }
 
   Future<DispensaryProductsResponse> getDispensaryProducts(
-      String clubId, String userId) async {
+      String clubId, String userId, String dispensaryId) async {
     final urlFinal = Uri.https('${Environment.apiUrl}',
-        '/api/product/dispensary/products/club/$clubId/user/$userId');
+        '/api/product/dispensary/products/club/$clubId/user/$userId/dispensary/$dispensaryId');
 
     final token = await this._storage.read(key: 'token');
 

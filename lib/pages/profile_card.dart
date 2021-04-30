@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:chat/bloc/dispensary_bloc.dart';
 import 'package:chat/bloc/subscribe_bloc.dart';
-import 'package:chat/models/dispensary.dart';
+import 'package:chat/models/dispensaries_products_response%20copy.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/models/subscribe.dart';
 import 'package:chat/pages/chat_page.dart';
@@ -33,7 +34,10 @@ class ProfileCard extends StatefulWidget {
       @required this.profile,
       @required this.image,
       this.loading = false,
-      this.isEmpty = false});
+      this.isEmpty = false,
+      @required this.productsDispensaryBloc});
+
+  final ProductDispensaryBloc productsDispensaryBloc;
 
   final Color profileColor;
   static const double avatarRadius = 48;
@@ -61,6 +65,7 @@ class _ProfileCardState extends State<ProfileCard> {
   Subscription subscription;
 
   Stream streamSubscription;
+
   bool loadSub = false;
 
   bool isSuscriptionApprove = false;
@@ -112,7 +117,7 @@ class _ProfileCardState extends State<ProfileCard> {
     final chatService = Provider.of<ChatService>(context, listen: false);
     profileUser = (widget.isUserAuth) ? widget.profile : chatService.userFor;
 
-    final dispensary = new Dispensary();
+    final dispensary = new DispensariesProduct();
     return Stack(
       children: [
         Hero(
@@ -167,8 +172,10 @@ class _ProfileCardState extends State<ProfileCard> {
                           textColor: currentTheme.currentTheme.accentColor,
                           text: 'DISPENSAR',
                           onPressed: () {
-                            Navigator.of(context).push(
-                                createRouteDispensar(profileUser, dispensary));
+                            Navigator.of(context).push(createRouteDispensar(
+                                profileUser,
+                                dispensary,
+                                widget.productsDispensaryBloc));
                           }),
                     )),
               )

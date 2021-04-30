@@ -42,17 +42,6 @@ class _CardProductState extends State<CardProduct> {
     final size = MediaQuery.of(context).size;
     final currentTheme = Provider.of<ThemeChanger>(context);
 
-    final quantityDispensary = widget.product.quantityDispensary;
-
-    setState(() {
-      quantity = quantityDispensary;
-      //isActive = widget.isActive;
-
-      if (widget.isActive)
-        productDispensary =
-            widget.productsUserDispensaryBloc.productDispensary.value;
-    });
-
     print(widget.product);
     return Column(
       children: <Widget>[
@@ -123,10 +112,6 @@ class _CardProductState extends State<CardProduct> {
 
     var ratingDouble = double.parse('$rating');
 
-    isActive1 = isActive;
-
-    print(isActive1);
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,250 +137,88 @@ class _CardProductState extends State<CardProduct> {
                 cbd: '$cbd',
                 fontSize: 9.0,
               ),
-              if (!isDispensary)
-                SizedBox(
-                  height: 5.0,
+              SizedBox(
+                height: 5.0,
+              ),
+              Container(
+                width: size.width / 3.5,
+                child: Text(
+                  (about.length > 0) ? about.capitalize() : "Sin descripción",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 10,
+                      color: Colors.grey),
                 ),
-              if (!isDispensary)
-                Container(
-                  width: size.width / 3.5,
-                  child: Text(
-                    (about.length > 0) ? about.capitalize() : "Sin descripción",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 10,
-                        color: Colors.grey),
-                  ),
-                ),
+              ),
               SizedBox(
                 height: (about.length < 20 || isDispensary) ? 10 : 0.0,
               ),
-              (isDispensary)
-                  ? StreamBuilder(
-                      stream: productsUserDispensaryBloc.gramsStream,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        final isSelected = (snapshot.data != null)
-                            ? (snapshot.data != "")
-                                ? true
-                                : false
-                            : false;
-
-                        final gram =
-                            (isSelected) ? int.parse(snapshot.data) : 0;
-
-                        if (gram == 0 || gram < quantity && isActive1) {
-                          quantity = 0;
-                          productDispensary = [];
-
-                          productsUserDispensaryBloc.productDispensary.sink
-                              .add(productDispensary);
-                        }
-
-                        setState(() {
-                          isActive1 = false;
-                        });
-
-                        return Container(
-                          width: size.width / 3.5,
-                          height: size.height / 25,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 0,
+              Container(
+                padding: EdgeInsets.only(left: 0, top: 5.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    (ratingDouble >= 1)
+                        ? Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.orangeAccent,
+                          )
+                        : Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.grey,
                           ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: currentTheme
-                                  .currentTheme.scaffoldBackgroundColor),
-                          child: Row(
-                            children: [
-                              Material(
-                                color: currentTheme
-                                    .currentTheme.scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(10),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(10),
-                                  radius: 25,
-                                  onTap: () {
-                                    if (quantity > 0) {
-                                      setState(() {
-                                        quantity--;
-                                        FocusScope.of(context)
-                                            .requestFocus(new FocusNode());
-
-                                        final item =
-                                            productDispensary.firstWhere(
-                                                (item) =>
-                                                    item.id ==
-                                                    widget.product.id,
-                                                orElse: () => null);
-                                        if (item != null) {
-                                          setState(() => {
-                                                item.quantityDispensary =
-                                                    quantity,
-                                                productsUserDispensaryBloc
-                                                    .productDispensary.sink
-                                                    .add(productDispensary)
-                                              });
-                                        }
-                                      });
-                                    }
-                                  },
-                                  splashColor: Colors.grey,
-                                  highlightColor: Colors.grey,
-                                  child: Container(
-                                    width: 34,
-                                    height: 34,
-                                    child: Icon(
-                                      Icons.remove,
-                                      color:
-                                          currentTheme.currentTheme.accentColor,
-                                      size: 15,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.only(),
-                                  child: Text(
-                                    quantity.toString(),
-                                    style: TextStyle(
-                                      color:
-                                          currentTheme.currentTheme.accentColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Material(
-                                  color: currentTheme
-                                      .currentTheme.scaffoldBackgroundColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(10),
-                                    radius: 25,
-                                    onTap: () {
-                                      print(quantitysTotal);
-                                      if (quantity < gram &&
-                                          gram != quantitysTotal) {
-                                        setState(() {
-                                          FocusScope.of(context)
-                                              .requestFocus(new FocusNode());
-
-                                          quantity++;
-
-                                          final product = widget.product;
-
-                                          product.quantityDispensary = quantity;
-
-                                          final findItem =
-                                              productDispensary.firstWhere(
-                                                  (item) =>
-                                                      item.id == product.id,
-                                                  orElse: () => null);
-
-                                          if (findItem == null) {
-                                            productDispensary.add(product);
-
-                                            productsUserDispensaryBloc
-                                                .productDispensary.sink
-                                                .add(productDispensary);
-                                          } else {
-                                            product.quantityDispensary =
-                                                quantity;
-                                            productsUserDispensaryBloc
-                                                .productDispensary.sink
-                                                .add(productDispensary);
-                                          }
-                                        });
-                                      }
-                                    },
-                                    splashColor: Colors.grey,
-                                    highlightColor: Colors.grey,
-                                    child: Container(
-                                      width: 34,
-                                      height: 34,
-                                      child: Icon(
-                                        Icons.add,
-                                        color: currentTheme
-                                            .currentTheme.accentColor,
-                                        size: 15,
-                                      ),
-                                    ),
-                                  ))
-                            ],
+                    (ratingDouble >= 2)
+                        ? Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.orangeAccent,
+                          )
+                        : Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.grey,
                           ),
-                        );
-                      })
-                  : Container(),
-              if (isDispensary) const SizedBox(height: 10),
-              (!isDispensary)
-                  ? Container(
-                      padding: EdgeInsets.only(left: 0, top: 5.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          (ratingDouble >= 1)
-                              ? Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.orangeAccent,
-                                )
-                              : Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.grey,
-                                ),
-                          (ratingDouble >= 2)
-                              ? Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.orangeAccent,
-                                )
-                              : Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.grey,
-                                ),
-                          (ratingDouble >= 3)
-                              ? Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.orangeAccent,
-                                )
-                              : Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.grey,
-                                ),
-                          (ratingDouble >= 4)
-                              ? Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.orangeAccent,
-                                )
-                              : Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.grey,
-                                ),
-                          (ratingDouble == 5)
-                              ? Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.orangeAccent,
-                                )
-                              : Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: Colors.grey,
-                                ),
-                        ],
-                      ),
-                    )
-                  : Container(),
+                    (ratingDouble >= 3)
+                        ? Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.orangeAccent,
+                          )
+                        : Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.grey,
+                          ),
+                    (ratingDouble >= 4)
+                        ? Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.orangeAccent,
+                          )
+                        : Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.grey,
+                          ),
+                    (ratingDouble == 5)
+                        ? Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.orangeAccent,
+                          )
+                        : Icon(
+                            Icons.star,
+                            size: 15,
+                            color: Colors.grey,
+                          ),
+                  ],
+                ),
+              )
             ],
           ),
         ),

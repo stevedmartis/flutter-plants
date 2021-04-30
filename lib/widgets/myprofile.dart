@@ -5,12 +5,12 @@ import 'package:animations/animations.dart';
 import 'package:chat/api/pdf_api.dart';
 import 'package:chat/api/pdf_invoice.dart';
 import 'package:chat/bloc/catalogo_bloc.dart';
-import 'package:chat/bloc/plant_bloc.dart';
+import 'package:chat/bloc/dispensary_bloc.dart';
 import 'package:chat/bloc/product_bloc.dart';
 import 'package:chat/bloc/room_bloc.dart';
-import 'package:chat/bloc/visit_bloc.dart';
 import 'package:chat/models/catalogo.dart';
 import 'package:chat/models/catalogos_response.dart';
+import 'package:chat/models/dispensaries_products_response%20copy.dart';
 import 'package:chat/models/invoice.dart';
 import 'package:chat/models/plant.dart';
 import 'package:chat/models/products.dart';
@@ -19,6 +19,7 @@ import 'package:chat/models/room.dart';
 import 'package:chat/models/rooms_response.dart';
 import 'package:chat/models/visit.dart';
 import 'package:chat/pages/chat_page.dart';
+import 'package:chat/pages/dispensar_products.dart';
 import 'package:chat/pages/principalCustom_page.dart';
 import 'package:chat/pages/principal_page.dart';
 import 'package:chat/pages/product_detail.dart';
@@ -43,6 +44,8 @@ import '../utils//extension.dart';
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+
+import 'dispensary_products_Card.dart';
 
 class MyProfile extends StatefulWidget {
   MyProfile({
@@ -149,8 +152,11 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
   Profiles thisProfile;
 
+  final productsDispensaryBloc = new ProductDispensaryBloc();
+
   final productUserBloc = ProductBloc();
   final plantService = new PlantService();
+  List<DispensariesProduct> dispensariesProducts = [];
 
   @override
   void initState() {
@@ -160,16 +166,20 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
     profile = authService.profile;
 
-    if (widget.isUserAuth) _chargeMyRooms();
-    if (widget.isUserAuth) _chargeMyLastPlantsByUser();
-    if (widget.isUserAuth) _chargeMyLastVisitByUser();
+    // if (widget.isUserAuth) _chargeMyRooms();
+    // if (widget.isUserAuth) _chargeMyLastPlantsByUser();
+    // if (widget.isUserAuth) _chargeMyLastVisitByUser();
 
-    (widget.isUserAuth) ? fetchMyCatalogos() : fetchUserCatalogos();
+    (widget.isUserAuth)
+        ? fetchMyCatalogos()
+        : (!widget.profile.isClub)
+            ? fetchUserDispensariesProducts()
+            : fetchUserCatalogos();
 
     super.initState();
   }
 
-  _chargeMyRooms() async {
+/*   _chargeMyRooms() async {
     roomBloc.getMyRooms(profile.user.uid);
 
     roomBloc.myRooms.listen((rooms) {
@@ -194,7 +204,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
       myVisits = visits.visits;
       if (mounted) setState(() {});
     });
-  }
+  } */
 
   @override
   void didUpdateWidget(MyProfile oldWidget) {
@@ -318,6 +328,11 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     });
   }
 
+  void fetchUserDispensariesProducts() async {
+    productsDispensaryBloc.getDispensariesProducts(
+        profile.user.uid, widget.profile.user.uid);
+  }
+
   bool get _showTitle {
     return _scrollController.hasClients && _scrollController.offset >= 130;
   }
@@ -332,9 +347,13 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    controller.animation.removeListener(onScrollF);
-    controller.removeListener(onPositionChangeF);
-    controller.dispose();
+    if (thisProfile.isClub) {
+      controller.animation?.removeListener(onScrollF);
+      controller.removeListener(onPositionChangeF);
+      controller.dispose();
+    }
+
+    // productsDispensaryBloc.dispose();
 
     super.dispose();
   }
@@ -514,6 +533,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                         // StretchMode.blurBackground
                       ],
                       background: ProfilePage(
+                        productsDispensaryBloc: productsDispensaryBloc,
                         isEmpty: false,
                         loading: false,
                         //image: snapshot.data,
@@ -535,71 +555,119 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                       ? makePrivateAccountMessage(context)
                       : makeHeaderSpacer(context),
 
-                  (itemCount != null)
-                      ? SliverAppBar(
-                          toolbarHeight: 50,
-                          pinned: true,
-                          backgroundColor:
-                              currentTheme.currentTheme.scaffoldBackgroundColor,
-                          automaticallyImplyLeading: false,
-                          actions: [Container()],
-                          title: Container(
-                              alignment: Alignment.centerLeft,
-                              child: TabBar(
-                                  controller: controller,
-                                  indicatorWeight: 5,
-                                  isScrollable: true,
-                                  labelColor:
-                                      currentTheme.currentTheme.accentColor,
-                                  unselectedLabelColor: (currentTheme
-                                          .customTheme)
-                                      ? Colors.white54.withOpacity(0.30)
-                                      : currentTheme.currentTheme.primaryColor,
-                                  indicatorColor:
-                                      currentTheme.currentTheme.accentColor,
-                                  indicator: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: currentTheme
-                                            .currentTheme.accentColor,
-                                        width: 4,
+                  if (thisProfile.isClub)
+                    (itemCount != null)
+                        ? SliverAppBar(
+                            toolbarHeight: 50,
+                            pinned: true,
+                            backgroundColor: currentTheme
+                                .currentTheme.scaffoldBackgroundColor,
+                            automaticallyImplyLeading: false,
+                            actions: [Container()],
+                            title: Container(
+                                alignment: Alignment.centerLeft,
+                                child: TabBar(
+                                    controller: controller,
+                                    indicatorWeight: 5,
+                                    isScrollable: true,
+                                    labelColor: currentTheme
+                                        .currentTheme.accentColor,
+                                    unselectedLabelColor:
+                                        (currentTheme.customTheme)
+                                            ? Colors.white54.withOpacity(0.30)
+                                            : currentTheme
+                                                .currentTheme.primaryColor,
+                                    indicatorColor:
+                                        currentTheme.currentTheme.accentColor,
+                                    indicator: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: currentTheme
+                                              .currentTheme.accentColor,
+                                          width: 4,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  tabs: List.generate(
-                                    itemCount,
-                                    (index) => FadeInLeft(
-                                        child: tabBuilder(context, index)),
-                                  ))))
-                      : makeHeaderSpacerShort(context)
+                                    tabs: List.generate(
+                                      itemCount,
+                                      (index) => FadeInLeft(
+                                          child: tabBuilder(context, index)),
+                                    ))))
+                        : makeHeaderSpacerShort(context)
                 ];
               },
 
               // tab bar view
-              body: (itemCount != null)
-                  ? TabBarView(
-                      controller: controller,
-                      children: List.generate(
-                          itemCount,
-                          (index) => Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                        height: 30,
-                                        padding: EdgeInsets.only(
-                                            left: 20, top: 15, bottom: 0),
-                                        child: Text(
-                                          'Tratamientos',
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Expanded(child: pageBuilder(context, index))
-                                  ])),
-                    )
-                  : Container())),
+              body: (thisProfile.isClub)
+                  ? (itemCount != null)
+                      ? TabBarView(
+                          controller: controller,
+                          children: List.generate(
+                              itemCount,
+                              (index) => Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                            height: 30,
+                                            padding: EdgeInsets.only(
+                                                left: 20, top: 15, bottom: 0),
+                                            child: Text(
+                                              'Tratamientos',
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontWeight: FontWeight.bold),
+                                            )),
+                                        Expanded(
+                                            child: pageBuilder(context, index))
+                                      ])),
+                        )
+                      : Container()
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 20, top: 15),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Pedidos',
+                            style: TextStyle(
+                                color: (currentTheme.customTheme)
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          ),
+                        ),
+                        Expanded(
+                          child: StreamBuilder<DispensariesProductsResponse>(
+                            stream: productsDispensaryBloc
+                                .dispensariesProducts.stream,
+                            builder: (context,
+                                AsyncSnapshot<DispensariesProductsResponse>
+                                    snapshot) {
+                              if (snapshot.hasData) {
+                                dispensariesProducts =
+                                    snapshot.data.dispensariesProducts;
+
+                                return (snapshot
+                                            .data.dispensariesProducts.length >
+                                        0)
+                                    ? _buildWidgetDispensaryProducts(
+                                        context, profile)
+                                    : Container();
+                              } else if (snapshot.hasError) {
+                                return _buildErrorWidget(snapshot.error);
+                              } else {
+                                return _buildLoadingWidget();
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ))),
     );
 
     /*   (itemCount != null)
@@ -662,6 +730,68 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
               )),
         ),
       ]),
+    );
+  }
+
+  Widget _buildWidgetDispensaryProducts(context, profile) {
+    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+
+    return Container(
+      child: SizedBox(
+        child: ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: dispensariesProducts.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              final dispensaryProducts = dispensariesProducts[index];
+
+              return Stack(
+                children: [
+                  FadeInLeft(
+                    delay: Duration(milliseconds: 300 * index),
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: 10,
+                      ),
+                      child: OpenContainer(
+                          closedElevation: 5,
+                          openElevation: 5,
+                          closedColor: currentTheme.scaffoldBackgroundColor,
+                          openColor: currentTheme.scaffoldBackgroundColor,
+                          transitionType: ContainerTransitionType.fade,
+                          openShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(20.0),
+                                topLeft: Radius.circular(10.0),
+                                bottomRight: Radius.circular(10.0),
+                                bottomLeft: Radius.circular(10.0)),
+                          ),
+                          closedShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(20.0),
+                                topLeft: Radius.circular(10.0),
+                                bottomRight: Radius.circular(10.0),
+                                bottomLeft: Radius.circular(10.0)),
+                          ),
+                          openBuilder: (_, closeContainer) {
+                            return DispensarProductPage(
+                                profileUser: thisProfile,
+                                dispensaryProducts: dispensaryProducts,
+                                productsDispensaryBloc: productsDispensaryBloc);
+                          },
+                          closedBuilder: (_, openContainer) {
+                            return CardDispensaryProducts(
+                              dispensaryProducts: dispensaryProducts,
+                            );
+                          }),
+                    ),
+                  ),
+                ],
+              );
+            }),
+      ),
     );
   }
 
