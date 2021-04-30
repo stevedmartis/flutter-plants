@@ -154,33 +154,29 @@ class _CardDispensaryProductsState extends State<CardDispensaryProducts> {
               ),
               width: 70,
               height: 70,
-              child: Hero(
-                  tag: product.id,
-                  child: Material(
-                      type: MaterialType.transparency,
-                      child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(100)),
-                          ),
-                          child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100.0)),
-                              child: CircleAvatar(
-                                backgroundColor: (currentTheme.customTheme)
-                                    ? Colors.black
-                                    : Colors.white,
-                                foregroundColor: (currentTheme.customTheme)
-                                    ? Colors.black
-                                    : Colors.white,
-                                child: Container(
-                                  color: Colors.white,
-                                  width: 100,
-                                  height: 100,
-                                  child:
-                                      cachedNetworkImage(product.getCoverImg()),
-                                ),
-                              ))))),
+              child: Material(
+                  type: MaterialType.transparency,
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                      ),
+                      child: ClipRRect(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(100.0)),
+                          child: CircleAvatar(
+                            backgroundColor: (currentTheme.customTheme)
+                                ? Colors.black
+                                : Colors.white,
+                            foregroundColor: (currentTheme.customTheme)
+                                ? Colors.black
+                                : Colors.white,
+                            child: Container(
+                              color: Colors.white,
+                              width: 100,
+                              height: 100,
+                              child: cachedNetworkImage(product.getCoverImg()),
+                            ),
+                          )))),
             ),
           ),
           Container(

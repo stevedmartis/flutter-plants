@@ -78,6 +78,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   ];
   TabController _tabController;
 
+  final productDispensaryBloc2 = new ProductDispensaryBloc();
+
   Room room;
 
   List<Plant> plants = [];
@@ -105,8 +107,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   DispensariesProduct dispensaryProducts;
 
   List<Product> dispensaryProductsNotLikes = [];
-
-  List<Product> dispensaryProductsActive = [];
 
   final productsLikedBloc = ProductBloc();
 
@@ -137,6 +137,20 @@ class _DispensarProductPageState extends State<DispensarProductPage>
       });
   }
 
+  List<Product> runCopy(List<Product> _list) {
+//pre code
+    List<Product> originalList = _list;
+    originalList.add(new Product());
+
+//copying list
+    List<Product> secondList = List.from(originalList);
+
+    print(originalList);
+    print(secondList);
+
+    return secondList;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -144,12 +158,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final authService = Provider.of<AuthService>(context, listen: false);
 
     profile = authService.profile;
-    dispensaryProductsActive =
-        (widget.dispensaryProducts.productsDispensary != null)
-            ? widget.dispensaryProducts.productsDispensary
-            : [];
 
-    print(dispensaryProductsActive);
 /*     dispensary = new Dispensary(
       id: widget.dispensary.id,
       club: widget.dispensary.club,
@@ -172,6 +181,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   }
 
   void getDispensaryActiveByUser() async {
+    /*  final List<Product> dispensaryProductsActive =
+        List.from(widget.dispensaryProducts.productsDispensary);
+ */
     setState(() {
       isDispensary = widget.dispensaryProducts.isActive;
       loadingData = true;
@@ -184,24 +196,33 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     gramsRecipeController.text =
         (widget.dispensaryProducts.gramsRecipe).toString();
     _dateGController.text = widget.dispensaryProducts.dateDelivery;
-    initialQuantity = (dispensaryProductsActive.length > 0)
-        ? dispensaryProductsActive
-            .map((Product item) => item.quantityDispensary)
-            .reduce((item1, item2) => item1 + item2)
-        : 0;
 
-    if (dispensaryProductsActive.length > 0)
-      quantitysTotal = (isSelected)
-          ? dispensaryProductsActive
-              .map((Product item) => item.quantityDispensary)
-              .reduce((item1, item2) => item1 + item2)
-          : 0;
+    if (isDispensary) {
+      productDispensaryBloc2.productDispensary.value = [];
+      initialQuantity =
+          (widget.dispensaryProducts.productsDispensary.length > 0)
+              ? widget.dispensaryProducts.productsDispensary
+                  .map((Product item) => item.quantityDispensary)
+                  .reduce((item1, item2) => item1 + item2)
+              : 0;
 
-    widget.productsDispensaryBloc.productDispensary.sink
-        .add(dispensaryProductsActive);
+      if (widget.dispensaryProducts.productsDispensary.length > 0)
+        quantitysTotal = (isSelected)
+            ? widget.dispensaryProducts.productsDispensary
+                .map((Product item) => item.quantityDispensary)
+                .reduce((item1, item2) => item1 + item2)
+            : 0;
+    } else {
+      initialQuantity = 0;
+      quantitysTotal = 0;
+    }
 
-    widget.productsDispensaryBloc.gramsRecipeAdd.sink
+    // productDispensaryBloc2.productDispensary.sink.add(dispensaryProductsActive);
+
+    productDispensaryBloc2.gramsRecipeAdd.sink
         .add((widget.dispensaryProducts.gramsRecipe).toString());
+
+    print(widget.dispensaryProducts.productsDispensary);
 
     gramsRecipeController.addListener(() {
       final gram = (gramsRecipeController.text == "")
@@ -236,7 +257,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     _tabController?.dispose();
 
     dispensaryProducts = null;
-    dispensaryProductsActive = [];
 
     //  widget.productsDispensaryBloc.dispose();
     gramsRecipeController.dispose();
@@ -302,7 +322,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
   Widget _createButton() {
     return StreamBuilder(
-      stream: widget.productsDispensaryBloc.productDispensary.stream,
+      stream: productDispensaryBloc2.productDispensary.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
@@ -778,13 +798,15 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                   builder: (context,
                       AsyncSnapshot<DispensaryProductsResponse> snapshot) {
                     if (snapshot.hasData) {
-                      dispensaryProductsLikes = snapshot.data.products
-                          .where((i) => i.isLike)
-                          .toList();
+                      final List<Product> allProducts = snapshot.data.products;
 
-                      dispensaryProductsNotLikes = snapshot.data.products
-                          .where((i) => !i.isLike)
-                          .toList();
+                      productDispensaryBloc2.productDispensary.sink
+                          .add(allProducts);
+
+                      allProducts.where((i) => i.isLike).toList();
+
+                      dispensaryProductsNotLikes =
+                          allProducts.where((i) => !i.isLike).toList();
 
                       return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -852,7 +874,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
     return Container(
       child: StreamBuilder(
-          stream: widget.productsDispensaryBloc.productDispensary,
+          stream: productDispensaryBloc2.productDispensary,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             final isSelected = (snapshot.data != null)
                 ? (snapshot.data != "")
@@ -970,7 +992,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final about = product.description;
 
     var ratingDouble = double.parse('$rating');
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1018,7 +1039,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
               ),
               (isDispensary)
                   ? StreamBuilder(
-                      stream: widget.productsDispensaryBloc.gramsStream,
+                      stream: productDispensaryBloc2.gramsStream,
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         final isSelected = (snapshot.data != null)
                             ? (snapshot.data != "")
@@ -1032,10 +1053,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                         if (!isDispensaryActive) if (gram == 0 ||
                             gram < product.quantityDispensary) {
                           product.quantityDispensary = 0;
-                          dispensaryProductsActive = [];
+                          productDispensaryBloc2.productDispensary.value = [];
 
-                          widget.productsDispensaryBloc.productDispensary.sink
-                              .add(dispensaryProductsActive);
+                          productDispensaryBloc2.productDispensary.sink.add(
+                              productDispensaryBloc2.productDispensary.value);
+
+                          print('entro');
                         }
 
                         Timer(Duration(seconds: 1),
@@ -1067,18 +1090,20 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                         FocusScope.of(context)
                                             .requestFocus(new FocusNode());
 
-                                        final item =
-                                            dispensaryProductsActive.firstWhere(
+                                        final item = productDispensaryBloc2
+                                            .productDispensary.value
+                                            .firstWhere(
                                                 (item) => item.id == product.id,
                                                 orElse: () => null);
                                         if (item != null) {
                                           setState(() => {
                                                 item.quantityDispensary =
                                                     product.quantityDispensary,
-                                                widget.productsDispensaryBloc
+                                                productDispensaryBloc2
                                                     .productDispensary.sink
-                                                    .add(
-                                                        dispensaryProductsActive)
+                                                    .add(productDispensaryBloc2
+                                                        .productDispensary
+                                                        .value)
                                               });
                                         }
                                       });
@@ -1127,29 +1152,47 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
                                           product.quantityDispensary++;
 
-                                          final findItem =
-                                              dispensaryProductsActive
-                                                  .firstWhere(
-                                                      (item) =>
-                                                          item.id == product.id,
-                                                      orElse: () => null);
+                                          if (productDispensaryBloc2
+                                                  .productDispensary.value !=
+                                              null) {
+                                            final findItem =
+                                                productDispensaryBloc2
+                                                    .productDispensary.value
+                                                    .firstWhere(
+                                                        (item) =>
+                                                            item.id ==
+                                                            product.id,
+                                                        orElse: () => null);
 
-                                          if (findItem == null) {
-                                            dispensaryProductsActive
+                                            if (findItem == null) {
+                                              productDispensaryBloc2
+                                                  .productDispensary.value
+                                                  .add(product);
+
+                                              productDispensaryBloc2
+                                                  .productDispensary.sink
+                                                  .add(productDispensaryBloc2
+                                                      .productDispensary.value);
+                                            } else {
+                                              findItem.quantityDispensary =
+                                                  product.quantityDispensary;
+                                              productDispensaryBloc2
+                                                  .productDispensary.sink
+                                                  .add(productDispensaryBloc2
+                                                      .productDispensary.value);
+
+                                              print(widget.dispensaryProducts
+                                                  .productsDispensary);
+                                            }
+                                          } else {
+                                            productDispensaryBloc2
+                                                .productDispensary.value
                                                 .add(product);
 
-                                            widget.productsDispensaryBloc
+                                            productDispensaryBloc2
                                                 .productDispensary.sink
-                                                .add(dispensaryProductsActive);
-                                          } else {
-                                            findItem.quantityDispensary =
-                                                product.quantityDispensary;
-                                            widget.productsDispensaryBloc
-                                                .productDispensary.sink
-                                                .add(dispensaryProductsActive);
-
-                                            print(widget.dispensaryProducts
-                                                .productsDispensary);
+                                                .add(productDispensaryBloc2
+                                                    .productDispensary.value);
                                           }
                                         });
                                       }
@@ -1374,14 +1417,14 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                               fontSize: 16))),
                 Spacer(),
                 StreamBuilder(
-                  stream:
-                      widget.productsDispensaryBloc.productDispensary.stream,
+                  stream: productDispensaryBloc2.productDispensary.stream,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     final isSelected = (snapshot.data != null)
                         ? (snapshot.data.length > 0)
                             ? true
                             : false
                         : false;
+
                     final quantitysTotalNew = (isSelected)
                         ? snapshot.data
                             .map((Product item) => item.quantityDispensary)
@@ -1392,7 +1435,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                       children: [
                         Container(
                           child: Text(
-                            (isSelected) ? 'Total: ' : ' ',
+                            'Total: ',
                             style: TextStyle(color: Colors.grey, fontSize: 16),
                           ),
                         ),
@@ -1401,7 +1444,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                         ),
                         Container(
                           child: Text(
-                            (isSelected) ? '$quantitysTotalNew' : ' ',
+                            '$quantitysTotalNew',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -1435,7 +1478,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
   Widget _createGramsRecipe() {
     return StreamBuilder(
-      stream: widget.productsDispensaryBloc.productDispensary.stream,
+      stream: productDispensaryBloc2.productDispensary.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context);
 
@@ -1480,7 +1523,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                 labelText: 'Gramos recetados *',
                 //counterText: snapshot.data,
                 errorText: snapshot.error),
-            onChanged: widget.productsDispensaryBloc.changeGrams,
+            onChanged: productDispensaryBloc2.changeGrams,
           ),
         );
       },
@@ -1508,8 +1551,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                 indicatorColor: Colors.grey,
                 tabs: [
                   StreamBuilder(
-                    stream:
-                        widget.productsDispensaryBloc.productDispensary.stream,
+                    stream: productDispensaryBloc2.productDispensary.stream,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       final isSelected = (snapshot.data != null)
                           ? (snapshot.data.length > 0)
@@ -1551,9 +1593,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
     Navigator.pop(context);
 
-    final gramRecipe = (widget.productsDispensaryBloc.gramsRecipe == null)
-        ? widget.dispensaryProducts.gramsRecipe
-        : widget.productsDispensaryBloc.gramsRecipe;
+    final gramRecipe = (productDispensaryBloc2.gramsRecipe == null)
+        ? productDispensaryBloc2.gramsRecipe
+        : productDispensaryBloc2.gramsRecipe;
 
     final dateDelivery = _dateGController.text;
 
@@ -1564,8 +1606,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
         gramsRecipe: int.parse(gramRecipe),
         dateDelivery: dateDelivery);
 
-    final productsDispensary =
-        widget.productsDispensaryBloc.productDispensary.value;
+    final productsDispensary = productDispensaryBloc2.productDispensary.value;
 
     if (!isEdit) {
       final createDispensary = await dispensaryService.createDispensary(
