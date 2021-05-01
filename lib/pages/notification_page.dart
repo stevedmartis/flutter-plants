@@ -1,8 +1,9 @@
+import 'package:chat/bloc/dispensary_bloc.dart';
 import 'package:chat/bloc/subscribe_bloc.dart';
+import 'package:chat/models/dispensaries_products_response%20copy.dart';
 import 'package:chat/models/profile_dispensary.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/models/profilesDispensaries_response.dart';
-import 'package:chat/models/profiles_response.dart';
 import 'package:chat/pages/principalCustom_page.dart';
 import 'package:chat/pages/recipe_image_page.dart';
 import 'package:chat/providers/notifications_provider.dart';
@@ -14,12 +15,15 @@ import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/avatar_user_chat.dart';
 import 'package:chat/widgets/carousel_users.dart';
 import 'package:chat/widgets/header_appbar_pages.dart';
+import 'package:chat/widgets/myprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
+
+import 'dispensar_products.dart';
 
 class NotificationsPage extends StatefulWidget {
   NotificationsPage({Key key, this.title}) : super(key: key);
@@ -557,8 +561,13 @@ class _NotificationsPageState extends State<NotificationsPage>
                                         Provider.of<ChatService>(context,
                                             listen: false);
                                     chatService.userFor = item.profile;
-                                    Navigator.of(context).push(
-                                        createRouteProfileSelect(item.profile));
+
+                                    (!item.dispensary.isActive)
+                                        ? Navigator.of(context).push(
+                                            createRouteProfile(
+                                                item.profile, false))
+                                        : Navigator.of(context).push(
+                                            createRouteProfile(profile, true));
                                   },
                                 ),
                               ),
@@ -578,6 +587,30 @@ class _NotificationsPageState extends State<NotificationsPage>
           return _buildLoadingWidget();
         }
       },
+    );
+  }
+
+  Route createRouteProfile(Profiles profile, bool isAuth) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => MyProfile(
+        title: '',
+        profile: profile,
+        isUserAuth: isAuth,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+      transitionDuration: Duration(milliseconds: 400),
     );
   }
 
@@ -626,6 +659,33 @@ class _NotificationsPageState extends State<NotificationsPage>
         padding: EdgeInsets.all(10),
         height: 200.0,
         child: Center(child: CircularProgressIndicator()));
+  }
+
+  Route createRoutedispensary(
+      Profiles item,
+      DispensariesProduct dispensaryProducts,
+      ProductDispensaryBloc productsDispensaryBloc) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          DispensarProductPage(
+              profileUser: profile,
+              dispensaryProducts: dispensaryProducts,
+              productsDispensaryBloc: productsDispensaryBloc),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+      transitionDuration: Duration(milliseconds: 400),
+    );
   }
 
   Route createRouteRecipeViewImage(Profiles item) {
