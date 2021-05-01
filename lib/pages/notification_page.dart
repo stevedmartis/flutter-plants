@@ -1,5 +1,7 @@
 import 'package:chat/bloc/subscribe_bloc.dart';
+import 'package:chat/models/profile_dispensary.dart';
 import 'package:chat/models/profiles.dart';
+import 'package:chat/models/profilesDispensaries_response.dart';
 import 'package:chat/models/profiles_response.dart';
 import 'package:chat/pages/principalCustom_page.dart';
 import 'package:chat/pages/recipe_image_page.dart';
@@ -38,7 +40,7 @@ class _NotificationsPageState extends State<NotificationsPage>
   SocketService socketService;
   AuthService authService;
   Profiles profile;
-  List<Profiles> profiles = [];
+  List<ProfileDispensary> profiles = [];
   SlidableController slidableController;
 
   final List<_HomeItem> items = List.generate(
@@ -63,7 +65,7 @@ class _NotificationsPageState extends State<NotificationsPage>
     profile = authService.profile;
     //this.socketService.socket.on('personal-message', _listenMessage);
 
-    subscriptionBloc.getSubscriptionsNotifi(profile.user.uid);
+    subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
 
     super.initState();
   }
@@ -142,11 +144,11 @@ class _NotificationsPageState extends State<NotificationsPage>
   Widget _buildList(BuildContext context, Axis direction) {
     final currentTheme = Provider.of<ThemeChanger>(context);
 
-    return StreamBuilder<ProfilesResponse>(
-      stream: subscriptionBloc.subscriptionsApproveNotifi.stream,
-      builder: (context, AsyncSnapshot<ProfilesResponse> snapshot) {
+    return StreamBuilder<ProfilesDispensariesResponse>(
+      stream: subscriptionBloc.subscriptionsApprove.stream,
+      builder: (context, AsyncSnapshot<ProfilesDispensariesResponse> snapshot) {
         if (snapshot.hasData) {
-          profiles = snapshot.data.profiles;
+          profiles = snapshot.data.profilesDispensaries;
 
           if (profiles.length > 0) {
             return ListView.builder(
@@ -154,21 +156,30 @@ class _NotificationsPageState extends State<NotificationsPage>
               shrinkWrap: true,
               itemCount: profiles.length,
               itemBuilder: (BuildContext ctxt, int index) {
-                Profiles item = profiles[index];
+                ProfileDispensary item = profiles[index];
 
-                final DateTime dateMessage = item.messageDate;
+                final DateTime dateMessage = item.profile.messageDate;
 
                 final DateFormat formatter = DateFormat('dd MMM - kk:mm a');
                 final String formatted = formatter.format(dateMessage);
-                final nameSub =
-                    (item.name == "") ? item.user.username : item.name;
+                final nameSub = (item.profile.name == "")
+                    ? item.profile.user.username
+                    : item.profile.name;
+
+                final DateTime dateDelivered = item.dispensary.updatedAt;
+
+                final DateFormat formatterDispensary =
+                    DateFormat('dd MMM - kk:mm');
+                final String dateDeliveredFormatter =
+                    formatterDispensary.format(dateDelivered);
+
                 return (profile.isClub)
                     ? Container(
                         child: Column(
                           children: [
                             //final int t = index;
                             Slidable.builder(
-                              key: Key(item.id),
+                              key: Key(item.profile.id),
                               controller: slidableController,
                               direction: Axis.horizontal,
                               dismissal: SlidableDismissal(
@@ -183,8 +194,10 @@ class _NotificationsPageState extends State<NotificationsPage>
                                     profiles.removeAt(index);
                                   }),
                                   actionType == SlideActionType.primary
-                                      ? _approveSubscription(item, index)
-                                      : _deleteSubscription(item.subId, index),
+                                      ? _approveSubscription(
+                                          item.profile, index)
+                                      : _deleteSubscription(
+                                          item.profile.subId, index),
                                 },
                               ),
                               actionPane: _getActionPane(index),
@@ -199,7 +212,7 @@ class _NotificationsPageState extends State<NotificationsPage>
                                     leading: ImageUserChat(
                                         width: 100,
                                         height: 100,
-                                        profile: item,
+                                        profile: item.profile,
                                         fontsize: 20),
                                     title: Text(nameSub,
                                         style: TextStyle(
@@ -251,9 +264,10 @@ class _NotificationsPageState extends State<NotificationsPage>
                                       final chatService =
                                           Provider.of<ChatService>(context,
                                               listen: false);
-                                      chatService.userFor = item;
-                                      Navigator.of(context)
-                                          .push(createRouteProfileSelect(item));
+                                      chatService.userFor = item.profile;
+                                      Navigator.of(context).push(
+                                          createRouteProfileSelect(
+                                              item.profile));
                                     },
                                   ),
                                 ),
@@ -354,7 +368,7 @@ class _NotificationsPageState extends State<NotificationsPage>
                         children: [
                           //final int t = index;
                           Slidable.builder(
-                            key: Key(item.id),
+                            key: Key(item.profile.id),
                             controller: slidableController,
                             direction: Axis.horizontal,
                             dismissal: SlidableDismissal(
@@ -372,41 +386,163 @@ class _NotificationsPageState extends State<NotificationsPage>
                                   leading: ImageUserChat(
                                       width: 100,
                                       height: 100,
-                                      profile: item,
+                                      profile: item.profile,
                                       fontsize: 20),
-                                  title: Text(nameSub,
-                                      style: TextStyle(
-                                          color: (currentTheme.customTheme)
-                                              ? Colors.white
-                                              : Colors.black,
-                                          fontSize: 18)),
-                                  subtitle: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  title: Row(
                                     children: [
-                                      Container(
-                                        child: Text(
-                                          'Solicitud: $formatted',
+                                      Text(nameSub,
                                           style: TextStyle(
                                               color: (currentTheme.customTheme)
-                                                  ? Colors.white54
-                                                  : Colors.black54,
-                                              fontSize: 15),
-                                        ),
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontSize: 18)),
+                                      SizedBox(
+                                        width: 10,
                                       ),
-                                      Container(
-                                        child: Text(
-                                          'Solicitud Aprobada!',
-                                          style: TextStyle(
-                                              color: currentTheme
-                                                  .currentTheme.accentColor,
-                                              fontSize: 15),
+                                      if (item.dispensary.isActive &&
+                                          !item.dispensary.isEdit &&
+                                          !item.dispensary.isDelivered)
+                                        Text('Pedido Creado!',
+                                            style: TextStyle(
+                                                color: currentTheme
+                                                    .currentTheme.accentColor,
+                                                fontSize: 15)),
+                                      if (item.dispensary.isActive &&
+                                          item.dispensary.isEdit &&
+                                          !item.dispensary.isDelivered)
+                                        Text('Pedido Editado',
+                                            style: TextStyle(
+                                                color: currentTheme
+                                                    .currentTheme.accentColor,
+                                                fontSize: 15)),
+                                      if (!item.dispensary.isActive)
+                                        Container(
+                                          child: Text(
+                                            'Aprobado!',
+                                            style: TextStyle(
+                                                color: currentTheme
+                                                    .currentTheme.accentColor,
+                                                fontSize: 15),
+                                          ),
                                         ),
-                                      ),
                                     ],
                                   ),
+                                  subtitle: (!item.dispensary.isActive)
+                                      ? Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              child: Text(
+                                                '$formatted',
+                                                style: TextStyle(
+                                                    color: (currentTheme
+                                                            .customTheme)
+                                                        ? Colors.white54
+                                                        : Colors.black54,
+                                                    fontSize: 15),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Container(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              if (!item.dispensary.isActive &&
+                                                  !item.dispensary.isDelivered)
+                                                Container(
+                                                  child: Text(
+                                                    'Aprobado: $formatted',
+                                                    style: TextStyle(
+                                                        color: (currentTheme
+                                                                .customTheme)
+                                                            ? Colors.white54
+                                                            : Colors.black54,
+                                                        fontSize: 15),
+                                                  ),
+                                                ),
+                                              if (item.dispensary.isActive &&
+                                                  !item.dispensary.isDelivered)
+                                                Row(
+                                                  children: [
+                                                    Chip(
+                                                      avatar: CircleAvatar(
+                                                          backgroundColor:
+                                                              Colors.black,
+                                                          child: Icon(
+                                                              Icons.pending)),
+                                                      label: Text('En Curso'),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Container(
+                                                      child: Text(
+                                                        '$dateDeliveredFormatter',
+                                                        style: TextStyle(
+                                                            color: (currentTheme
+                                                                    .customTheme)
+                                                                ? Colors.white54
+                                                                : Colors
+                                                                    .black54,
+                                                            fontSize: 14),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              if (item.dispensary.isActive &&
+                                                  item.dispensary.isDelivered)
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Chip(
+                                                        backgroundColor:
+                                                            currentTheme
+                                                                .currentTheme
+                                                                .accentColor,
+                                                        avatar: CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors.black,
+                                                            child: Icon(
+                                                              Icons.check,
+                                                              color: currentTheme
+                                                                  .currentTheme
+                                                                  .accentColor,
+                                                            )),
+                                                        label: Text(
+                                                          'Entregado',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 0,
+                                                    ),
+                                                    Container(
+                                                      child: Text(
+                                                        '$dateDeliveredFormatter',
+                                                        style: TextStyle(
+                                                            color: (currentTheme
+                                                                    .customTheme)
+                                                                ? Colors.white54
+                                                                : Colors
+                                                                    .black54,
+                                                            fontSize: 14),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                            ],
+                                          ),
+                                        ),
                                   trailing: Container(
                                     padding: EdgeInsets.all(10),
                                     child: Icon(
@@ -420,9 +556,9 @@ class _NotificationsPageState extends State<NotificationsPage>
                                     final chatService =
                                         Provider.of<ChatService>(context,
                                             listen: false);
-                                    chatService.userFor = item;
-                                    Navigator.of(context)
-                                        .push(createRouteProfileSelect(item));
+                                    chatService.userFor = item.profile;
+                                    Navigator.of(context).push(
+                                        createRouteProfileSelect(item.profile));
                                   },
                                 ),
                               ),
@@ -559,7 +695,8 @@ class _NotificationsPageState extends State<NotificationsPage>
   }
 
   void _showSnackBar(BuildContext context, String text) {
-    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+    final currentTheme =
+        Provider.of<ThemeChanger>(context, listen: false).currentTheme;
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: currentTheme.canvasColor,

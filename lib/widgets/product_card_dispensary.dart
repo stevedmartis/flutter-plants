@@ -53,7 +53,6 @@ class _CardProductState extends State<CardProductDispensary> {
             widget.productsUserDispensaryBloc.productDispensary.value;
     });
 
-    print(widget.product);
     return Column(
       children: <Widget>[
         Container(
@@ -123,8 +122,6 @@ class _CardProductState extends State<CardProductDispensary> {
     var ratingDouble = double.parse('$rating');
 
     isActive1 = isActive;
-
-    print(isActive1);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -275,7 +272,6 @@ class _CardProductState extends State<CardProductDispensary> {
                                     borderRadius: BorderRadius.circular(10),
                                     radius: 25,
                                     onTap: () {
-                                      print(quantitysTotal);
                                       if (quantity < gram &&
                                           gram != quantitysTotal) {
                                         setState(() {

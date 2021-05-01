@@ -170,12 +170,13 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     // if (widget.isUserAuth) _chargeMyLastPlantsByUser();
     // if (widget.isUserAuth) _chargeMyLastVisitByUser();
 
-    (widget.isUserAuth)
-        ? fetchMyCatalogos()
-        : (!widget.profile.isClub)
-            ? fetchUserDispensariesProducts()
-            : fetchUserCatalogos();
+    if (widget.isUserAuth && profile.isClub) fetchMyCatalogos();
+    if (!widget.profile.isClub && !widget.isUserAuth)
+      fetchForClubDispensariesProducts();
+    if (!widget.isUserAuth && widget.profile.isClub) fetchUserCatalogos();
 
+    if (!widget.profile.isClub && widget.isUserAuth)
+      fetchForUserDispensariesProducts();
     super.initState();
   }
 
@@ -328,9 +329,14 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     });
   }
 
-  void fetchUserDispensariesProducts() async {
+  void fetchForClubDispensariesProducts() async {
     productsDispensaryBloc.getDispensariesProducts(
         profile.user.uid, widget.profile.user.uid);
+  }
+
+  void fetchForUserDispensariesProducts() async {
+    productsDispensaryBloc.getDispensariesProducts(
+        widget.profile.user.uid, profile.user.uid);
   }
 
   bool get _showTitle {
@@ -348,7 +354,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   @override
   void dispose() {
     if (thisProfile.isClub) {
-      controller.animation?.removeListener(onScrollF);
+      controller?.animation?.removeListener(onScrollF);
       controller.removeListener(onPositionChangeF);
       controller.dispose();
     }
@@ -551,7 +557,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
                   // makeHeaderSpace(context),
 
-                  (profile.isClub)
+                  (thisProfile.isClub && !widget.isUserAuth)
                       ? makePrivateAccountMessage(context)
                       : makeHeaderSpacer(context),
 
@@ -1400,65 +1406,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                                           grams: (visit.grams != null)
                                               ? visit.grams
                                               : '0');
-                                    })
-
-                                    /* [
-                                    InvoiceItem(
-                                      description: 'Coffee',
-                                      date: DateTime.now(),
-                                      quantity: 3,
-                                      vat: 0.19,
-                                      unitPrice: 5.99,
-                                    ),
-                                    InvoiceItem(
-                                      description: 'Water',
-                                      date: DateTime.now(),
-                                      quantity: 8,
-                                      vat: 0.19,
-                                      unitPrice: 0.99,
-                                    ),
-                                    InvoiceItem(
-                                      description: 'Orange',
-                                      date: DateTime.now(),
-                                      quantity: 3,
-                                      vat: 0.19,
-                                      unitPrice: 2.99,
-                                    ),
-                                    InvoiceItem(
-                                      description: 'Apple',
-                                      date: DateTime.now(),
-                                      quantity: 8,
-                                      vat: 0.19,
-                                      unitPrice: 3.99,
-                                    ),
-                                    InvoiceItem(
-                                      description: 'Mango',
-                                      date: DateTime.now(),
-                                      quantity: 1,
-                                      vat: 0.19,
-                                      unitPrice: 1.59,
-                                    ),
-                                    InvoiceItem(
-                                      description: 'Blue Berries',
-                                      date: DateTime.now(),
-                                      quantity: 5,
-                                      vat: 0.19,
-                                      unitPrice: 0.99,
-                                    ),
-                                    InvoiceItem(
-                                      description: 'Lemon',
-                                      date: DateTime.now(),
-                                      quantity: 4,
-                                      vat: 0.19,
-                                      unitPrice: 1.29,
-                                    ),
-                                  ], */
-                                    );
+                                    }));
 
                                 final pdfFile =
                                     await PdfInvoiceApi.generate(report);
-
-                                print(pdfFile);
 
                                 if (pdfFile.path.length > 0) {
                                   setState(() {

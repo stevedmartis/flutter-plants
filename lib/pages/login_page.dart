@@ -317,9 +317,7 @@ class __FormState extends State<_Form> {
                       color: currentTheme.currentTheme.accentColor, width: 2.0),
                   borderRadius: BorderRadius.circular(25.0),
                 ),
-                hintText: '',
                 labelText: 'Email *',
-                counterText: snapshot.data,
                 labelStyle: TextStyle(
                     color: (currentTheme.customTheme)
                         ? Colors.white54
@@ -396,8 +394,8 @@ class __FormState extends State<_Form> {
     final authService = Provider.of<AuthService>(context, listen: false);
     final socketService = Provider.of<SocketService>(context, listen: false);
 
-    final loginOk =
-        await authService.login(bloc.email.trim(), bloc.password.trim());
+    final loginOk = await authService.login(
+        bloc.email.trim().toLowerCase(), bloc.password.trim());
 
     if (loginOk) {
       socketService.connect();

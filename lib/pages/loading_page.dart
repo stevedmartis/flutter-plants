@@ -14,7 +14,7 @@ class LoadingPage extends StatelessWidget {
     Upgrader().clearSavedSettings(); // Remove this for release builds
 
     final appcastURL =
-        'https://github.com/DavidMarsCodes/flutter-plants/blob/flutter-2/lib/appcast_leafety.xml';
+        'https://github.com/DavidMarsCodes/flutter-design-pro-eccomerce/blob/master/appcast_leafety';
     final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
 
     return Scaffold(

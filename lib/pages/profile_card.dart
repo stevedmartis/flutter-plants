@@ -17,6 +17,7 @@ import 'package:chat/widgets/avatar_user_chat.dart';
 import 'package:chat/widgets/button_gold.dart';
 import 'package:chat/widgets/productProfile_card.dart';
 import 'package:chat/widgets/sliver_header.dart';
+import 'package:chat/widgets/text_emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -843,8 +844,25 @@ class _ProfileCardState extends State<ProfileCard> {
         'for': profileUser.user.uid,
       });
     }
+
+    _showSnackBar(context, 'Suscripción Enviada al Club 👍');
+
     Navigator.pop(context);
   }
+}
+
+void _showSnackBar(BuildContext context, String text) {
+  final currentTheme = Provider.of<ThemeChanger>(context, listen: false);
+
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    backgroundColor: currentTheme.currentTheme.cardColor,
+    content: EmojiText(
+        text: text,
+        style: TextStyle(
+            color: (currentTheme.customTheme) ? Colors.white : Colors.black,
+            fontSize: 15),
+        emojiFontMultiplier: 1.5),
+  ));
 }
 
 void unSubscription(context, SubscribeBloc subscriptionBlocUser) async {
@@ -859,6 +877,9 @@ void unSubscription(context, SubscribeBloc subscriptionBlocUser) async {
     subscriptionBlocUser.getSubscription(
         resp.subscription.subscriptor, resp.subscription.club);
   }
+
+  _showSnackBar(context, 'Suscripción Anulada');
+
   Navigator.pop(context);
 }
 

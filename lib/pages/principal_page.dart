@@ -54,7 +54,9 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
     final notifiModel = Provider.of<NotificationModel>(context, listen: false);
     int number = notifiModel.numberNotifiBell;
-    number = notifications.subscriptionsNotifi.length;
+    number = (notifications.subscriptionsNotifi.length > 0)
+        ? notifications.subscriptionsNotifi.length
+        : 1;
     notifiModel.numberNotifiBell = number;
 
     if (number >= 2) {

@@ -3,6 +3,7 @@ import 'package:chat/models/dispensaries_products_response%20copy.dart';
 import 'package:chat/models/products.dart';
 import 'package:chat/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -29,7 +30,7 @@ class _CardDispensaryProductsState extends State<CardDispensaryProducts> {
 
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-      height: (products.length > 0) ? 220 : 150,
+      height: (products.length > 0) ? 210 : 150,
       width: double.maxFinite,
       child: Card(
         color: currentTheme.currentTheme.cardColor,
@@ -54,6 +55,19 @@ class _CardDispensaryProductsState extends State<CardDispensaryProducts> {
                                 width: 15,
                               ),
                             ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              gramsIcon(),
+
+                              // dateUpdated(),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
                           ),
                           Row(
                             children: [
@@ -92,18 +106,8 @@ class _CardDispensaryProductsState extends State<CardDispensaryProducts> {
                                 )
                             ],
                           ),
-                          Row(
-                            children: <Widget>[
-                              gramsRecipe(),
-                              Spacer(),
-                              // dateUpdated(),
-                            ],
-                          ),
                           SizedBox(
                             height: 5,
-                          ),
-                          SizedBox(
-                            height: 10,
                           ),
                           Expanded(
                             child: ListView.builder(
@@ -271,6 +275,40 @@ class _CardDispensaryProductsState extends State<CardDispensaryProducts> {
                         : Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.bold)),
+          ],
+        ));
+  }
+
+  Widget gramsIcon() {
+    final currentTheme = Provider.of<ThemeChanger>(context);
+    final gramsRecipe = widget.dispensaryProducts.gramsRecipe;
+
+    return Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+          children: [
+            FaIcon(
+              FontAwesomeIcons.handHoldingMedical,
+              size: 20,
+              color: currentTheme.currentTheme.accentColor,
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Text('$gramsRecipe ',
+                style: TextStyle(
+                    color: (currentTheme.customTheme)
+                        ? Colors.white
+                        : Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold)),
+            Text('Gramos receta',
+                style: TextStyle(
+                    color: (currentTheme.customTheme)
+                        ? Colors.white54
+                        : Colors.black54,
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal)),
           ],
         ));
   }

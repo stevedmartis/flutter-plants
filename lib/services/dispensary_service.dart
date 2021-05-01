@@ -186,7 +186,6 @@ class DispensaryService with ChangeNotifier {
 
       final plantsResponse = dispensaryProductsResponseFromJson(resp.body);
 
-      print(plantsResponse);
       return plantsResponse;
     } catch (e) {
       return DispensaryproductsResponse.withError("$e");

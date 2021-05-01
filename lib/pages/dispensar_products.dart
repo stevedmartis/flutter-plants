@@ -33,6 +33,7 @@ import 'package:chat/providers/rooms_provider.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/dispensary_service.dart';
 import 'package:chat/services/room_services.dart';
+import 'package:chat/services/socket_service.dart';
 
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/button_gold.dart';
@@ -43,6 +44,7 @@ import 'package:chat/widgets/text_emoji.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../utils/extension.dart';
@@ -70,7 +72,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   final airService = new AiresApiProvider();
 
   final lightService = new LightApiProvider();
-
+  SocketService socketService;
   final roomsApiProvider = new RoomsApiProvider();
 
   final List<Tab> myTabs = <Tab>[
@@ -137,20 +139,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
       });
   }
 
-  List<Product> runCopy(List<Product> _list) {
-//pre code
-    List<Product> originalList = _list;
-    originalList.add(new Product());
-
-//copying list
-    List<Product> secondList = List.from(originalList);
-
-    print(originalList);
-    print(secondList);
-
-    return secondList;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -158,15 +146,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final authService = Provider.of<AuthService>(context, listen: false);
 
     profile = authService.profile;
-
-/*     dispensary = new Dispensary(
-      id: widget.dispensary.id,
-      club: widget.dispensary.club,
-      subscriptor: widget.dispensary.subscriptor,
-      gramsRecipe: widget.dispensary.gramsRecipe,
-      isEdit: widget.dispensary.
-
-    ) */
+    this.socketService = Provider.of<SocketService>(context, listen: false);
 
     getDispensaryActiveByUser();
 
@@ -181,9 +161,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   }
 
   void getDispensaryActiveByUser() async {
-    /*  final List<Product> dispensaryProductsActive =
-        List.from(widget.dispensaryProducts.productsDispensary);
- */
     setState(() {
       isDispensary = widget.dispensaryProducts.isActive;
       loadingData = true;
@@ -221,8 +198,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
     productDispensaryBloc2.gramsRecipeAdd.sink
         .add((widget.dispensaryProducts.gramsRecipe).toString());
-
-    print(widget.dispensaryProducts.productsDispensary);
 
     gramsRecipeController.addListener(() {
       final gram = (gramsRecipeController.text == "")
@@ -803,7 +778,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                       productDispensaryBloc2.productDispensary.sink
                           .add(allProducts);
 
-                      allProducts.where((i) => i.isLike).toList();
+                      dispensaryProductsLikes =
+                          allProducts.where((i) => i.isLike).toList();
 
                       dispensaryProductsNotLikes =
                           allProducts.where((i) => !i.isLike).toList();
@@ -1057,8 +1033,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
                           productDispensaryBloc2.productDispensary.sink.add(
                               productDispensaryBloc2.productDispensary.value);
-
-                          print('entro');
                         }
 
                         Timer(Duration(seconds: 1),
@@ -1081,10 +1055,15 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                     .currentTheme.scaffoldBackgroundColor,
                                 borderRadius: BorderRadius.circular(10),
                                 child: InkWell(
+                                  splashColor: (!isDispensaryDelivered)
+                                      ? Colors.grey
+                                      : Colors.black,
                                   borderRadius: BorderRadius.circular(10),
                                   radius: 25,
                                   onTap: () {
-                                    if (product.quantityDispensary > 0) {
+                                    if (!isDispensaryDelivered) if (product
+                                            .quantityDispensary >
+                                        0) {
                                       setState(() {
                                         product.quantityDispensary--;
                                         FocusScope.of(context)
@@ -1109,15 +1088,16 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                       });
                                     }
                                   },
-                                  splashColor: Colors.grey,
                                   highlightColor: Colors.grey,
                                   child: Container(
                                     width: 34,
                                     height: 34,
                                     child: Icon(
                                       Icons.remove,
-                                      color:
-                                          currentTheme.currentTheme.accentColor,
+                                      color: (isDispensaryDelivered)
+                                          ? Colors.grey
+                                          : currentTheme
+                                              .currentTheme.accentColor,
                                       size: 15,
                                     ),
                                   ),
@@ -1130,8 +1110,10 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                   child: Text(
                                     product.quantityDispensary.toString(),
                                     style: TextStyle(
-                                      color:
-                                          currentTheme.currentTheme.accentColor,
+                                      color: (isDispensaryDelivered)
+                                          ? Colors.grey
+                                          : currentTheme
+                                              .currentTheme.accentColor,
                                     ),
                                   ),
                                 ),
@@ -1141,10 +1123,15 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                       .currentTheme.scaffoldBackgroundColor,
                                   borderRadius: BorderRadius.circular(10),
                                   child: InkWell(
+                                    splashColor: (!isDispensaryDelivered)
+                                        ? Colors.grey
+                                        : Colors.black,
                                     borderRadius: BorderRadius.circular(10),
                                     radius: 25,
                                     onTap: () {
-                                      if (product.quantityDispensary < gram &&
+                                      if (!isDispensaryDelivered) if (product
+                                                  .quantityDispensary <
+                                              gram &&
                                           gram != quantitysTotal) {
                                         setState(() {
                                           FocusScope.of(context)
@@ -1180,9 +1167,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                                   .productDispensary.sink
                                                   .add(productDispensaryBloc2
                                                       .productDispensary.value);
-
-                                              print(widget.dispensaryProducts
-                                                  .productsDispensary);
                                             }
                                           } else {
                                             productDispensaryBloc2
@@ -1197,15 +1181,16 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                         });
                                       }
                                     },
-                                    splashColor: Colors.grey,
                                     highlightColor: Colors.grey,
                                     child: Container(
                                       width: 34,
                                       height: 34,
                                       child: Icon(
                                         Icons.add,
-                                        color: currentTheme
-                                            .currentTheme.accentColor,
+                                        color: (isDispensaryDelivered)
+                                            ? Colors.grey
+                                            : currentTheme
+                                                .currentTheme.accentColor,
                                         size: 15,
                                       ),
                                     ),
@@ -1335,13 +1320,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
       padding: EdgeInsets.only(left: 20, right: 20, top: 10),
       child: Column(
         children: [
-          Container(
-            child: _createGramsRecipe(),
-          ),
           GestureDetector(
-            onTap: () => _selectDateGermina(context),
+            onTap: () =>
+                (!isDispensaryDelivered) ? _selectDateGermina(context) : null,
             child: AbsorbPointer(
               child: TextFormField(
+                enabled: !isDispensaryDelivered,
                 style: TextStyle(
                   color:
                       (currentTheme.customTheme) ? Colors.white : Colors.black,
@@ -1373,7 +1357,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                   ),
                   labelText: 'Fecha Entrega',
 
-                  suffixIcon: Icon(Icons.event,
+                  icon: Icon(Icons.event,
                       color: (currentTheme.customTheme)
                           ? Colors.white54
                           : Colors.black54),
@@ -1385,6 +1369,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
               ),
             ),
           ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            child: _createGramsRecipe(),
+          ),
           Container(
             padding: EdgeInsets.only(top: 10),
             child: Row(
@@ -1395,6 +1385,20 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                         backgroundColor: Colors.black,
                         child: Icon(Icons.pending)),
                     label: Text('En Curso'),
+                  ),
+                if (isDispensary && isDispensaryDelivered)
+                  Chip(
+                    backgroundColor: currentTheme.currentTheme.accentColor,
+                    avatar: CircleAvatar(
+                        backgroundColor: Colors.black,
+                        child: Icon(
+                          Icons.check,
+                          color: currentTheme.currentTheme.accentColor,
+                        )),
+                    label: Text(
+                      'Entregado',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 if (isDispensary) SizedBox(width: 10),
                 if (isDispensary)
@@ -1408,7 +1412,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                       : Container(),
                 if (!isDispensary)
                   Container(
-                      child: Text('Tratamientos ',
+                      child: Text(' ',
                           style: TextStyle(
                               color: (currentTheme.customTheme)
                                   ? Colors.white
@@ -1488,10 +1492,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
               color: (currentTheme.customTheme) ? Colors.white : Colors.black,
             ),
             onTap: () => {
-              if (gramsRecipeController.text == "0")
-                gramsRecipeController.text = "",
+              if (!isDispensaryDelivered)
+                if (gramsRecipeController.text == "0")
+                  gramsRecipeController.text = "",
               setState(() {})
             },
+            enabled: !isDispensaryDelivered,
             controller: gramsRecipeController,
             inputFormatters: <TextInputFormatter>[
               LengthLimitingTextInputFormatter(3),
@@ -1513,13 +1519,17 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                       ? Colors.white54
                       : Colors.black54,
                 ),
-                // icon: Icon(Icons.perm_identity),
+                icon: FaIcon(
+                  FontAwesomeIcons.handHoldingMedical,
+                  color: (currentTheme.customTheme)
+                      ? Colors.white54
+                      : Colors.black54,
+                ),
                 //  fillColor: currentTheme.accentColor,
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                       color: currentTheme.currentTheme.accentColor, width: 2.0),
                 ),
-                hintText: '',
                 labelText: 'Gramos recetados *',
                 //counterText: snapshot.data,
                 errorText: snapshot.error),
@@ -1620,6 +1630,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           widget.productsDispensaryBloc.getDispensariesProducts(
               profile.user.uid, widget.profileUser.user.uid);
 
+          this.socketService.emit('principal-notification',
+              {'by': profile.user.uid, 'for': widget.profileUser.user.uid});
+
           Navigator.pop(context);
           _showSnackBar(context, 'Pedido en Curso y Notificado 👍');
           setState(() {});
@@ -1642,6 +1655,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           widget.productsDispensaryBloc.getDispensariesProducts(
               profile.user.uid, widget.profileUser.user.uid);
 
+          this.socketService.emit('principal-notification',
+              {'by': profile.user.uid, 'for': widget.profileUser.user.uid});
+
           Navigator.pop(context);
 
           _showSnackBar(context, 'Pedido Editado y Notificado 👍');
@@ -1662,8 +1678,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final dispensaryService =
         Provider.of<DispensaryService>(context, listen: false);
 
-    final createDispensary =
-        await dispensaryService.deliveredDispensary(dispensaryProducts.id);
+    final createDispensary = await dispensaryService
+        .deliveredDispensary(widget.dispensaryProducts.id);
 
     if (createDispensary != null) {
       if (createDispensary.ok) {
@@ -1671,6 +1687,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
         widget.productsDispensaryBloc.getDispensariesProducts(
             profile.user.uid, widget.profileUser.user.uid);
+
+        this.socketService.emit('principal-notification',
+            {'by': profile.user.uid, 'for': widget.profileUser.user.uid});
 
         Navigator.pop(context);
         _showSnackBar(context, 'Pedido Entregado y Notificado 👍');
