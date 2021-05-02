@@ -69,7 +69,7 @@ class _NotificationsPageState extends State<NotificationsPage>
     profile = authService.profile;
     //this.socketService.socket.on('personal-message', _listenMessage);
 
-    subscriptionBloc.getSubscriptionsApprove(profile.user.uid);
+    subscriptionBloc.getSubscriptionsPending(profile.user.uid);
 
     super.initState();
   }
@@ -149,7 +149,7 @@ class _NotificationsPageState extends State<NotificationsPage>
     final currentTheme = Provider.of<ThemeChanger>(context);
 
     return StreamBuilder<ProfilesDispensariesResponse>(
-      stream: subscriptionBloc.subscriptionsApprove.stream,
+      stream: subscriptionBloc.subscriptionsPending.stream,
       builder: (context, AsyncSnapshot<ProfilesDispensariesResponse> snapshot) {
         if (snapshot.hasData) {
           profiles = snapshot.data.profilesDispensaries;

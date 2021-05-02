@@ -11,7 +11,8 @@ class SubscriptionRepository {
     return _apiProvider.getSubscription(userAuth, userId);
   }
 
-  Future<ProfilesResponse> getProfilesSubsciptionsPending(String userId) {
+  Future<ProfilesDispensariesResponse> getProfilesSubsciptionsPending(
+      String userId) {
     return _apiProvider.getProfilesSubscriptionsByUser(userId);
   }
 

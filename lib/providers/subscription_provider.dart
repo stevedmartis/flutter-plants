@@ -84,7 +84,8 @@ class SubscriptionApiProvider {
     }
   }
 
-  Future<ProfilesResponse> getProfilesSubscriptionsByUser(String userId) async {
+  Future<ProfilesDispensariesResponse> getProfilesSubscriptionsByUser(
+      String userId) async {
     try {
       final urlFinal = Uri.https('${Environment.apiUrl}',
           '/api/notification/profiles/subscriptions/pending/$userId');
@@ -97,11 +98,11 @@ class SubscriptionApiProvider {
         },
       );
 
-      final profilesResponse = profilesResponseFromJson(resp.body);
+      final profilesResponse = profilesDispensariesResponseFromJson(resp.body);
 
       return profilesResponse;
     } catch (error) {
-      return ProfilesResponse.withError("$error");
+      return ProfilesDispensariesResponse.withError("$error");
     }
   }
 

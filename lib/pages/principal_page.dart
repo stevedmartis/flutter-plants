@@ -54,9 +54,32 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
     final notifiModel = Provider.of<NotificationModel>(context, listen: false);
     int number = notifiModel.numberNotifiBell;
-    number = (notifications.subscriptionsNotifi.length > 0)
-        ? notifications.subscriptionsNotifi.length
-        : 1;
+
+    final subscriptions = notifications.subscriptionsNotifi.length;
+
+    final dispensariesClub = notifications.dispensaryNotifi
+        .where((i) => i.isClubNotifi)
+        .toList()
+        .length;
+
+    final dispensariesUser = notifications.dispensaryNotifi
+        .where((i) => i.isUserNotifi)
+        .toList()
+        .length;
+
+    number = (profile.isClub)
+        ? (subscriptions > 0)
+            ? subscriptions
+            : (dispensariesClub > 0)
+                ? dispensariesClub
+                : 0
+        : (subscriptions > 0)
+            ? subscriptions
+            : (dispensariesUser > 0)
+                ? dispensariesUser
+                : 0;
+    ;
+
     notifiModel.numberNotifiBell = number;
 
     if (number >= 2) {

@@ -10,8 +10,8 @@ class SubscribeBloc with Validators {
   final BehaviorSubject<Subscription> _subscriptionCtrl =
       BehaviorSubject<Subscription>();
 
-  final BehaviorSubject<ProfilesResponse> _subscriptionsPending =
-      BehaviorSubject<ProfilesResponse>();
+  final BehaviorSubject<ProfilesDispensariesResponse> _subscriptionsPending =
+      BehaviorSubject<ProfilesDispensariesResponse>();
 
   final BehaviorSubject<ProfilesDispensariesResponse> _subscriptionsApprove =
       BehaviorSubject<ProfilesDispensariesResponse>();
@@ -29,7 +29,7 @@ class SubscribeBloc with Validators {
   }
 
   getSubscriptionsPending(String userId) async {
-    ProfilesResponse response =
+    ProfilesDispensariesResponse response =
         await _repository.getProfilesSubsciptionsPending(userId);
 
     _subscriptionsPending.sink.add(response);
@@ -56,7 +56,7 @@ class SubscribeBloc with Validators {
   // Obtener el último valor ingresado a los streams
   Subscription get recipeUpload => _subscriptionCtrl.value;
 
-  BehaviorSubject<ProfilesResponse> get subscriptionsPending =>
+  BehaviorSubject<ProfilesDispensariesResponse> get subscriptionsPending =>
       _subscriptionsPending;
 
   BehaviorSubject<ProfilesResponse> get subscriptionsApproveBySubId =>

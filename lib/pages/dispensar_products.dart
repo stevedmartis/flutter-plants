@@ -146,7 +146,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final authService = Provider.of<AuthService>(context, listen: false);
 
     profile = authService.profile;
-    this.socketService = Provider.of<SocketService>(context, listen: false);
+    //this.socketService = Provider.of<SocketService>(context, listen: false);
 
     getDispensaryActiveByUser();
 
@@ -156,8 +156,14 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
     roomService.room = null;
 
-    productsLikedBloc.getDispensaryProducts(profile.user.uid,
-        widget.profileUser.user.uid, widget.dispensaryProducts.id);
+    (profile.isClub)
+        ? productsLikedBloc.getDispensaryProducts(profile.user.uid,
+            widget.profileUser.user.uid, widget.dispensaryProducts.id)
+        : productsLikedBloc.getDispensaryProducts(
+            widget.dispensaryProducts.club,
+            widget.profileUser.user.uid,
+            widget.dispensaryProducts.id);
+    ;
   }
 
   void getDispensaryActiveByUser() async {
@@ -314,7 +320,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
             : null;
 
         final isQuantity = (quantity != null) ? quantity : initialQuantity;
-        return (!isDispensaryDelivered)
+        return (!isDispensaryDelivered && profile.isClub)
             ? GestureDetector(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -1055,13 +1061,15 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                     .currentTheme.scaffoldBackgroundColor,
                                 borderRadius: BorderRadius.circular(10),
                                 child: InkWell(
-                                  splashColor: (!isDispensaryDelivered)
-                                      ? Colors.grey
-                                      : Colors.black,
+                                  splashColor:
+                                      (!isDispensaryDelivered && profile.isClub)
+                                          ? Colors.grey
+                                          : Colors.black,
                                   borderRadius: BorderRadius.circular(10),
                                   radius: 25,
                                   onTap: () {
-                                    if (!isDispensaryDelivered) if (product
+                                    if (!isDispensaryDelivered &&
+                                        profile.isClub) if (product
                                             .quantityDispensary >
                                         0) {
                                       setState(() {
@@ -1094,7 +1102,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                     height: 34,
                                     child: Icon(
                                       Icons.remove,
-                                      color: (isDispensaryDelivered)
+                                      color: (isDispensaryDelivered ||
+                                              !profile.isClub)
                                           ? Colors.grey
                                           : currentTheme
                                               .currentTheme.accentColor,
@@ -1110,7 +1119,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                   child: Text(
                                     product.quantityDispensary.toString(),
                                     style: TextStyle(
-                                      color: (isDispensaryDelivered)
+                                      color: (isDispensaryDelivered ||
+                                              !profile.isClub)
                                           ? Colors.grey
                                           : currentTheme
                                               .currentTheme.accentColor,
@@ -1123,13 +1133,15 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                       .currentTheme.scaffoldBackgroundColor,
                                   borderRadius: BorderRadius.circular(10),
                                   child: InkWell(
-                                    splashColor: (!isDispensaryDelivered)
+                                    splashColor: (!isDispensaryDelivered &&
+                                            profile.isClub)
                                         ? Colors.grey
                                         : Colors.black,
                                     borderRadius: BorderRadius.circular(10),
                                     radius: 25,
                                     onTap: () {
-                                      if (!isDispensaryDelivered) if (product
+                                      if (!isDispensaryDelivered &&
+                                          profile.isClub) if (product
                                                   .quantityDispensary <
                                               gram &&
                                           gram != quantitysTotal) {
@@ -1187,7 +1199,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                       height: 34,
                                       child: Icon(
                                         Icons.add,
-                                        color: (isDispensaryDelivered)
+                                        color: (isDispensaryDelivered ||
+                                                !profile.isClub)
                                             ? Colors.grey
                                             : currentTheme
                                                 .currentTheme.accentColor,
@@ -1321,11 +1334,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
       child: Column(
         children: [
           GestureDetector(
-            onTap: () =>
-                (!isDispensaryDelivered) ? _selectDateGermina(context) : null,
+            onTap: () => (!isDispensaryDelivered && profile.isClub)
+                ? _selectDateGermina(context)
+                : null,
             child: AbsorbPointer(
               child: TextFormField(
-                enabled: !isDispensaryDelivered,
+                enabled: !isDispensaryDelivered && profile.isClub,
                 style: TextStyle(
                   color:
                       (currentTheme.customTheme) ? Colors.white : Colors.black,
@@ -1492,12 +1506,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
               color: (currentTheme.customTheme) ? Colors.white : Colors.black,
             ),
             onTap: () => {
-              if (!isDispensaryDelivered)
+              if (!isDispensaryDelivered && profile.isClub)
                 if (gramsRecipeController.text == "0")
                   gramsRecipeController.text = "",
               setState(() {})
             },
-            enabled: !isDispensaryDelivered,
+            enabled: !isDispensaryDelivered && profile.isClub,
             controller: gramsRecipeController,
             inputFormatters: <TextInputFormatter>[
               LengthLimitingTextInputFormatter(3),
