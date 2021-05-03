@@ -78,7 +78,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
             : (dispensariesUser > 0)
                 ? dispensariesUser
                 : 0;
-    ;
 
     notifiModel.numberNotifiBell = number;
 

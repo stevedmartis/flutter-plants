@@ -6,8 +6,10 @@ import 'package:chat/api/pdf_api.dart';
 import 'package:chat/api/pdf_invoice.dart';
 import 'package:chat/bloc/catalogo_bloc.dart';
 import 'package:chat/bloc/dispensary_bloc.dart';
+import 'package:chat/bloc/plant_bloc.dart';
 import 'package:chat/bloc/product_bloc.dart';
 import 'package:chat/bloc/room_bloc.dart';
+import 'package:chat/bloc/visit_bloc.dart';
 import 'package:chat/models/catalogo.dart';
 import 'package:chat/models/catalogos_response.dart';
 import 'package:chat/models/dispensaries_products_response%20copy.dart';
@@ -17,6 +19,7 @@ import 'package:chat/models/products.dart';
 import 'package:chat/models/profiles.dart';
 import 'package:chat/models/room.dart';
 import 'package:chat/models/rooms_response.dart';
+import 'package:chat/models/subscriptions_dispensaries.dart';
 import 'package:chat/models/visit.dart';
 import 'package:chat/pages/chat_page.dart';
 import 'package:chat/pages/dispensar_products.dart';
@@ -31,6 +34,7 @@ import 'package:chat/providers/products_provider.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/plant_services.dart';
 import 'package:chat/services/room_services.dart';
+import 'package:chat/services/subscription_service.dart';
 import 'package:chat/theme/theme.dart';
 import 'package:chat/widgets/card_product.dart';
 import 'package:chat/widgets/menu_drawer.dart';
@@ -150,12 +154,15 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
   List<Plant> myPlants = [];
   List<Visit> myVisits = [];
 
+  List<DispensariesSubscriptor> subscriptionsDispensaries = [];
+
   Profiles thisProfile;
 
   final productsDispensaryBloc = new ProductDispensaryBloc();
 
   final productUserBloc = ProductBloc();
   final plantService = new PlantService();
+  final subscriptionService = SubscriptionService();
   List<DispensariesProduct> dispensariesProducts = [];
 
   @override
@@ -166,9 +173,10 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
     profile = authService.profile;
 
-    // if (widget.isUserAuth) _chargeMyRooms();
-    // if (widget.isUserAuth) _chargeMyLastPlantsByUser();
-    // if (widget.isUserAuth) _chargeMyLastVisitByUser();
+    if (widget.isUserAuth) _chargeMyRooms();
+    if (widget.isUserAuth) _chargeMyLastPlantsByUser();
+    if (widget.isUserAuth) _chargeMyLastVisitByUser();
+    if (widget.isUserAuth && profile.isClub) _chargeSubscriptionsDispensaries();
 
     if (widget.isUserAuth && profile.isClub) fetchMyCatalogos();
     if (!widget.profile.isClub && !widget.isUserAuth)
@@ -180,7 +188,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     super.initState();
   }
 
-/*   _chargeMyRooms() async {
+  _chargeMyRooms() async {
     roomBloc.getMyRooms(profile.user.uid);
 
     roomBloc.myRooms.listen((rooms) {
@@ -205,7 +213,15 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
       myVisits = visits.visits;
       if (mounted) setState(() {});
     });
-  } */
+  }
+
+  _chargeSubscriptionsDispensaries() async {
+    var res = await subscriptionService
+        .getSubscriptionsDispensaries(profile.user.uid);
+
+    subscriptionsDispensaries = res.dispensariesSubscriptors;
+    print(subscriptionsDispensaries);
+  }
 
   @override
   void didUpdateWidget(MyProfile oldWidget) {
@@ -1406,7 +1422,9 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                                           grams: (visit.grams != null)
                                               ? visit.grams
                                               : '0');
-                                    }));
+                                    }),
+                                    subscriptionsDispensary:
+                                        subscriptionsDispensaries);
 
                                 final pdfFile =
                                     await PdfInvoiceApi.generate(report);

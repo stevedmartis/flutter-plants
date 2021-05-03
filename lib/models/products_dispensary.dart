@@ -4,35 +4,40 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/products.dart';
+import 'package:chat/models/product_principal.dart';
 
-DispensaryProductsResponse dispensaryProductsResponseFromJson(String str) =>
-    DispensaryProductsResponse.fromJson(json.decode(str));
+DispensaryProductsProfileResponse dispensaryProductsResponseFromJson(
+        String str) =>
+    DispensaryProductsProfileResponse.fromJson(json.decode(str));
 
-String catalogosProductsResponseToJson(DispensaryProductsResponse data) =>
+String catalogosProductsResponseToJson(
+        DispensaryProductsProfileResponse data) =>
     json.encode(data.toJson());
 
-class DispensaryProductsResponse {
-  DispensaryProductsResponse({
+class DispensaryProductsProfileResponse {
+  DispensaryProductsProfileResponse({
     this.ok,
-    this.products,
+    this.productsProfileDispensary,
   });
 
   bool ok;
 
-  List<Product> products;
+  List<ProductProfile> productsProfileDispensary;
 
-  factory DispensaryProductsResponse.fromJson(Map<String, dynamic> json) =>
-      DispensaryProductsResponse(
+  factory DispensaryProductsProfileResponse.fromJson(
+          Map<String, dynamic> json) =>
+      DispensaryProductsProfileResponse(
         ok: json["ok"],
-        products: List<Product>.from(
-            json["products"].map((x) => Product.fromJson(x))),
+        productsProfileDispensary: List<ProductProfile>.from(
+            json["productsProfileDispensary"]
+                .map((x) => ProductProfile.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "ok": ok,
-        "products": List<dynamic>.from(products.map((x) => x.toJson())),
+        "productsProfileDispensary": List<dynamic>.from(
+            productsProfileDispensary.map((x) => x.toJson())),
       };
 
-  DispensaryProductsResponse.withError(String errorValue);
+  DispensaryProductsProfileResponse.withError(String errorValue);
 }

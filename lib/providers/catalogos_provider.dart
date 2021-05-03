@@ -67,7 +67,7 @@ class CatalogosApiProvider {
     }
   }
 
-  Future<DispensaryProductsResponse> getDispensaryProducts(
+  Future<DispensaryProductsProfileResponse> getDispensaryProductsProfile(
       String clubId, String userId, String dispensaryId) async {
     final urlFinal = Uri.https('${Environment.apiUrl}',
         '/api/product/dispensary/products/club/$clubId/user/$userId/dispensary/$dispensaryId');
@@ -84,7 +84,7 @@ class CatalogosApiProvider {
       return dispensaryProductsResponse;
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return DispensaryProductsResponse.withError("$error");
+      return DispensaryProductsProfileResponse.withError("$error");
     }
   }
 

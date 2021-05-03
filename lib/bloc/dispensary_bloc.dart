@@ -1,18 +1,26 @@
 import 'dart:async';
 import 'package:chat/bloc/validators.dart';
 import 'package:chat/models/dispensaries_products_response%20copy.dart';
+import 'package:chat/models/product_principal.dart';
 import 'package:chat/models/products.dart';
+import 'package:chat/models/products_dispensary.dart';
 import 'package:chat/repository/products_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProductDispensaryBloc with Validators {
   final ProductsRepository _repository = ProductsRepository();
 
-  final BehaviorSubject<List<Product>> _productDispensary =
-      BehaviorSubject<List<Product>>();
+  final BehaviorSubject<DispensaryProductsProfileResponse> _productDispensary =
+      BehaviorSubject<DispensaryProductsProfileResponse>();
 
   final BehaviorSubject<DispensariesProductsResponse> _dispensariesProducts =
       BehaviorSubject<DispensariesProductsResponse>();
+
+  final BehaviorSubject<List<ProductProfile>> _productsProfilesDispensary =
+      BehaviorSubject<List<ProductProfile>>();
+
+  final BehaviorSubject<List<Product>> _productsDispensary =
+      BehaviorSubject<List<Product>>();
 
   final _gramsRecipeController = BehaviorSubject<String>();
 
@@ -21,7 +29,8 @@ class ProductDispensaryBloc with Validators {
   BehaviorSubject<String> get gramsRecipeAdd => _gramsRecipeController.stream;
 
   getProductsDispensary(String productId) async {
-    List<Product> response = await _repository.getProductsDispensary(productId);
+    DispensaryProductsProfileResponse response =
+        await _repository.getProductsDispensary(productId);
 
     if (!_productDispensary.isClosed) _productDispensary.sink.add(response);
   }
@@ -40,11 +49,16 @@ class ProductDispensaryBloc with Validators {
 
   Function(String) get changeGrams => _gramsRecipeController.sink.add;
 
-  BehaviorSubject<List<Product>> get productDispensary =>
-      _productDispensary.stream;
+  BehaviorSubject<List<ProductProfile>> get productsProfileDispensary =>
+      _productsProfilesDispensary.stream;
+
+  BehaviorSubject<List<Product>> get productsDispensary =>
+      _productsDispensary.stream;
 
   dispose() {
+    _productsProfilesDispensary?.close();
     _productDispensary?.close();
+    _productsDispensary?.close();
     _gramsRecipeController?.close();
     _dispensariesProducts?.close();
 

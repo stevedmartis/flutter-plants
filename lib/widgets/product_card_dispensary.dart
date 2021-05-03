@@ -50,7 +50,7 @@ class _CardProductState extends State<CardProductDispensary> {
 
       if (widget.isActive)
         productDispensary =
-            widget.productsUserDispensaryBloc.productDispensary.value;
+            widget.productsUserDispensaryBloc.productsDispensary.value;
     });
 
     return Column(
@@ -185,7 +185,7 @@ class _CardProductState extends State<CardProductDispensary> {
                           quantity = 0;
                           productDispensary = [];
 
-                          productsUserDispensaryBloc.productDispensary.sink
+                          productsUserDispensaryBloc.productsDispensary.sink
                               .add(productDispensary);
                         }
 
@@ -230,7 +230,7 @@ class _CardProductState extends State<CardProductDispensary> {
                                                 item.quantityDispensary =
                                                     quantity,
                                                 productsUserDispensaryBloc
-                                                    .productDispensary.sink
+                                                    .productsDispensary.sink
                                                     .add(productDispensary)
                                               });
                                         }
@@ -294,13 +294,13 @@ class _CardProductState extends State<CardProductDispensary> {
                                             productDispensary.add(product);
 
                                             productsUserDispensaryBloc
-                                                .productDispensary.sink
+                                                .productsDispensary.sink
                                                 .add(productDispensary);
                                           } else {
                                             product.quantityDispensary =
                                                 quantity;
                                             productsUserDispensaryBloc
-                                                .productDispensary.sink
+                                                .productsDispensary.sink
                                                 .add(productDispensary);
                                           }
                                         });

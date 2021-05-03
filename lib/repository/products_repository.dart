@@ -1,5 +1,6 @@
 import 'package:chat/models/dispensaries_products_response%20copy.dart';
 import 'package:chat/models/products.dart';
+import 'package:chat/models/products_dispensary.dart';
 import 'package:chat/models/products_profiles_response.dart';
 import 'package:chat/providers/products_provider.dart';
 
@@ -14,7 +15,8 @@ class ProductsRepository {
     return _apiProvider.getProduct(productId);
   }
 
-  Future<List<Product>> getProductsDispensary(String productId) {
+  Future<DispensaryProductsProfileResponse> getProductsDispensary(
+      String productId) {
     return _apiProvider.getProductsDispensary(productId);
   }
 

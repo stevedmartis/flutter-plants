@@ -26,8 +26,8 @@ class ProductBloc with Validators {
   final BehaviorSubject<CatalogosProductsResponse> _catalogosProducts =
       BehaviorSubject<CatalogosProductsResponse>();
 
-  final BehaviorSubject<DispensaryProductsResponse> _dispensaryProducts =
-      BehaviorSubject<DispensaryProductsResponse>();
+  final BehaviorSubject<DispensaryProductsProfileResponse> _dispensaryProducts =
+      BehaviorSubject<DispensaryProductsProfileResponse>();
 
   final BehaviorSubject<CatalogosProductsResponse> _catalogosUserProducts =
       BehaviorSubject<CatalogosProductsResponse>();
@@ -46,10 +46,11 @@ class ProductBloc with Validators {
     if (!_catalogosProducts.isClosed) _catalogosProducts.sink.add(response);
   }
 
-  getDispensaryProducts(
+  getDispensaryProductsProfile(
       String profileClubId, String profileUserId, String dispensaryId) async {
-    DispensaryProductsResponse response = await _service.getDispensaryProducts(
-        profileClubId, profileUserId, dispensaryId);
+    DispensaryProductsProfileResponse response =
+        await _service.getDispensaryProductsProfile(
+            profileClubId, profileUserId, dispensaryId);
     if (!_dispensaryProducts.isClosed) _dispensaryProducts.sink.add(response);
   }
 
@@ -71,7 +72,7 @@ class ProductBloc with Validators {
   BehaviorSubject<CatalogosProductsResponse> get catalogosProducts =>
       _catalogosProducts;
 
-  BehaviorSubject<DispensaryProductsResponse> get dispensaryProducts =>
+  BehaviorSubject<DispensaryProductsProfileResponse> get dispensaryProducts =>
       _dispensaryProducts;
 
   BehaviorSubject<CatalogosProductsResponse> get catalogosProductsUser =>

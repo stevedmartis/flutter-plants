@@ -5,6 +5,7 @@ import 'package:chat/models/dispensaries_products_response%20copy.dart';
 import 'package:chat/models/favorite_response.dart';
 import 'package:chat/models/product_response.dart';
 import 'package:chat/models/products.dart';
+import 'package:chat/models/products_dispensary.dart';
 import 'package:chat/models/products_profiles_response.dart';
 import 'package:chat/models/products_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -66,7 +67,8 @@ class ProductsApiProvider {
     }
   }
 
-  Future<List<Product>> getProductsDispensary(String productId) async {
+  Future<DispensaryProductsProfileResponse> getProductsDispensary(
+      String productId) async {
     final urlFinal =
         Uri.https('${Environment.apiUrl}', '/api/product/product/$productId');
 
@@ -76,11 +78,11 @@ class ProductsApiProvider {
       final resp = await http.get(urlFinal,
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
-      final plantResponse = productsResponseFromJson(resp.body);
-      return plantResponse.products;
+      final plantResponse = dispensaryProductsResponseFromJson(resp.body);
+      return plantResponse;
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return [];
+      return DispensaryProductsProfileResponse.withError('$error');
     }
   }
 

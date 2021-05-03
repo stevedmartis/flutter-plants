@@ -2,6 +2,7 @@ import 'package:chat/models/message_error.dart';
 
 import 'package:chat/models/subscribe.dart';
 import 'package:chat/models/subscription_response.dart';
+import 'package:chat/models/subscriptions_dispensaries.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -58,6 +59,32 @@ class SubscriptionService with ChangeNotifier {
       final respBody = errorMessageResponseFromJson(resp.body);
 
       return respBody;
+    }
+  }
+
+  Future<DispensariesSubscriptorResponse> getSubscriptionsDispensaries(
+      String clubId) async {
+    final token = await this._storage.read(key: 'token');
+
+    final urlFinal = Uri.https('${Environment.apiUrl}',
+        '/api/subscription/subscriptions/profile/dispensaries/$clubId');
+
+    try {
+      final resp = await http.get(urlFinal,
+          headers: {'Content-Type': 'application/json', 'x-token': token});
+
+      final productsResponse =
+          dispensariesSubscriptorResponseFromJson(resp.body);
+
+      // roomModel.rooms = rooms;
+      //roomModel.rooms;
+      // this.rooms = rooms;
+
+      //  print('$roomModel.rooms');
+
+      return productsResponse;
+    } catch (e) {
+      return DispensariesSubscriptorResponse.withError('$e');
     }
   }
 }

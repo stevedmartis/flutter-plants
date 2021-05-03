@@ -47,6 +47,12 @@ class PdfInvoiceApi {
           if (report.visits.length > 0) buildVisits(report),
           Divider(),
           if (report.visits.length > 0) buildTotal(report),
+          SizedBox(height: 2.0),
+          if (report.plants.length > 0) buildTitleDispensary(),
+          if (report.subscriptionsDispensary.length > 0)
+            buildSubscriptionsDispensaries(report),
+          Divider(),
+          if (report.visits.length > 0) buildGTotal(report),
         ],
         footer: (context) => buildFooter(report),
       ));
@@ -252,6 +258,19 @@ class PdfInvoiceApi {
         ],
       );
 
+  static Widget buildTitleDispensary() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 0.5 * PdfPageFormat.cm),
+          Text(
+            'Dispensario',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 0.4 * PdfPageFormat.cm),
+          SizedBox(height: 0.4 * PdfPageFormat.cm),
+        ],
+      );
+
   static Widget buildRooms(Report report) {
     final headers = [
       'Nombre',
@@ -377,6 +396,63 @@ class PdfInvoiceApi {
     );
   }
 
+  static Widget buildSubscriptionsDispensaries(Report report) {
+    final headers = [
+      'Miembro',
+      'Suscripción',
+      'G.Receta',
+      'Estado',
+      'Entrega',
+      'G.Dispensados'
+    ];
+    final data = report.subscriptionsDispensary.map((item) {
+      return [
+        //item.description,
+
+        (item.subscriptor.name != null)
+            ? '${item.subscriptor.name}'
+            : '${item.subscriptor.user.username}', //miembro
+        Utils.formatDate(item.subscription.updatedAt), // date suscription
+        item.gramsRecipe, // gramos receta
+
+        (item.isActive && !item.isDelivered) // estado
+            ? 'En Curso'
+            : (item.isActive && item.isDelivered)
+                ? 'Entregado'
+                : 'Inactivo',
+
+        (item.isActive && !item.isDelivered) // entrega date
+            ? '${item.dateDelivery}'
+            : (item.isActive && item.isDelivered)
+                ? '${item.dateDelivery}'
+                : 'Sin Fecha',
+
+        item.gramsTotal, // g total
+
+        //(item.ph != null) ? '${item.ph}' : '0',
+      ];
+    }).toList();
+
+    return Table.fromTextArray(
+      headers: headers,
+      data: data,
+      border: null,
+      headerStyle: TextStyle(fontWeight: FontWeight.bold),
+      headerDecoration: BoxDecoration(color: PdfColors.grey300),
+      cellHeight: 30,
+      cellAlignments: {
+        0: Alignment.centerLeft,
+        1: Alignment.centerRight,
+        2: Alignment.centerRight,
+        3: Alignment.centerRight,
+        4: Alignment.centerRight,
+        5: Alignment.centerRight,
+        6: Alignment.centerRight,
+        7: Alignment.centerRight,
+      },
+    );
+  }
+
   static Widget buildTotal(Report report) {
     final gramsTotal = report.visits
         .map((item) => int.parse(item.grams))
@@ -404,7 +480,54 @@ class PdfInvoiceApi {
                 ), */
                 Divider(),
                 buildText(
-                  title: 'Total gramos',
+                  title: 'Total Cosechados',
+                  titleStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  value: '$gramsTotal',
+                  unite: true,
+                ),
+                SizedBox(height: 2 * PdfPageFormat.mm),
+                Container(height: 1, color: PdfColors.grey400),
+                SizedBox(height: 0.5 * PdfPageFormat.mm),
+                Container(height: 1, color: PdfColors.grey400),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget buildGTotal(Report report) {
+    final gramsTotal = report.subscriptionsDispensary
+        .map((item) => (item.gramsTotal))
+        .reduce((item1, item2) => item1 + item2);
+
+    return Container(
+      alignment: Alignment.centerRight,
+      child: Row(
+        children: [
+          Spacer(flex: 6),
+          Expanded(
+            flex: 4,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /* buildText(
+                  title: 'Toal Gramos',
+                  value: Utils.formatPrice(34),
+                  unite: true,
+                ),
+                buildText(
+                  title: 'Vat ${1 * 100} %',
+                  value: Utils.formatPrice(2),
+                  unite: true,
+                ), */
+                Divider(),
+                buildText(
+                  title: 'Total Dispensados',
                   titleStyle: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

@@ -1,3 +1,4 @@
+import 'package:chat/models/subscriptions_dispensaries.dart';
 import 'package:flutter/material.dart';
 
 class Customer {
@@ -38,15 +39,16 @@ class Report {
   final List<RoomsItem> rooms;
   final List<PlantsItem> plants;
   final List<VisitsItem> visits;
+  final List<DispensariesSubscriptor> subscriptionsDispensary;
 
-  const Report({
-    @required this.info,
-    @required this.profile,
-    @required this.customer,
-    @required this.rooms,
-    @required this.plants,
-    @required this.visits,
-  });
+  const Report(
+      {@required this.info,
+      @required this.profile,
+      @required this.customer,
+      @required this.rooms,
+      @required this.plants,
+      @required this.visits,
+      @required this.subscriptionsDispensary});
 }
 
 class InvoiceInfo {

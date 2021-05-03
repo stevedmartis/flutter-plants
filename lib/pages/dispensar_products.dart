@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:animate_do/animate_do.dart';
+import 'package:animations/animations.dart';
 import 'package:chat/bloc/dispensary_bloc.dart';
 import 'package:chat/bloc/plant_bloc.dart';
 import 'package:chat/bloc/product_bloc.dart';
@@ -14,6 +16,7 @@ import 'package:chat/models/dispensary.dart';
 import 'package:chat/models/light.dart';
 
 import 'package:chat/models/plant.dart';
+import 'package:chat/models/product_principal.dart';
 import 'package:chat/models/products.dart';
 import 'package:chat/models/products_dispensary.dart';
 import 'package:chat/models/profiles.dart';
@@ -24,6 +27,7 @@ import 'package:chat/pages/add_update_light.dart';
 import 'package:chat/pages/add_update_plant.dart';
 import 'package:chat/pages/add_update_product.dart';
 import 'package:chat/pages/plant_detail.dart';
+import 'package:chat/pages/product_profile_detail.dart';
 import 'package:chat/pages/profile_page.dart';
 import 'package:chat/pages/room_list_page.dart';
 import 'package:chat/providers/air_provider.dart';
@@ -105,10 +109,10 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   bool loadingData = false;
   bool isEdit = false;
 
-  List<Product> dispensaryProductsLikes = [];
+  List<ProductProfile> dispensaryProductsLikes = [];
   DispensariesProduct dispensaryProducts;
 
-  List<Product> dispensaryProductsNotLikes = [];
+  List<ProductProfile> dispensaryProductsNotLikes = [];
 
   final productsLikedBloc = ProductBloc();
 
@@ -157,13 +161,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     roomService.room = null;
 
     (profile.isClub)
-        ? productsLikedBloc.getDispensaryProducts(profile.user.uid,
+        ? productsLikedBloc.getDispensaryProductsProfile(profile.user.uid,
             widget.profileUser.user.uid, widget.dispensaryProducts.id)
-        : productsLikedBloc.getDispensaryProducts(
+        : productsLikedBloc.getDispensaryProductsProfile(
             widget.dispensaryProducts.club,
             widget.profileUser.user.uid,
             widget.dispensaryProducts.id);
-    ;
   }
 
   void getDispensaryActiveByUser() async {
@@ -181,7 +184,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     _dateGController.text = widget.dispensaryProducts.dateDelivery;
 
     if (isDispensary) {
-      productDispensaryBloc2.productDispensary.value = [];
+      //  productDispensaryBloc2.productDispensary.value = [];
       initialQuantity =
           (widget.dispensaryProducts.productsDispensary.length > 0)
               ? widget.dispensaryProducts.productsDispensary
@@ -303,7 +306,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
   Widget _createButton() {
     return StreamBuilder(
-      stream: productDispensaryBloc2.productDispensary.stream,
+      stream: productDispensaryBloc2.productsDispensary.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
@@ -774,42 +777,59 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           children: [
             Container(
                 padding: EdgeInsets.only(top: 20),
-                child: StreamBuilder<DispensaryProductsResponse>(
+                child: StreamBuilder<DispensaryProductsProfileResponse>(
                   stream: productsLikedBloc.dispensaryProducts.stream,
                   builder: (context,
-                      AsyncSnapshot<DispensaryProductsResponse> snapshot) {
+                      AsyncSnapshot<DispensaryProductsProfileResponse>
+                          snapshot) {
                     if (snapshot.hasData) {
-                      final List<Product> allProducts = snapshot.data.products;
+                      final List<ProductProfile> allProducts =
+                          snapshot.data.productsProfileDispensary;
 
-                      productDispensaryBloc2.productDispensary.sink
+                      productDispensaryBloc2.productsProfileDispensary.sink
                           .add(allProducts);
 
                       dispensaryProductsLikes =
-                          allProducts.where((i) => i.isLike).toList();
+                          allProducts.where((i) => i.product.isLike).toList();
 
                       dispensaryProductsNotLikes =
-                          allProducts.where((i) => !i.isLike).toList();
+                          allProducts.where((i) => !i.product.isLike).toList();
 
                       return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (dispensaryProductsLikes.length > 0)
-                              Container(
-                                padding: EdgeInsets.only(
-                                    top: 0, left: 20, bottom: 15),
-                                child: Text(
-                                  'Favoritos',
-                                  style: TextStyle(
-                                      color: (currentTheme.customTheme)
-                                          ? Colors.white
-                                          : Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
+                            (dispensaryProductsLikes.length > 0 &&
+                                    profile.isClub)
+                                ? Container(
+                                    padding: EdgeInsets.only(
+                                        top: 0, left: 20, bottom: 15),
+                                    child: Text(
+                                      'Favoritos',
+                                      style: TextStyle(
+                                          color: (currentTheme.customTheme)
+                                              ? Colors.white
+                                              : Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  )
+                                : Container(
+                                    padding: EdgeInsets.only(
+                                        top: 0, left: 20, bottom: 15),
+                                    child: Text(
+                                      'Tratamientos',
+                                      style: TextStyle(
+                                          color: (currentTheme.customTheme)
+                                              ? Colors.white
+                                              : Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  ),
                             if (dispensaryProductsLikes.length > 0)
                               _buildDispensaryProducts(dispensaryProductsLikes),
-                            if (dispensaryProductsNotLikes.length > 0)
+                            if (dispensaryProductsNotLikes.length > 0 &&
+                                profile.isClub)
                               Container(
                                 padding: EdgeInsets.only(
                                     top: 0, left: 20, bottom: 15),
@@ -848,15 +868,13 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     ));
   }
 
-  Widget _buildDispensaryProducts(products) {
-    final size = MediaQuery.of(context).size;
-    final currentTheme = Provider.of<ThemeChanger>(context);
-
-    products.sort((Product a, Product b) => b.id.compareTo(a.id));
+  Widget _buildDispensaryProducts(List<ProductProfile> productsProfile) {
+    productsProfile.sort((ProductProfile a, ProductProfile b) =>
+        b.product.id.compareTo(a.product.id));
 
     return Container(
       child: StreamBuilder(
-          stream: productDispensaryBloc2.productDispensary,
+          stream: productDispensaryBloc2.productsDispensary,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             final isSelected = (snapshot.data != null)
                 ? (snapshot.data != "")
@@ -865,8 +883,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                         : false
                     : false
                 : false;
-
-            int quantitysTotal = 0;
 
             quantitysTotal = (isSelected)
                 ? snapshot.data
@@ -878,75 +894,173 @@ class _DispensarProductPageState extends State<DispensarProductPage>
               child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: products.length,
+                  itemCount: productsProfile.length,
                   itemBuilder: (BuildContext ctxt, int index) {
-                    final product = products[index];
+                    final productProfile = productsProfile[index];
 
-                    return Container(
-                        padding:
-                            EdgeInsets.only(bottom: 20, left: 20, right: 10),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: (currentTheme.customTheme)
-                                      ? currentTheme.currentTheme.cardColor
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(10.0),
-                                      topLeft: Radius.circular(10.0),
-                                      bottomRight: Radius.circular(10.0),
-                                      bottomLeft: Radius.circular(10.0))),
+                    return (productProfile.product.quantityDispensary > 0 ||
+                            productProfile.profile.user.uid == profile.user.uid)
+                        ? _buildWidgetProducts(
+                            productsProfile,
+                          )
+                        : Container();
+                  }),
+            );
+          }),
+    );
+  }
 
-                              // padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5.0),
-                              width: size.height / 1.5,
-                              child: FittedBox(
-                                child: Stack(
-                                  children: [
-                                    Row(
-                                      children: <Widget>[
-                                        productItem(
-                                          true,
-                                          product,
-                                          quantitysTotal,
-                                        ),
-                                        Container(
-                                          width: 100,
-                                          height: 100,
-                                          child: ClipRRect(
-                                              borderRadius: BorderRadius.only(
-                                                  topRight:
-                                                      Radius.circular(10.0),
-                                                  topLeft:
-                                                      Radius.circular(10.0),
-                                                  bottomRight:
-                                                      Radius.circular(0.0),
-                                                  bottomLeft:
-                                                      Radius.circular(10.0)),
-                                              child: Material(
-                                                type: MaterialType.transparency,
-                                                child: (product.coverImage !=
-                                                        "")
-                                                    ? cachedNetworkImage(
-                                                        product.getCoverImg())
-                                                    : FadeInImage(
-                                                        image: AssetImage(
-                                                            'assets/images/empty_image.png'),
-                                                        placeholder: AssetImage(
-                                                            'assets/loading2.gif'),
-                                                        fit: BoxFit.cover),
-                                              )),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+  Widget _buildWidgetProducts(List<ProductProfile> productsProfile) {
+    final currentTheme = Provider.of<ThemeChanger>(context);
+    final size = MediaQuery.of(context).size;
 
-                        /*  CardProduct(
+    return Container(
+      child: SizedBox(
+        child: ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: productsProfile.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              final productProfiles = productsProfile[index];
+
+              final isUserAuth =
+                  (productProfiles.profile.user.uid == profile.user.uid)
+                      ? true
+                      : false;
+
+              return Stack(
+                children: [
+                  FadeInLeft(
+                    delay: Duration(milliseconds: 300 * index),
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: size.height / 30,
+                      ),
+                      child: OpenContainer(
+                          closedElevation: 5,
+                          openElevation: 5,
+                          closedColor:
+                              currentTheme.currentTheme.scaffoldBackgroundColor,
+                          openColor:
+                              currentTheme.currentTheme.scaffoldBackgroundColor,
+                          transitionType: ContainerTransitionType.fade,
+                          openShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(20.0),
+                                topLeft: Radius.circular(10.0),
+                                bottomRight: Radius.circular(10.0),
+                                bottomLeft: Radius.circular(10.0)),
+                          ),
+                          closedShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(20.0),
+                                topLeft: Radius.circular(10.0),
+                                bottomRight: Radius.circular(10.0),
+                                bottomLeft: Radius.circular(10.0)),
+                          ),
+                          openBuilder: (_, closeContainer) {
+                            return ProductProfileDetailPage(
+                                productProfile: productProfiles,
+                                isUserAuth: isUserAuth);
+                          },
+                          closedBuilder: (_, openContainer) {
+                            return Stack(
+                              children: [
+                                (!profile.isClub)
+                                    ? Container(
+                                        child: CardProductProfile(
+                                            productProfile: productProfiles),
+                                      )
+                                    : Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: 20, left: 20, right: 10),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  color:
+                                                      (currentTheme.customTheme)
+                                                          ? currentTheme
+                                                              .currentTheme
+                                                              .cardColor
+                                                          : Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10.0),
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10.0),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  10.0),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  10.0))),
+
+                                              // padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5.0),
+                                              width: size.height / 1.5,
+                                              child: FittedBox(
+                                                child: Stack(
+                                                  children: [
+                                                    Row(
+                                                      children: <Widget>[
+                                                        productItem(
+                                                          true,
+                                                          productProfiles
+                                                              .product,
+                                                          quantitysTotal,
+                                                        ),
+                                                        Container(
+                                                          width: 100,
+                                                          height: 100,
+                                                          child: ClipRRect(
+                                                              borderRadius: BorderRadius.only(
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10.0),
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10.0),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          0.0),
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                              child: Material(
+                                                                type: MaterialType
+                                                                    .transparency,
+                                                                child: (productProfiles
+                                                                            .product
+                                                                            .coverImage !=
+                                                                        "")
+                                                                    ? cachedNetworkImage(productProfiles
+                                                                        .product
+                                                                        .getCoverImg())
+                                                                    : FadeInImage(
+                                                                        image: AssetImage(
+                                                                            'assets/images/empty_image.png'),
+                                                                        placeholder:
+                                                                            AssetImage(
+                                                                                'assets/loading2.gif'),
+                                                                        fit: BoxFit
+                                                                            .cover),
+                                                              )),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+
+                                        /*  CardProduct(
                           product: product,
                           isDispensary: true,
                           quantitysTotal: quantitysTotal,
@@ -954,11 +1068,45 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                               productsUserDispensaryBloc,
                           isActive: isDispensaryActive,
                         ) */
-                        );
-                  }),
-            );
-          }),
+                                        ),
+                                if (!profile.isClub)
+                                  buildCircleQuantutyProductProfile(
+                                      context,
+                                      productProfiles
+                                          .product.quantityDispensary),
+
+                                /* buildCircleFavoriteProductProfile(
+                                  context, productProfiles.product.isLike), */
+                              ],
+                            );
+                          }),
+                    ),
+                  ),
+                ],
+              );
+            }),
+      ),
     );
+  }
+
+  Container buildCircleQuantutyProductProfile(context, int quantity) {
+    final size = MediaQuery.of(context).size;
+    //final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
+
+    return Container(
+        alignment: Alignment.topRight,
+        margin: EdgeInsets.only(left: size.width / 1.4, top: 0.0),
+        width: 120,
+        height: 120,
+        child: CircleAvatar(
+            child: Text(
+              '$quantity',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.white),
+            ),
+            backgroundColor: Colors.black));
   }
 
   Widget productItem(
@@ -1035,10 +1183,10 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                         if (!isDispensaryActive) if (gram == 0 ||
                             gram < product.quantityDispensary) {
                           product.quantityDispensary = 0;
-                          productDispensaryBloc2.productDispensary.value = [];
+                          productDispensaryBloc2.productsDispensary.value = [];
 
-                          productDispensaryBloc2.productDispensary.sink.add(
-                              productDispensaryBloc2.productDispensary.value);
+                          productDispensaryBloc2.productsDispensary.sink.add(
+                              productDispensaryBloc2.productsDispensary.value);
                         }
 
                         Timer(Duration(seconds: 1),
@@ -1078,7 +1226,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                             .requestFocus(new FocusNode());
 
                                         final item = productDispensaryBloc2
-                                            .productDispensary.value
+                                            .productsDispensary.value
                                             .firstWhere(
                                                 (item) => item.id == product.id,
                                                 orElse: () => null);
@@ -1087,9 +1235,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                                 item.quantityDispensary =
                                                     product.quantityDispensary,
                                                 productDispensaryBloc2
-                                                    .productDispensary.sink
+                                                    .productsDispensary.sink
                                                     .add(productDispensaryBloc2
-                                                        .productDispensary
+                                                        .productsDispensary
                                                         .value)
                                               });
                                         }
@@ -1152,11 +1300,11 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                           product.quantityDispensary++;
 
                                           if (productDispensaryBloc2
-                                                  .productDispensary.value !=
+                                                  .productsDispensary.value !=
                                               null) {
                                             final findItem =
                                                 productDispensaryBloc2
-                                                    .productDispensary.value
+                                                    .productsDispensary.value
                                                     .firstWhere(
                                                         (item) =>
                                                             item.id ==
@@ -1165,30 +1313,32 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
                                             if (findItem == null) {
                                               productDispensaryBloc2
-                                                  .productDispensary.value
+                                                  .productsDispensary.value
                                                   .add(product);
 
                                               productDispensaryBloc2
-                                                  .productDispensary.sink
+                                                  .productsDispensary.sink
                                                   .add(productDispensaryBloc2
-                                                      .productDispensary.value);
+                                                      .productsDispensary
+                                                      .value);
                                             } else {
                                               findItem.quantityDispensary =
                                                   product.quantityDispensary;
                                               productDispensaryBloc2
-                                                  .productDispensary.sink
+                                                  .productsDispensary.sink
                                                   .add(productDispensaryBloc2
-                                                      .productDispensary.value);
+                                                      .productsDispensary
+                                                      .value);
                                             }
                                           } else {
                                             productDispensaryBloc2
-                                                .productDispensary.value
+                                                .productsDispensary.value
                                                 .add(product);
 
                                             productDispensaryBloc2
-                                                .productDispensary.sink
+                                                .productsDispensary.sink
                                                 .add(productDispensaryBloc2
-                                                    .productDispensary.value);
+                                                    .productsDispensary.value);
                                           }
                                         });
                                       }
@@ -1435,7 +1585,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                               fontSize: 16))),
                 Spacer(),
                 StreamBuilder(
-                  stream: productDispensaryBloc2.productDispensary.stream,
+                  stream: productDispensaryBloc2.productsDispensary.stream,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     final isSelected = (snapshot.data != null)
                         ? (snapshot.data.length > 0)
@@ -1443,11 +1593,13 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                             : false
                         : false;
 
-                    final quantitysTotalNew = (isSelected)
+                    quantitysTotal = (isSelected)
                         ? snapshot.data
                             .map((Product item) => item.quantityDispensary)
                             .reduce((item1, item2) => item1 + item2)
-                        : 0;
+                        : (isDispensaryActive)
+                            ? initialQuantity
+                            : 0;
 
                     return Row(
                       children: [
@@ -1462,7 +1614,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                         ),
                         Container(
                           child: Text(
-                            '$quantitysTotalNew',
+                            '$quantitysTotal',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -1496,7 +1648,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
   Widget _createGramsRecipe() {
     return StreamBuilder(
-      stream: productDispensaryBloc2.productDispensary.stream,
+      stream: productDispensaryBloc2.productsDispensary.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context);
 
@@ -1575,7 +1727,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                 indicatorColor: Colors.grey,
                 tabs: [
                   StreamBuilder(
-                    stream: productDispensaryBloc2.productDispensary.stream,
+                    stream: productDispensaryBloc2.productsDispensary.stream,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       final isSelected = (snapshot.data != null)
                           ? (snapshot.data.length > 0)
@@ -1630,7 +1782,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
         gramsRecipe: int.parse(gramRecipe),
         dateDelivery: dateDelivery);
 
-    final productsDispensary = productDispensaryBloc2.productDispensary.value;
+    final productsDispensary = productDispensaryBloc2.productsDispensary.value;
 
     if (!isEdit) {
       final createDispensary = await dispensaryService.createDispensary(
