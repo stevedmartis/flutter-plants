@@ -125,6 +125,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   bool isDateChange = false;
   bool errorRequired = false;
   int initialQuantity = 0;
+  int itemsInitial = 0;
 
   DateTime selectedDateG = DateTime.now();
   TextEditingController _dateGController = TextEditingController();
@@ -150,63 +151,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final authService = Provider.of<AuthService>(context, listen: false);
 
     profile = authService.profile;
-    //this.socketService = Provider.of<SocketService>(context, listen: false);
-
-    getDispensaryActiveByUser();
-
-    _tabController = new TabController(vsync: this, length: myTabs.length);
-
-    final roomService = Provider.of<RoomService>(context, listen: false);
-
-    roomService.room = null;
-
-    (profile.isClub)
-        ? productsLikedBloc.getDispensaryProductsProfile(profile.user.uid,
-            widget.profileUser.user.uid, widget.dispensaryProducts.id)
-        : productsLikedBloc.getDispensaryProductsProfile(
-            widget.dispensaryProducts.club,
-            widget.profileUser.user.uid,
-            widget.dispensaryProducts.id);
-  }
-
-  void getDispensaryActiveByUser() async {
-    setState(() {
-      isDispensary = widget.dispensaryProducts.isActive;
-      loadingData = true;
-      isEdit = widget.dispensaryProducts.isEdit;
-      isDispensaryDelivered = widget.dispensaryProducts.isDelivered;
-    });
-
-    isDispensaryActive = widget.dispensaryProducts.isActive;
-
-    gramsRecipeController.text =
-        (widget.dispensaryProducts.gramsRecipe).toString();
-    _dateGController.text = widget.dispensaryProducts.dateDelivery;
-
-    if (isDispensary) {
-      //  productDispensaryBloc2.productDispensary.value = [];
-      initialQuantity =
-          (widget.dispensaryProducts.productsDispensary.length > 0)
-              ? widget.dispensaryProducts.productsDispensary
-                  .map((Product item) => item.quantityDispensary)
-                  .reduce((item1, item2) => item1 + item2)
-              : 0;
-
-      if (widget.dispensaryProducts.productsDispensary.length > 0)
-        quantitysTotal = (isSelected)
-            ? widget.dispensaryProducts.productsDispensary
-                .map((Product item) => item.quantityDispensary)
-                .reduce((item1, item2) => item1 + item2)
-            : 0;
-    } else {
-      initialQuantity = 0;
-      quantitysTotal = 0;
-    }
-
-    // productDispensaryBloc2.productDispensary.sink.add(dispensaryProductsActive);
-
-    productDispensaryBloc2.gramsRecipeAdd.sink
-        .add((widget.dispensaryProducts.gramsRecipe).toString());
+    this.socketService = Provider.of<SocketService>(context, listen: false);
 
     gramsRecipeController.addListener(() {
       final gram = (gramsRecipeController.text == "")
@@ -233,6 +178,61 @@ class _DispensarProductPageState extends State<DispensarProductPage>
           this.isDateChange = false;
       });
     });
+
+    getDispensaryActiveByUser();
+
+    _tabController = new TabController(vsync: this, length: myTabs.length);
+
+    final roomService = Provider.of<RoomService>(context, listen: false);
+
+    roomService.room = null;
+
+    (profile.isClub)
+        ? productsLikedBloc.getDispensaryProductsProfile(profile.user.uid,
+            widget.profileUser.user.uid, widget.dispensaryProducts.id)
+        : productsLikedBloc.getDispensaryProductsProfile(
+            widget.dispensaryProducts.club,
+            widget.profileUser.user.uid,
+            widget.dispensaryProducts.id);
+  }
+
+  void getDispensaryActiveByUser() async {
+    setState(() {
+      itemsInitial = widget.dispensaryProducts.productsDispensary.length;
+      isDispensary = widget.dispensaryProducts.isActive;
+      loadingData = true;
+      isEdit = widget.dispensaryProducts.isEdit;
+      isDispensaryDelivered = widget.dispensaryProducts.isDelivered;
+    });
+
+    isDispensaryActive = widget.dispensaryProducts.isActive;
+
+    gramsRecipeController.text =
+        (widget.dispensaryProducts.gramsRecipe).toString();
+    _dateGController.text = widget.dispensaryProducts.dateDelivery;
+
+    if (isDispensary) {
+      productDispensaryBloc2.productsDispensary.value = [];
+      initialQuantity =
+          (widget.dispensaryProducts.productsDispensary.length > 0)
+              ? widget.dispensaryProducts.productsDispensary
+                  .map((Product item) => item.quantityDispensary)
+                  .reduce((item1, item2) => item1 + item2)
+              : 0;
+
+      if (widget.dispensaryProducts.productsDispensary.length > 0)
+        quantitysTotal = widget.dispensaryProducts.productsDispensary
+            .map((Product item) => item.quantityDispensary)
+            .reduce((item1, item2) => item1 + item2);
+    } else {
+      initialQuantity = 0;
+      quantitysTotal = 0;
+    }
+
+    // productDispensaryBloc2.productDispensary.sink.add(dispensaryProductsActive);
+
+    productDispensaryBloc2.gramsRecipeAdd.sink
+        .add((widget.dispensaryProducts.gramsRecipe).toString());
   }
 
   @override
@@ -322,46 +322,46 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                 .reduce((item1, item2) => item1 + item2)
             : null;
 
+        final int items = (isSelected) ? snapshot.data.length : itemsInitial;
+
         final isQuantity = (quantity != null) ? quantity : initialQuantity;
         return (!isDispensaryDelivered && profile.isClub)
             ? GestureDetector(
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: (isDispensary &&
-                          initialQuantity == isQuantity &&
-                          !isGramChange &&
-                          isQuantity > 0 &&
-                          !isDateChange)
-                      ? Center(
-                          child: Text(
-                          'Entregar',
-                          style: TextStyle(
-                              color: currentTheme.accentColor, fontSize: 18),
-                        ))
-                      : (loadingData)
-                          ? Center(
-                              child: (initialQuantity == 0 && !isDispensary)
-                                  ? Text('Hecho',
-                                      style: TextStyle(
-                                          color:
-                                              (!errorRequired && isGramChange)
-                                                  ? currentTheme.accentColor
-                                                  : Colors.grey,
-                                          fontSize: 18))
-                                  : (isQuantity > 0 && isDispensary ||
-                                          isGramChange ||
-                                          initialQuantity != isQuantity ||
-                                          isDateChange)
-                                      ? Text(
-                                          'Editar',
-                                          style: TextStyle(
-                                              color: currentTheme.accentColor,
-                                              fontSize: 18),
-                                        )
-                                      : Container(),
-                            )
-                          : Container(),
-                ),
+                    padding: const EdgeInsets.all(10.0),
+                    child: (isDispensary &&
+                            !isGramChange &&
+                            isQuantity > 0 &&
+                            !isDateChange &&
+                            isQuantity == initialQuantity &&
+                            itemsInitial == items)
+                        ? Center(
+                            child: Text(
+                            'Entregar',
+                            style: TextStyle(
+                                color: currentTheme.accentColor, fontSize: 18),
+                          ))
+                        : Center(
+                            child: (initialQuantity == 0 && !isDispensary)
+                                ? Text('Hecho',
+                                    style: TextStyle(
+                                        color: (!errorRequired && isGramChange)
+                                            ? currentTheme.accentColor
+                                            : Colors.grey,
+                                        fontSize: 18))
+                                : (isQuantity > 0 && isDispensary ||
+                                        isGramChange ||
+                                        initialQuantity != isQuantity ||
+                                        isDateChange ||
+                                        itemsInitial != items)
+                                    ? Text(
+                                        'Editar',
+                                        style: TextStyle(
+                                            color: currentTheme.accentColor,
+                                            fontSize: 18),
+                                      )
+                                    : Container(),
+                          )),
                 onTap: () => {
                       (isDispensary &&
                               initialQuantity == isQuantity &&
@@ -873,194 +873,143 @@ class _DispensarProductPageState extends State<DispensarProductPage>
         b.product.id.compareTo(a.product.id));
 
     return Container(
-      child: StreamBuilder(
-          stream: productDispensaryBloc2.productsDispensary,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            final isSelected = (snapshot.data != null)
-                ? (snapshot.data != "")
-                    ? (snapshot.data.length > 0)
-                        ? true
-                        : false
-                    : false
-                : false;
+        child: SizedBox(
+      child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: productsProfile.length,
+          itemBuilder: (BuildContext ctxt, int index) {
+            final productProfile = productsProfile[index];
 
-            quantitysTotal = (isSelected)
-                ? snapshot.data
-                    .map((Product item) => item.quantityDispensary)
-                    .reduce((item1, item2) => item1 + item2)
-                : 0;
-
-            return SizedBox(
-              child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: productsProfile.length,
-                  itemBuilder: (BuildContext ctxt, int index) {
-                    final productProfile = productsProfile[index];
-
-                    return (productProfile.product.quantityDispensary > 0 ||
-                            productProfile.profile.user.uid == profile.user.uid)
-                        ? _buildWidgetProducts(
-                            productsProfile,
-                          )
-                        : Container();
-                  }),
-            );
+            return (!profile.isClub)
+                ? _buildWidgetProducts(productProfile, index)
+                : _buildWidgetProductsForClub(productProfile);
           }),
+    ));
+  }
+
+  Widget _buildWidgetProducts(ProductProfile productProfile, int index) {
+    final currentTheme = Provider.of<ThemeChanger>(context);
+    final size = MediaQuery.of(context).size;
+
+    return Stack(
+      children: [
+        FadeInLeft(
+          delay: Duration(milliseconds: 300 * index),
+          child: Container(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: size.height / 30,
+            ),
+            child: OpenContainer(
+                closedElevation: 5,
+                openElevation: 5,
+                closedColor: currentTheme.currentTheme.scaffoldBackgroundColor,
+                openColor: currentTheme.currentTheme.scaffoldBackgroundColor,
+                transitionType: ContainerTransitionType.fade,
+                openShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20.0),
+                      topLeft: Radius.circular(10.0),
+                      bottomRight: Radius.circular(10.0),
+                      bottomLeft: Radius.circular(10.0)),
+                ),
+                closedShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20.0),
+                      topLeft: Radius.circular(10.0),
+                      bottomRight: Radius.circular(10.0),
+                      bottomLeft: Radius.circular(10.0)),
+                ),
+                openBuilder: (_, closeContainer) {
+                  return ProductProfileDetailPage(
+                      productProfile: productProfile, isUserAuth: false);
+                },
+                closedBuilder: (_, openContainer) {
+                  return Stack(
+                    children: [
+                      Container(
+                        child:
+                            CardProductProfile(productProfile: productProfile),
+                      )
+                    ],
+                  );
+                }),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildWidgetProducts(List<ProductProfile> productsProfile) {
+  Widget _buildWidgetProductsForClub(ProductProfile productsProfile) {
     final currentTheme = Provider.of<ThemeChanger>(context);
     final size = MediaQuery.of(context).size;
 
     return Container(
-      child: SizedBox(
-        child: ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: productsProfile.length,
-            itemBuilder: (BuildContext ctxt, int index) {
-              final productProfiles = productsProfile[index];
+        child: Stack(
+      children: [
+        Container(
+            padding: EdgeInsets.only(bottom: 20, left: 20, right: 10),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                      color: (currentTheme.customTheme)
+                          ? currentTheme.currentTheme.cardColor
+                          : Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10.0),
+                          topLeft: Radius.circular(10.0),
+                          bottomRight: Radius.circular(10.0),
+                          bottomLeft: Radius.circular(10.0))),
 
-              final isUserAuth =
-                  (productProfiles.profile.user.uid == profile.user.uid)
-                      ? true
-                      : false;
+                  // padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5.0),
+                  width: size.height / 1.5,
+                  child: FittedBox(
+                    child: Stack(
+                      children: [
+                        Row(
+                          children: <Widget>[
+                            productItem(
+                              true,
+                              productsProfile.product,
+                            ),
+                            Container(
+                              width: 100,
+                              height: 100,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10.0),
+                                      topLeft: Radius.circular(10.0),
+                                      bottomRight: Radius.circular(0.0),
+                                      bottomLeft: Radius.circular(10.0)),
+                                  child: Material(
+                                    type: MaterialType.transparency,
+                                    child: (productsProfile
+                                                .product.coverImage !=
+                                            "")
+                                        ? cachedNetworkImage(productsProfile
+                                            .product
+                                            .getCoverImg())
+                                        : FadeInImage(
+                                            image: AssetImage(
+                                                'assets/images/empty_image.png'),
+                                            placeholder: AssetImage(
+                                                'assets/loading2.gif'),
+                                            fit: BoxFit.cover),
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
 
-              return Stack(
-                children: [
-                  FadeInLeft(
-                    delay: Duration(milliseconds: 300 * index),
-                    child: Container(
-                      padding: EdgeInsets.only(
-                        left: 20,
-                        right: 20,
-                        top: size.height / 30,
-                      ),
-                      child: OpenContainer(
-                          closedElevation: 5,
-                          openElevation: 5,
-                          closedColor:
-                              currentTheme.currentTheme.scaffoldBackgroundColor,
-                          openColor:
-                              currentTheme.currentTheme.scaffoldBackgroundColor,
-                          transitionType: ContainerTransitionType.fade,
-                          openShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(20.0),
-                                topLeft: Radius.circular(10.0),
-                                bottomRight: Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0)),
-                          ),
-                          closedShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(20.0),
-                                topLeft: Radius.circular(10.0),
-                                bottomRight: Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0)),
-                          ),
-                          openBuilder: (_, closeContainer) {
-                            return ProductProfileDetailPage(
-                                productProfile: productProfiles,
-                                isUserAuth: isUserAuth);
-                          },
-                          closedBuilder: (_, openContainer) {
-                            return Stack(
-                              children: [
-                                (!profile.isClub)
-                                    ? Container(
-                                        child: CardProductProfile(
-                                            productProfile: productProfiles),
-                                      )
-                                    : Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: 20, left: 20, right: 10),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      (currentTheme.customTheme)
-                                                          ? currentTheme
-                                                              .currentTheme
-                                                              .cardColor
-                                                          : Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  10.0),
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  10.0),
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                  10.0),
-                                                          bottomLeft:
-                                                              Radius.circular(
-                                                                  10.0))),
-
-                                              // padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5.0),
-                                              width: size.height / 1.5,
-                                              child: FittedBox(
-                                                child: Stack(
-                                                  children: [
-                                                    Row(
-                                                      children: <Widget>[
-                                                        productItem(
-                                                          true,
-                                                          productProfiles
-                                                              .product,
-                                                          quantitysTotal,
-                                                        ),
-                                                        Container(
-                                                          width: 100,
-                                                          height: 100,
-                                                          child: ClipRRect(
-                                                              borderRadius: BorderRadius.only(
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          10.0),
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10.0),
-                                                                  bottomRight: Radius
-                                                                      .circular(
-                                                                          0.0),
-                                                                  bottomLeft: Radius
-                                                                      .circular(
-                                                                          10.0)),
-                                                              child: Material(
-                                                                type: MaterialType
-                                                                    .transparency,
-                                                                child: (productProfiles
-                                                                            .product
-                                                                            .coverImage !=
-                                                                        "")
-                                                                    ? cachedNetworkImage(productProfiles
-                                                                        .product
-                                                                        .getCoverImg())
-                                                                    : FadeInImage(
-                                                                        image: AssetImage(
-                                                                            'assets/images/empty_image.png'),
-                                                                        placeholder:
-                                                                            AssetImage(
-                                                                                'assets/loading2.gif'),
-                                                                        fit: BoxFit
-                                                                            .cover),
-                                                              )),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )
-
-                                        /*  CardProduct(
+            /*  CardProduct(
                           product: product,
                           isDispensary: true,
                           quantitysTotal: quantitysTotal,
@@ -1068,25 +1017,15 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                               productsUserDispensaryBloc,
                           isActive: isDispensaryActive,
                         ) */
-                                        ),
-                                if (!profile.isClub)
-                                  buildCircleQuantutyProductProfile(
-                                      context,
-                                      productProfiles
-                                          .product.quantityDispensary),
+            ),
+        if (!profile.isClub)
+          buildCircleQuantutyProductProfile(
+              context, productsProfile.product.quantityDispensary),
 
-                                /* buildCircleFavoriteProductProfile(
+        /* buildCircleFavoriteProductProfile(
                                   context, productProfiles.product.isLike), */
-                              ],
-                            );
-                          }),
-                    ),
-                  ),
-                ],
-              );
-            }),
-      ),
-    );
+      ],
+    ));
   }
 
   Container buildCircleQuantutyProductProfile(context, int quantity) {
@@ -1112,7 +1051,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   Widget productItem(
     bool isDispensary,
     Product product,
-    int quantitysTotal,
   ) {
     final size = MediaQuery.of(context).size;
     final currentTheme = Provider.of<ThemeChanger>(context);
@@ -1234,6 +1172,17 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                           setState(() => {
                                                 item.quantityDispensary =
                                                     product.quantityDispensary,
+                                                productDispensaryBloc2
+                                                    .productsDispensary.sink
+                                                    .add(productDispensaryBloc2
+                                                        .productsDispensary
+                                                        .value)
+                                              });
+                                        } else {
+                                          setState(() => {
+                                                productDispensaryBloc2
+                                                    .productsDispensary.value
+                                                    .add(product),
                                                 productDispensaryBloc2
                                                     .productsDispensary.sink
                                                     .add(productDispensaryBloc2
@@ -1484,9 +1433,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
       child: Column(
         children: [
           GestureDetector(
-            onTap: () => (!isDispensaryDelivered && profile.isClub)
-                ? _selectDateGermina(context)
-                : null,
+            onTap: () => {
+              (!isDispensaryDelivered && profile.isClub)
+                  ? _selectDateGermina(context)
+                  : null,
+              FocusScope.of(context).requestFocus(new FocusNode())
+            },
             child: AbsorbPointer(
               child: TextFormField(
                 enabled: !isDispensaryDelivered && profile.isClub,
@@ -1599,7 +1551,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                             .reduce((item1, item2) => item1 + item2)
                         : (isDispensaryActive)
                             ? initialQuantity
-                            : 0;
+                            : quantitysTotal--;
 
                     return Row(
                       children: [
