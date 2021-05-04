@@ -1343,12 +1343,24 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
                                 final numberId = profile.id.substring(11, 15);
 
+                                var search = "googleusercontent";
+                                RegExp exp = new RegExp(
+                                  "\\b" + search + "\\b",
+                                  caseSensitive: false,
+                                );
+                                bool containe =
+                                    exp.hasMatch(profile.imageAvatar);
+                                print(containe);
+
                                 final imageAvatarPath = (profile.imageAvatar !=
-                                        "")
+                                            "" &&
+                                        !containe)
                                     ? profile.imageAvatar.replaceAll(
                                         'https://leafety-images.s3.us-east-2.amazonaws.com',
                                         '')
-                                    : "";
+                                    : profile.imageAvatar.replaceAll(
+                                        'https://lh3.googleusercontent.com',
+                                        '');
 
                                 final report = Report(
                                     profile: Profile(
@@ -1356,6 +1368,7 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                                       rutClub: thisProfile.rutClub,
                                       name: thisProfile.name,
                                       about: about,
+                                      isGoogle: containe,
                                       username: thisProfile.user.username,
                                       email: thisProfile.user.email,
                                       imageAvatar: imageAvatarPath,

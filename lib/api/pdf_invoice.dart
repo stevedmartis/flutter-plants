@@ -17,45 +17,93 @@ class PdfInvoiceApi {
     Directory tempDir = await getApplicationDocumentsDirectory();
     String tempPath = tempDir.path;
     bool imageUpload = (report.profile.imageAvatar != "") ? true : false;
-    String nameImage = (imageUpload)
-        ? report.profile.imageAvatar.replaceAll('/avatar', '')
-        : "";
+
+/*   var seacg = 'google'
+     RegExp exp = new RegExp( "\\b" + search + "\\b", caseSensitive: false, ); 
+    bool containe = exp.hasMatch(str);
+ */
 
     if (imageUpload) {
-      File file = new File('$tempPath' + (nameImage));
+      if (!report.profile.isGoogle) {
+        String nameImage = (imageUpload)
+            ? report.profile.imageAvatar.replaceAll('/avatar', '')
+            : "";
+        File file = new File('$tempPath' + (nameImage));
 
-      final urlImage = Uri.https('leafety-images.s3.us-east-2.amazonaws.com',
-          report.profile.imageAvatar);
-      final response = await http.get(urlImage);
+        final urlImage = Uri.https('leafety-images.s3.us-east-2.amazonaws.com',
+            report.profile.imageAvatar);
+        final response = await http.get(urlImage);
 
-      await file.writeAsBytes(response.bodyBytes);
+        await file.writeAsBytes(response.bodyBytes);
 
-      final image = pw.MemoryImage(
-        File(file.path).readAsBytesSync(),
-      );
+        final image = pw.MemoryImage(
+          File(file.path).readAsBytesSync(),
+        );
 
-      pdf.addPage(MultiPage(
-        build: (context) => [
-          buildHeader(report, image),
-          SizedBox(height: 1.5 * PdfPageFormat.cm),
-          buildTitle(report),
-          if (report.rooms.length > 0) buildTitleRooms(),
-          if (report.rooms.length > 0) buildRooms(report),
-          if (report.plants.length > 0) buildTitlePlants(),
-          if (report.plants.length > 0) buildPlants(report),
-          if (report.visits.length > 0) buildTitleVisits(),
-          if (report.visits.length > 0) buildVisits(report),
-          Divider(),
-          if (report.visits.length > 0) buildTotal(report),
-          SizedBox(height: 2.0),
-          if (report.plants.length > 0) buildTitleDispensary(),
-          if (report.subscriptionsDispensary.length > 0)
-            buildSubscriptionsDispensaries(report),
-          Divider(),
-          if (report.visits.length > 0) buildGTotal(report),
-        ],
-        footer: (context) => buildFooter(report),
-      ));
+        pdf.addPage(MultiPage(
+          build: (context) => [
+            buildHeader(report, image),
+            SizedBox(height: 1.5 * PdfPageFormat.cm),
+            buildTitle(report),
+            if (report.rooms.length > 0) buildTitleRooms(),
+            if (report.rooms.length > 0) buildRooms(report),
+            if (report.plants.length > 0) buildTitlePlants(),
+            if (report.plants.length > 0) buildPlants(report),
+            if (report.visits.length > 0) buildTitleVisits(),
+            if (report.visits.length > 0) buildVisits(report),
+            Divider(),
+            if (report.visits.length > 0) buildTotal(report),
+            SizedBox(height: 2.0),
+            if (report.subscriptionsDispensary.length > 0)
+              buildTitleDispensary(),
+            if (report.subscriptionsDispensary.length > 0)
+              buildSubscriptionsDispensaries(report),
+            if (report.subscriptionsDispensary.length > 0) Divider(),
+            if (report.subscriptionsDispensary.length > 0) buildGTotal(report),
+          ],
+          footer: (context) => buildFooter(report),
+        ));
+      } else {
+        String nameImageGoogle = (imageUpload)
+            ? report.profile.imageAvatar.replaceAll('/a-', '')
+            : "";
+
+        File file = new File('$tempPath' + (nameImageGoogle));
+
+        final urlImageGoogle =
+            Uri.https('lh3.googleusercontent.com', report.profile.imageAvatar);
+
+        final responseGoogle = await http.get(urlImageGoogle);
+
+        await file.writeAsBytes(responseGoogle.bodyBytes);
+
+        final image = pw.MemoryImage(
+          File(file.path).readAsBytesSync(),
+        );
+
+        pdf.addPage(MultiPage(
+          build: (context) => [
+            buildHeader(report, image),
+            SizedBox(height: 1.5 * PdfPageFormat.cm),
+            buildTitle(report),
+            if (report.rooms.length > 0) buildTitleRooms(),
+            if (report.rooms.length > 0) buildRooms(report),
+            if (report.plants.length > 0) buildTitlePlants(),
+            if (report.plants.length > 0) buildPlants(report),
+            if (report.visits.length > 0) buildTitleVisits(),
+            if (report.visits.length > 0) buildVisits(report),
+            Divider(),
+            if (report.visits.length > 0) buildTotal(report),
+            SizedBox(height: 2.0),
+            if (report.plants.length > 0) buildTitleDispensary(),
+            if (report.subscriptionsDispensary.length > 0)
+              buildSubscriptionsDispensaries(report),
+            Divider(),
+            if (report.visits.length > 0) buildGTotal(report),
+          ],
+          footer: (context) => buildFooter(report),
+        ));
+      }
     } else {
       pdf.addPage(MultiPage(
         build: (context) => [

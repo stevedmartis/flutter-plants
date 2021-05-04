@@ -20,6 +20,7 @@ class Profile {
   final String imageAvatar;
   final String rutClub;
   final bool isClub;
+  final bool isGoogle;
 
   const Profile(
       {@required this.rutClub,
@@ -29,7 +30,8 @@ class Profile {
       @required this.siteInfo,
       @required this.email,
       @required this.imageAvatar,
-      @required this.isClub});
+      @required this.isClub,
+      this.isGoogle});
 }
 
 class Report {
