@@ -32,110 +32,107 @@ class _CardDispensaryProductsState extends State<CardDispensaryProducts> {
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       height: (products.length > 0) ? 210 : 150,
       width: double.maxFinite,
-      child: Card(
-        color: currentTheme.currentTheme.cardColor,
-        elevation: 5,
-        child: Padding(
-          padding: EdgeInsets.all(7),
-          child: Stack(children: <Widget>[
-            Align(
-              alignment: Alignment.centerRight,
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                      padding: const EdgeInsets.only(left: 10, top: 5),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: [
-                              dateDeliveredIcon(),
-                              Spacer(),
-                              dateUpdated(),
-                              SizedBox(
-                                width: 15,
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: <Widget>[
-                              gramsIcon(),
-
-                              // dateUpdated(),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              if (isActive && !isDelivered)
-                                Chip(
-                                  avatar: CircleAvatar(
-                                      backgroundColor: Colors.black,
-                                      child: Icon(Icons.pending)),
-                                  label: Text('En Curso'),
-                                ),
-                              if (isActive && isDelivered)
-                                Chip(
-                                  backgroundColor:
-                                      currentTheme.currentTheme.accentColor,
-                                  avatar: CircleAvatar(
-                                      backgroundColor: Colors.black,
-                                      child: Icon(
-                                        Icons.check,
-                                        color: currentTheme
-                                            .currentTheme.accentColor,
-                                      )),
-                                  label: Text(
-                                    'Entregado',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              if (isEdit)
-                                Chip(
-                                  avatar: CircleAvatar(
-                                      backgroundColor: Colors.black,
-                                      child: Icon(Icons.edit_rounded)),
-                                  label: Text('Editado'),
-                                )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Expanded(
-                            child: ListView.builder(
-                              shrinkWrap: false,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: products.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final product = products[index];
-                                return Container(
-                                    padding: EdgeInsets.only(right: 0),
-                                    child: FadeInLeft(
-                                        delay:
-                                            Duration(milliseconds: 200 * index),
-                                        child: _buildBox(product: product)));
-                              },
+      child: Padding(
+        padding: EdgeInsets.all(7),
+        child: Stack(children: <Widget>[
+          Align(
+            alignment: Alignment.centerRight,
+            child: Stack(
+              children: <Widget>[
+                Padding(
+                    padding: const EdgeInsets.only(left: 10, top: 5),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: [
+                            dateDeliveredIcon(),
+                            Spacer(),
+                            dateUpdated(),
+                            SizedBox(
+                              width: 15,
                             ),
-                          )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            gramsIcon(),
 
-                          /*  Row(
-                            children: <Widget>[cryptoAmount()],
-                          ), */
-                        ],
-                      ))
-                ],
-              ),
-            )
-          ]),
-        ),
+                            // dateUpdated(),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          children: [
+                            if (isActive && !isDelivered)
+                              Chip(
+                                avatar: CircleAvatar(
+                                    backgroundColor: currentTheme
+                                        .currentTheme.scaffoldBackgroundColor,
+                                    child: Icon(Icons.pending)),
+                                label: Text('En Curso'),
+                              ),
+                            if (isActive && isDelivered)
+                              Chip(
+                                backgroundColor:
+                                    currentTheme.currentTheme.accentColor,
+                                avatar: CircleAvatar(
+                                    backgroundColor: Colors.black,
+                                    child: Icon(
+                                      Icons.check,
+                                      color:
+                                          currentTheme.currentTheme.accentColor,
+                                    )),
+                                label: Text(
+                                  'Entregado',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            if (isEdit)
+                              Chip(
+                                avatar: CircleAvatar(
+                                    backgroundColor: Colors.black,
+                                    child: Icon(Icons.edit_rounded)),
+                                label: Text('Editado'),
+                              )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: false,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: products.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final product = products[index];
+                              return Container(
+                                  padding: EdgeInsets.only(right: 0),
+                                  child: FadeInLeft(
+                                      delay:
+                                          Duration(milliseconds: 200 * index),
+                                      child: _buildBox(product: product)));
+                            },
+                          ),
+                        )
+
+                        /*  Row(
+                          children: <Widget>[cryptoAmount()],
+                        ), */
+                      ],
+                    ))
+              ],
+            ),
+          )
+        ]),
       ),
     );
   }

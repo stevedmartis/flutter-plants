@@ -116,15 +116,10 @@ class CoverImagePlantPageState extends State<CoverImagePlantPage> {
   }
 
   Widget _buildLoadingWidget() {
-    final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-
     return Container(
         padding: EdgeInsets.only(right: 10),
         height: 400.0,
-        child: Center(
-            child: CircularProgressIndicator(
-          backgroundColor: currentTheme.accentColor,
-        )));
+        child: Center(child: CircularProgressIndicator()));
   }
 
   _selectImage(bool isCamera) async {
@@ -134,7 +129,7 @@ class CoverImagePlantPageState extends State<CoverImagePlantPage> {
     final pickedFile = await picker.getImage(
       source: (isCamera) ? ImageSource.camera : ImageSource.gallery,
       imageQuality: 50,
-      maxHeight: 680,
+      maxHeight: 880,
       maxWidth: 1080,
     );
 

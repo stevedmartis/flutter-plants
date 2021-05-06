@@ -82,8 +82,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
     notifiModel.numberNotifiBell = number;
 
     if (number >= 2) {
-      final controller = notifiModel.bounceControllerBell;
-      controller.forward(from: 0.0);
+      notifiModel.bounceControllerBell;
+      //controller.forward(from: 0.0);
     }
 
     int numberMessages = notifiModel.number;
@@ -282,7 +282,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                       ),
                       (number > 0)
                           ? Container(
-                              margin: EdgeInsets.only(right: 45),
+                              margin: EdgeInsets.only(right: 35),
                               alignment: Alignment.centerRight,
                               child: BounceInDown(
                                 from: 5,

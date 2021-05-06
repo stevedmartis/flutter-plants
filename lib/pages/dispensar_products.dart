@@ -197,21 +197,23 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   }
 
   void getDispensaryActiveByUser() async {
-    setState(() {
-      itemsInitial = widget.dispensaryProducts.productsDispensary.length;
-      isDispensary = widget.dispensaryProducts.isActive;
-      loadingData = true;
-      isEdit = widget.dispensaryProducts.isEdit;
-      isDispensaryDelivered = widget.dispensaryProducts.isDelivered;
-    });
-
-    isDispensaryActive = widget.dispensaryProducts.isActive;
-
-    gramsRecipeController.text =
-        (widget.dispensaryProducts.gramsRecipe).toString();
-    _dateGController.text = widget.dispensaryProducts.dateDelivery;
+    isDispensary = widget.dispensaryProducts.isActive;
 
     if (isDispensary) {
+      setState(() {
+        itemsInitial = widget.dispensaryProducts.productsDispensary.length;
+
+        loadingData = true;
+        isEdit = widget.dispensaryProducts.isEdit;
+        isDispensaryDelivered = widget.dispensaryProducts.isDelivered;
+      });
+
+      isDispensaryActive = widget.dispensaryProducts.isActive;
+
+      gramsRecipeController.text =
+          (widget.dispensaryProducts.gramsRecipe).toString();
+      _dateGController.text = widget.dispensaryProducts.dateDelivery;
+
       productDispensaryBloc2.productsDispensary.value = [];
       initialQuantity =
           (widget.dispensaryProducts.productsDispensary.length > 0)
@@ -225,8 +227,10 @@ class _DispensarProductPageState extends State<DispensarProductPage>
             .map((Product item) => item.quantityDispensary)
             .reduce((item1, item2) => item1 + item2);
     } else {
+      itemsInitial = 0;
       initialQuantity = 0;
       quantitysTotal = 0;
+      loadingData = true;
     }
 
     // productDispensaryBloc2.productDispensary.sink.add(dispensaryProductsActive);
@@ -257,49 +261,51 @@ class _DispensarProductPageState extends State<DispensarProductPage>
   Widget build(BuildContext context) {
     final currentTheme = Provider.of<ThemeChanger>(context);
 
-    return Scaffold(
-      backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
-      appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            widget.profileUser.name,
-            style: TextStyle(
-                fontSize: 20,
-                color:
-                    (currentTheme.customTheme) ? Colors.white : Colors.black),
-          ),
-          backgroundColor:
-              (currentTheme.customTheme) ? Colors.black : Colors.white,
-          actions: [_createButton()],
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-              color: currentTheme.currentTheme.accentColor,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text(
+              widget.profileUser.name,
+              style: TextStyle(
+                  fontSize: 20,
+                  color:
+                      (currentTheme.customTheme) ? Colors.white : Colors.black),
             ),
-            iconSize: 30,
-            onPressed: () => {
-              //plantBloc.plantsSelected.sink.add(false),
-              Navigator.pop(context),
-            },
-            color: Colors.white,
-          )),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(new FocusNode());
-        },
-        child: CustomScrollView(
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            controller: _scrollController,
-            slivers: <Widget>[
-              //  makeHeaderInfo(context),
-              makeFormDispensary(context),
-              // makeHeaderTabs(context),
-              makeListProducts(
-                  context) /*  (widget.product.id != null)
-                  ? makeListPlants(context)
-                  : makeListPlantsRoom(context) */
-            ]),
+            backgroundColor:
+                (currentTheme.customTheme) ? Colors.black : Colors.white,
+            actions: [_createButton()],
+            leading: IconButton(
+              icon: Icon(
+                Icons.chevron_left,
+                color: currentTheme.currentTheme.accentColor,
+              ),
+              iconSize: 30,
+              onPressed: () => {
+                //plantBloc.plantsSelected.sink.add(false),
+                Navigator.pop(context),
+              },
+              color: Colors.white,
+            )),
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: CustomScrollView(
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              controller: _scrollController,
+              slivers: <Widget>[
+                //  makeHeaderInfo(context),
+                makeFormDispensary(context),
+                // makeHeaderTabs(context),
+                makeListProducts(
+                    context) /*  (widget.product.id != null)
+                    ? makeListPlants(context)
+                    : makeListPlantsRoom(context) */
+              ]),
+        ),
       ),
     );
   }
@@ -402,7 +408,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final currentTheme = Provider.of<ThemeChanger>(context, listen: false);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: currentTheme.currentTheme.cardColor,
+      backgroundColor: (currentTheme.customTheme) ? Colors.white : Colors.black,
       content: EmojiText(
           text: text,
           style: TextStyle(
@@ -815,7 +821,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                   )
                                 : Container(
                                     padding: EdgeInsets.only(
-                                        top: 0, left: 20, bottom: 15),
+                                        top: 0, left: 20, bottom: 0),
                                     child: Text(
                                       'Tratamientos',
                                       style: TextStyle(
@@ -882,7 +888,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
             final productProfile = productsProfile[index];
 
             return (!profile.isClub)
-                ? _buildWidgetProducts(productProfile, index)
+                ? (productProfile.product.quantityDispensary > 0)
+                    ? _buildWidgetProducts(productProfile, index)
+                    : Container()
                 : _buildWidgetProductsForClub(productProfile);
           }),
     ));
@@ -932,7 +940,10 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                       Container(
                         child:
                             CardProductProfile(productProfile: productProfile),
-                      )
+                      ),
+                      if (!profile.isClub)
+                        buildCircleQuantutyProductProfile(
+                            context, productProfile.product.quantityDispensary),
                     ],
                   );
                 }),
@@ -1018,9 +1029,6 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                           isActive: isDispensaryActive,
                         ) */
             ),
-        if (!profile.isClub)
-          buildCircleQuantutyProductProfile(
-              context, productsProfile.product.quantityDispensary),
 
         /* buildCircleFavoriteProductProfile(
                                   context, productProfiles.product.isLike), */
@@ -1456,8 +1464,12 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                           : Colors.black54,
                     ),
                   ),
+
                   border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                        color: (currentTheme.customTheme)
+                            ? Colors.white
+                            : Colors.black),
                   ),
                   labelStyle: TextStyle(
                     color: (currentTheme.customTheme)
@@ -1568,7 +1580,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                           child: Text(
                             '$quantitysTotal',
                             style: TextStyle(
-                                color: Colors.white,
+                                color: (currentTheme.customTheme)
+                                    ? Colors.white
+                                    : Colors.black,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
                           ),

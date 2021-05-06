@@ -363,7 +363,6 @@ class _NotificationsPageState extends State<NotificationsPage>
                                         );
                                       }),
                             ),
-                            Divider(height: 1),
                           ],
                         ),
                       )
@@ -573,7 +572,6 @@ class _NotificationsPageState extends State<NotificationsPage>
                               ),
                             ),
                           ),
-                          Divider(height: 1),
                         ],
                       ));
               },

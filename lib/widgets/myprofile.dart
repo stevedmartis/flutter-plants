@@ -210,8 +210,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
     visitBloc.getVisitsByUser(profile.user.uid);
 
     visitBloc.visitsUser.listen((visits) {
-      myVisits = visits.visits;
-      if (mounted) setState(() {});
+      myVisits = visits?.visits;
+      if (myVisits.length > 0 && mounted) setState(() {});
     });
   }
 
@@ -780,8 +780,8 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                       child: OpenContainer(
                           closedElevation: 5,
                           openElevation: 5,
-                          closedColor: currentTheme.scaffoldBackgroundColor,
-                          openColor: currentTheme.scaffoldBackgroundColor,
+                          closedColor: currentTheme.cardColor,
+                          openColor: currentTheme.cardColor,
                           transitionType: ContainerTransitionType.fade,
                           openShape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(

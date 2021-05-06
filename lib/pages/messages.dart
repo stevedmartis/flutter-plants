@@ -192,7 +192,6 @@ class _MessagesPageState extends State<MessagesPage>
                       ),
                     ),
                   ),
-                  Divider(height: 1),
                 ],
               );
             },

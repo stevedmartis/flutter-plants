@@ -25,6 +25,8 @@ import 'package:chat/routes/routes.dart';
 import 'bloc/provider.dart';
 import 'package:flutter/services.dart';
 
+import 'helpers/ui_overlay_style.dart';
+
 void main() => runApp(MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => AuthService()),
       ChangeNotifierProvider(create: (_) => SocketService()),
@@ -54,7 +56,7 @@ class MyApp extends StatelessWidget {
 
     final currentTheme = Provider.of<ThemeChanger>(context);
 
-    //   changeStatusLight();
+    changeStatusLight();
 
     return CustomProvider(
       child: MaterialApp(

@@ -91,7 +91,7 @@ class CoverImageVisitPageState extends State<CoverImageVisitPage> {
                         : _editImage(false),
                     color: Colors.white,
                   )
-                : _buildLoadingWidget(),
+                : Container(),
         ],
       ),
       backgroundColor: Colors.black,
@@ -122,7 +122,11 @@ class CoverImageVisitPageState extends State<CoverImageVisitPage> {
     final visitService = Provider.of<VisitService>(context, listen: false);
 
     final pickedFile = await picker.getImage(
-        source: (isCamera) ? ImageSource.camera : ImageSource.gallery);
+      source: (isCamera) ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: 50,
+      maxHeight: 880,
+      maxWidth: 1800,
+    );
 
     if (pickedFile != null) {
       imageCover = File(pickedFile.path);
@@ -159,7 +163,11 @@ class CoverImageVisitPageState extends State<CoverImageVisitPage> {
     final visitService = Provider.of<VisitService>(context, listen: false);
 
     final pickedFile = await picker.getImage(
-        source: (isCamera) ? ImageSource.camera : ImageSource.gallery);
+      source: (isCamera) ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: 50,
+      maxHeight: 880,
+      maxWidth: 1800,
+    );
 
     if (pickedFile != null) {
       imageCover = File(pickedFile.path);
