@@ -275,7 +275,9 @@ class _SubscriptorsPageState extends State<SubscriptorsPage>
                                       children: [
                                         Chip(
                                           avatar: CircleAvatar(
-                                              backgroundColor: Colors.black,
+                                              backgroundColor: currentTheme
+                                                  .currentTheme
+                                                  .scaffoldBackgroundColor,
                                               child: Icon(Icons.pending)),
                                           label: Text('En Curso'),
                                         ),

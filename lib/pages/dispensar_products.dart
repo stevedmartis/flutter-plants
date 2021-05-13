@@ -412,7 +412,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
       content: EmojiText(
           text: text,
           style: TextStyle(
-              color: (currentTheme.customTheme) ? Colors.white : Colors.black,
+              color: (currentTheme.customTheme) ? Colors.black : Colors.white,
               fontSize: 15),
           emojiFontMultiplier: 1.5),
     ));
@@ -821,7 +821,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                   )
                                 : Container(
                                     padding: EdgeInsets.only(
-                                        top: 0, left: 20, bottom: 0),
+                                        top: 0,
+                                        left: 20,
+                                        bottom: (profile.isClub) ? 20 : 0),
                                     child: Text(
                                       'Tratamientos',
                                       style: TextStyle(
@@ -1510,7 +1512,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                 if (isDispensary && !isDispensaryDelivered)
                   Chip(
                     avatar: CircleAvatar(
-                        backgroundColor: Colors.black,
+                        backgroundColor:
+                            currentTheme.currentTheme.scaffoldBackgroundColor,
                         child: Icon(Icons.pending)),
                     label: Text('En Curso'),
                   ),
@@ -1534,7 +1537,8 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                       ? Chip(
                           avatar: CircleAvatar(
                               backgroundColor: Colors.black,
-                              child: Icon(Icons.edit_rounded)),
+                              child: Icon(Icons.edit_rounded,
+                                  color: Colors.white)),
                           label: Text('Editado'),
                         )
                       : Container(),

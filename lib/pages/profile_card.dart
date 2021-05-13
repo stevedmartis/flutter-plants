@@ -855,11 +855,11 @@ void _showSnackBar(BuildContext context, String text) {
   final currentTheme = Provider.of<ThemeChanger>(context, listen: false);
 
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    backgroundColor: currentTheme.currentTheme.cardColor,
+    backgroundColor: (currentTheme.customTheme) ? Colors.white : Colors.black,
     content: EmojiText(
         text: text,
         style: TextStyle(
-            color: (currentTheme.customTheme) ? Colors.white : Colors.black,
+            color: (currentTheme.customTheme) ? Colors.black : Colors.white,
             fontSize: 15),
         emojiFontMultiplier: 1.5),
   ));

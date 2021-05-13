@@ -95,7 +95,14 @@ class _CollapsingListState extends State<CollapsingList>
 
     this.bottomControll();
 
+    super.initState();
+  }
+
+  bottomControll() {
     _isVisible = true;
+
+    final authService = Provider.of<AuthService>(context, listen: false);
+
     _hideBottomNavController = ScrollController();
     _hideBottomNavController.addListener(
       () {
@@ -117,11 +124,7 @@ class _CollapsingListState extends State<CollapsingList>
         }
       },
     );
-
-    super.initState();
   }
-
-  bottomControll() {}
 
   _chargeClubesProfileUsers() async {
     this.profiles = await usuarioService.getProfilesLastUsers();

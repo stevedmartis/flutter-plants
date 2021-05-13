@@ -725,7 +725,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               ),
               Container(
                   width: size.width - 5,
-                  padding: EdgeInsets.only(left: size.width / 10.0, right: 30),
+                  padding: EdgeInsets.only(left: 20, right: 30),
                   //margin: EdgeInsets.only(left: size.width / 6, top: 10),
 
                   child: (about.length > 0)
@@ -735,8 +735,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                 height: 10.0,
               ),
               Container(
-                padding:
-                    EdgeInsets.only(top: 10, left: size.width / 5, bottom: 5.0),
+                padding: EdgeInsets.only(top: 10, left: 20, bottom: 5.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -840,7 +839,10 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   return Stack(
                     children: [
                       Container(
-                          alignment: Alignment.center,
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(
+                            left: 20,
+                          ),
                           child: Text(
                               (plants.length == 1)
                                   ? 'Planta Madre'
@@ -852,7 +854,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                                     ? Colors.white54
                                     : Colors.black54,
                               ))),
-                      Container(child: _buildWidgetPlant(plants))
+                      Container(
+                          padding: EdgeInsets.only(top: 30),
+                          child: _buildWidgetPlant(plants)),
                     ],
                   );
                 } else {
@@ -892,8 +896,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
             final plant = plants[index];
 
             return Container(
-              padding: EdgeInsets.only(
-                  left: 20, right: 20, bottom: 10.0, top: size.height / 35),
+              padding:
+                  EdgeInsets.only(left: 20, right: 20, bottom: 0.0, top: 10),
               child: OpenContainer(
                   closedElevation: 5,
                   openElevation: 5,

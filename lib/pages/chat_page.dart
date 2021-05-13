@@ -81,7 +81,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: TextStyle(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.normal,
                     fontSize: (profile.name.length >= 15) ? 15 : 18,
                     color: (currentTheme.customTheme)
                         ? Colors.white

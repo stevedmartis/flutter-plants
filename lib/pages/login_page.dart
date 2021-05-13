@@ -193,7 +193,8 @@ class _LoginPageState extends State<LoginPage> {
 
     if (signInGoogleOk) {
       socketService.connect();
-      Navigator.push(context, _createRute());
+      Navigator.of(context)
+          .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
     } else {
       // Mostara alerta
       mostrarAlerta(context, 'Login incorrecto', 'El correo ya existe');
@@ -209,7 +210,8 @@ class _LoginPageState extends State<LoginPage> {
 
     if (signInGoogleOk) {
       socketService.connect();
-      Navigator.push(context, _createRute());
+      Navigator.of(context)
+          .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
     } else {
       // Mostara alerta
       mostrarAlerta(context, 'Login incorrecto', 'Error del servidor, ');
@@ -365,6 +367,10 @@ class __FormState extends State<_Form> {
                         ? Colors.white54
                         : Colors.black54),
                 counterText: snapshot.data,
+                counterStyle: TextStyle(
+                    color: (currentTheme.customTheme)
+                        ? Colors.white54
+                        : Colors.black54),
                 errorText: snapshot.error),
             onChanged: bloc.changePassword,
           ),
@@ -399,7 +405,8 @@ class __FormState extends State<_Form> {
 
     if (loginOk) {
       socketService.connect();
-      Navigator.push(context, _createRute());
+      Navigator.of(context)
+          .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
     } else {
       // Mostara alerta
       mostrarAlerta(

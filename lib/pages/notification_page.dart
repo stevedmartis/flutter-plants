@@ -477,7 +477,9 @@ class _NotificationsPageState extends State<NotificationsPage>
                                                     Chip(
                                                       avatar: CircleAvatar(
                                                           backgroundColor:
-                                                              Colors.black,
+                                                              currentTheme
+                                                                  .currentTheme
+                                                                  .scaffoldBackgroundColor,
                                                           child: Icon(
                                                               Icons.pending)),
                                                       label: Text('En Curso'),
@@ -753,14 +755,14 @@ class _NotificationsPageState extends State<NotificationsPage>
   }
 
   void _showSnackBar(BuildContext context, String text) {
-    final currentTheme =
-        Provider.of<ThemeChanger>(context, listen: false).currentTheme;
+    final currentTheme = Provider.of<ThemeChanger>(context, listen: false);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: currentTheme.canvasColor,
+        backgroundColor:
+            (currentTheme.customTheme) ? Colors.white : Colors.black,
         content: Text(text,
             style: TextStyle(
-              color: Colors.white54,
+              color: (currentTheme.customTheme) ? Colors.black : Colors.white,
             ))));
   }
 }

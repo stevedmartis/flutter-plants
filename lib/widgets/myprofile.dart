@@ -388,12 +388,14 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
 
     final isUserAuth = authService.profile.user.uid == widget.profile.user.uid;
 
-    final name = (profile.name == "") ? profile.user.username : profile.name;
     setState(() {
       thisProfile = (widget.isUserAuth && isUserAuth)
           ? authService.profile
           : widget.profile;
     });
+
+    final name =
+        (thisProfile.name == "") ? thisProfile.user.username : thisProfile.name;
 
     //final username = widget.profile.user.username.toLowerCase();
 

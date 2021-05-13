@@ -99,7 +99,10 @@ class _CardDispensaryProductsState extends State<CardDispensaryProducts> {
                               Chip(
                                 avatar: CircleAvatar(
                                     backgroundColor: Colors.black,
-                                    child: Icon(Icons.edit_rounded)),
+                                    child: Icon(
+                                      Icons.edit_rounded,
+                                      color: Colors.white,
+                                    )),
                                 label: Text('Editado'),
                               )
                           ],

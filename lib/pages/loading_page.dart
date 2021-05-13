@@ -45,40 +45,51 @@ class LoadingPage extends StatelessWidget {
     final autenticado = await authService.isLoggedIn();
 
     if (autenticado) {
+      Navigator.of(context).pushAndRemoveUntil(
+          _createRutePrincipal(), (Route<dynamic> route) => false);
+
       socketService.connect();
-      Navigator.of(context).push(PageRouteBuilder(
-        transitionDuration: Duration(milliseconds: 1000),
-        pageBuilder: (BuildContext context, Animation<double> animation,
-            Animation<double> secondaryAnimation) {
-          return PrincipalPage();
-        },
-        transitionsBuilder: (BuildContext context, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) {
-          return Align(
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
-          );
-        },
-      ));
     } else {
-      Navigator.of(context).push(PageRouteBuilder(
-        transitionDuration: Duration(milliseconds: 600),
-        pageBuilder: (BuildContext context, Animation<double> animation,
-            Animation<double> secondaryAnimation) {
-          return OnBoardingScreen();
-        },
-        transitionsBuilder: (BuildContext context, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) {
-          return Align(
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
-          );
-        },
-      ));
+      Navigator.of(context).pushAndRemoveUntil(
+          _createRuteOnBoarding(), (Route<dynamic> route) => false);
     }
   }
+}
+
+Route _createRutePrincipal() {
+  return PageRouteBuilder(
+    transitionDuration: Duration(milliseconds: 1000),
+    pageBuilder: (BuildContext context, Animation<double> animation,
+        Animation<double> secondaryAnimation) {
+      return PrincipalPage();
+    },
+    transitionsBuilder: (BuildContext context, Animation<double> animation,
+        Animation<double> secondaryAnimation, Widget child) {
+      return Align(
+        child: FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
+Route _createRuteOnBoarding() {
+  return PageRouteBuilder(
+    transitionDuration: Duration(milliseconds: 600),
+    pageBuilder: (BuildContext context, Animation<double> animation,
+        Animation<double> secondaryAnimation) {
+      return OnBoardingScreen();
+    },
+    transitionsBuilder: (BuildContext context, Animation<double> animation,
+        Animation<double> secondaryAnimation, Widget child) {
+      return Align(
+        child: FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      );
+    },
+  );
 }

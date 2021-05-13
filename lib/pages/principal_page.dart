@@ -63,7 +63,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
         .length;
 
     final dispensariesUser = notifications.dispensaryNotifi
-        .where((i) => i.isUserNotifi)
+        .where((i) => i.isUserNotifi && i.subscriptor == profile.user.uid)
         .toList()
         .length;
 

@@ -487,6 +487,10 @@ Widget _createPassword(RegisterBloc bloc) {
                       ? Colors.white54
                       : Colors.black54),
               counterText: snapshot.data,
+              counterStyle: TextStyle(
+                  color: (currentTheme.customTheme)
+                      ? Colors.white54
+                      : Colors.black54),
               errorText: snapshot.error),
           onChanged: bloc.changePassword,
         ),
@@ -549,7 +553,8 @@ _signInGoogle(BuildContext context) async {
 
   if (signInGoogleOk) {
     socketService.connect();
-    Navigator.push(context, _createRute());
+    Navigator.of(context)
+        .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
   } else {
     // Mostara alerta
     mostrarAlerta(context, 'Login incorrecto', 'El correo ya existe');
@@ -564,7 +569,8 @@ _signIApple(BuildContext context) async {
 
   if (signInGoogleOk) {
     socketService.connect();
-    Navigator.push(context, _createRute());
+    Navigator.of(context)
+        .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
   } else {
     // Mostara alerta
     mostrarAlerta(context, 'Login incorrecto', 'El correo ya existe');
@@ -581,7 +587,8 @@ _register(RegisterBloc bloc, BuildContext context) async {
   if (registroOk != null) {
     if (registroOk == true) {
       socketService.connect();
-      Navigator.push(context, _createRute());
+      Navigator.of(context)
+          .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
     } else {
       mostrarAlerta(context, 'Registro incorrecto', registroOk);
     }
