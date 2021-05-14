@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/profile_chats.dart';
+import 'package:flutter_plants/models/profile_chats.dart';
 
 ProfileChatResponse profilesChatResponseFromJson(String str) =>
     ProfileChatResponse.fromJson(json.decode(str));

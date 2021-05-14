@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:chat/bloc/validators.dart';
-import 'package:chat/models/catalogos_products_response.dart';
-import 'package:chat/models/products.dart';
-import 'package:chat/models/products_dispensary.dart';
-import 'package:chat/models/products_profiles_response.dart';
-import 'package:chat/providers/catalogos_provider.dart';
-import 'package:chat/repository/products_repository.dart';
+import 'package:flutter_plants/bloc/validators.dart';
+import 'package:flutter_plants/models/catalogos_products_response.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/models/products_dispensary.dart';
+import 'package:flutter_plants/models/products_profiles_response.dart';
+import 'package:flutter_plants/providers/catalogos_provider.dart';
+import 'package:flutter_plants/repository/products_repository.dart';
 
 import 'package:rxdart/rxdart.dart';
 

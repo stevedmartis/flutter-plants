@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/catalogos_products_response2.dart';
+import 'package:flutter_plants/models/catalogos_products_response2.dart';
 
 CatalogosProductsResponse catalogosProductsResponseFromJson(String str) =>
     CatalogosProductsResponse.fromJson(json.decode(str));

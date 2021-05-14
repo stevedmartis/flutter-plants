@@ -1,24 +1,25 @@
-import 'package:chat/global/environment.dart';
-import 'package:chat/models/catalogo.dart';
-import 'package:chat/models/catalogo_response.dart';
-import 'package:chat/models/catalogos_products_response.dart';
-import 'package:chat/models/catalogos_response.dart';
-import 'package:chat/models/products_dispensary.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_plants/global/environment.dart';
+import 'package:flutter_plants/models/catalogo.dart';
+import 'package:flutter_plants/models/catalogo_response.dart';
+import 'package:flutter_plants/models/catalogos_products_response.dart';
+import 'package:flutter_plants/models/catalogos_response.dart';
+import 'package:flutter_plants/models/products_dispensary.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 class CatalogosApiProvider {
-  final _storage = new FlutterSecureStorage();
+  final prefs = new AuthUserPreferences();
 
   Future<CatalogosProductsResponse> getCatalogosProductsUser(
       String userId, String userAuthId) async {
-    final urlFinal = Uri.https('${Environment.apiUrl}',
-        '/api/catalogo/catalogos/user/$userId/userAuth/$userAuthId');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/catalogo/catalogos/user/$userId/userAuth/$userAuthId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final catalogosResponse = catalogosProductsResponseFromJson(resp.body);
@@ -30,13 +31,13 @@ class CatalogosApiProvider {
   }
 
   Future<CatalogosResponse> getMyCatalogos(String userId) async {
-    final urlFinal = Uri.https(
-        '${Environment.apiUrl}', '/api/catalogo/catalogos/user/$userId');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/catalogo/catalogos/user/$userId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final catalogosResponse = catalogosResponseFromJson(resp.body);
@@ -49,13 +50,13 @@ class CatalogosApiProvider {
 
   Future<CatalogosProductsResponse> getMyCatalogosProducts(
       String userId) async {
-    final urlFinal = Uri.https('${Environment.apiUrl}',
-        '/api/catalogo/catalogos/products/user/$userId');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/catalogo/catalogos/products/user/$userId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final catalogosResponse = catalogosProductsResponseFromJson(resp.body);
@@ -69,13 +70,13 @@ class CatalogosApiProvider {
 
   Future<DispensaryProductsProfileResponse> getDispensaryProductsProfile(
       String clubId, String userId, String dispensaryId) async {
-    final urlFinal = Uri.https('${Environment.apiUrl}',
-        '/api/product/dispensary/products/club/$clubId/user/$userId/dispensary/$dispensaryId');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/product/dispensary/products/club/$clubId/user/$userId/dispensary/$dispensaryId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final dispensaryProductsResponse =
@@ -89,13 +90,13 @@ class CatalogosApiProvider {
   }
 
   Future<Catalogo> getCatalogo(String catalogoId) async {
-    final urlFinal = Uri.https(
-        '${Environment.apiUrl}', '/api/catalogo/catalogo/$catalogoId');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/catalogo/catalogo/$catalogoId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final catalogoResponse = catalogoResponseFromJson(resp.body);

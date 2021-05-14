@@ -1,21 +1,21 @@
-import 'package:chat/global/environment.dart';
-import 'package:chat/models/air.dart';
-import 'package:chat/models/air_response.dart';
-import 'package:chat/models/aires_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_plants/global/environment.dart';
+import 'package:flutter_plants/models/air.dart';
+import 'package:flutter_plants/models/air_response.dart';
+import 'package:flutter_plants/models/aires_response.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AiresApiProvider {
-  final _storage = new FlutterSecureStorage();
+  final prefs = new AuthUserPreferences();
 
   Future<AiresResponse> getAires(String roomId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/air/airs/room/$roomId');
+    final urlFinal = ('${Environment.apiUrl}/api/air/airs/room/$roomId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final airesResponse = airesResponseFromJson(resp.body);
@@ -27,13 +27,12 @@ class AiresApiProvider {
   }
 
   Future<Air> getAir(String roomId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/plant/plant/$roomId');
+    final urlFinal = ('${Environment.apiUrl}/api/plant/plant/$roomId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final airResponse = airResponseFromJson(resp.body);
@@ -45,13 +44,12 @@ class AiresApiProvider {
   }
 
   Future<List<Air>> getAiresRoom(String roomId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/air/airs/room/$roomId');
+    final urlFinal = ('${Environment.apiUrl}/api/air/airs/room/$roomId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final airesResponse = airesResponseFromJson(resp.body);
@@ -62,13 +60,12 @@ class AiresApiProvider {
   }
 
   Future deleteAir(String airId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/air/delete/$airId');
+    final urlFinal = ('${Environment.apiUrl}/api/air/delete/$airId');
 
     try {
-      await http.delete(urlFinal,
+      await http.delete(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       return true;

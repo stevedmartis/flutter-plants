@@ -2,26 +2,29 @@ import 'dart:convert';
 
 import 'dart:io';
 
-import 'package:chat/models/profile_response.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/models/room.dart';
+import 'package:flutter_plants/models/profile_response.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/models/room.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'package:chat/global/environment.dart';
+import 'package:flutter_plants/global/environment.dart';
 
-import 'package:chat/models/login_response.dart';
+import 'package:flutter_plants/models/login_response.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthService with ChangeNotifier {
+  final prefs = new AuthUserPreferences();
+
   Profiles _profile;
   bool _bottomVisible = true;
   List<Room> rooms;
   bool _authenticated = false;
 
-  static String clientId = 'com.davidstevemars.signinservice';
+  static String clientId = 'com.budanty.signinservice';
   static String redirectUri =
       'https://api.gettymarket.com/api/apple/callbacks/sign_in_with_apple';
 
@@ -56,8 +59,6 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  final _storage = new FlutterSecureStorage();
-
   bool get authenticated => this._authenticated;
   set authenticated(bool valor) {
     this._authenticated = valor;
@@ -78,15 +79,8 @@ class AuthService with ChangeNotifier {
     notifyListeners();
   }
 
-  static Future<String> getToken() async {
-    final _storage = new FlutterSecureStorage();
-    final token = await _storage.read(key: 'token');
-    return token;
-  }
-
-  static Future<void> deleteToken() async {
-    final _storage = new FlutterSecureStorage();
-    await _storage.delete(key: 'token');
+  static logout() {
+    //_prefs.remove('token');
     signOut();
   }
 
@@ -95,9 +89,9 @@ class AuthService with ChangeNotifier {
 
     final data = {'email': email, 'password': password};
 
-    final urlFinal = Uri.https('${Environment.apiUrl}', '/api/profile/login');
+    final urlFinal = ('${Environment.apiUrl}/api/profile/login');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
     this.authenticated = false;
@@ -106,7 +100,7 @@ class AuthService with ChangeNotifier {
       final loginResponse = loginResponseFromJson(resp.body);
       this.profile = loginResponse.profile;
 
-      await this._guardarToken(loginResponse.token);
+      prefs.setToken = loginResponse.token;
 
       return true;
     } else {
@@ -115,9 +109,9 @@ class AuthService with ChangeNotifier {
   }
 
   Future siginWithGoogleBack(token) async {
-    final urlFinal = Uri.https('${Environment.apiUrl}', '/api/google/sign-in');
+    final urlFinal = ('${Environment.apiUrl}/api/google/sign-in');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode({'token': token}),
         headers: {'Content-Type': 'application/json'});
 
@@ -125,7 +119,7 @@ class AuthService with ChangeNotifier {
       final loginResponse = loginResponseFromJson(resp.body);
       this.profile = loginResponse.profile;
 
-      await this._guardarToken(loginResponse.token);
+      prefs.setToken = loginResponse.token;
 
       return true;
     } else {
@@ -150,8 +144,7 @@ class AuthService with ChangeNotifier {
 
   Future siginWithApple(String code, String email, String firstName,
       bool useBundleId, String state) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/apple/sign_in_with_apple');
+    final urlFinal = ('${Environment.apiUrl}/api/apple/sign_in_with_apple');
 
     final data = {
       'code': code,
@@ -160,14 +153,14 @@ class AuthService with ChangeNotifier {
       'useBundleId': useBundleId,
       if (state != null) 'state': state
     };
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
     if (resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.profile = loginResponse.profile;
 
-      await this._guardarToken(loginResponse.token);
+      prefs.setToken = loginResponse.token;
 
       return true;
     } else {
@@ -182,9 +175,9 @@ class AuthService with ChangeNotifier {
   Future register(String username, String email, String password) async {
     final data = {'username': username, 'email': email, 'password': password};
 
-    final urlFinal = Uri.https('${Environment.apiUrl}', '/api/login/new');
+    final urlFinal = ('${Environment.apiUrl}/api/login/new');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
     this.authenticated = false;
@@ -194,8 +187,9 @@ class AuthService with ChangeNotifier {
 
       this.profile = loginResponse.profile;
 
-      await this._guardarToken(loginResponse.token);
+      prefs.setToken = loginResponse.token;
 
+      print(prefs.token);
       return true;
     } else {
       final respBody = jsonDecode(resp.body);
@@ -207,7 +201,7 @@ class AuthService with ChangeNotifier {
       String email, String password) async {
     // this.authenticated = true;
 
-    final urlFinal = Uri.https('${Environment.apiUrl}', '/api/profile/edit');
+    final urlFinal = ('${Environment.apiUrl}/api/profile/edit');
 
     final data = {
       'uid': uid,
@@ -218,9 +212,9 @@ class AuthService with ChangeNotifier {
       'password': password,
     };
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -237,17 +231,16 @@ class AuthService with ChangeNotifier {
   }
 
   Future editImageRecipe(String imageRecipe, String uid) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/profile/image_recipe/edit');
+    final urlFinal = ('${Environment.apiUrl}/api/profile/image_recipe/edit');
 
     final data = {
       'uid': uid,
       'imageRecipe': imageRecipe,
     };
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -264,33 +257,26 @@ class AuthService with ChangeNotifier {
   }
 
   Future<bool> isLoggedIn() async {
-    var urlFinal = Uri.https('${Environment.apiUrl}', '/api/login/renew');
+    var urlFinal = ('${Environment.apiUrl}/api/login/renew');
 
-    final token = await this._storage.read(key: 'token');
-    final resp = await http.get(urlFinal,
+    final token = prefs.token;
+    print('hellor' + token);
+
+    final resp = await http.get(Uri.parse(urlFinal),
         headers: {'Content-Type': 'application/json', 'x-token': token});
     if (resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.profile = loginResponse.profile;
       // this.profile = loginResponse.profile;
-      await this._guardarToken(loginResponse.token);
+      prefs.setToken = loginResponse.token;
       // await getProfileByUserId(this.user.uid);
       // this.logout();a
       this.authenticated = false;
 
       return true;
     } else {
-      this.logout();
+      logout();
       return false;
     }
-  }
-
-  Future _guardarToken(String token) async {
-    return await _storage.write(key: 'token', value: token);
-  }
-
-  Future logout() async {
-    await _storage.delete(key: 'token');
-    signOut();
   }
 }

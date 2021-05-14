@@ -1,12 +1,15 @@
-import 'package:chat/global/environment.dart';
-import 'package:chat/services/auth_service.dart';
+import 'package:flutter_plants/global/environment.dart';
+import 'package:flutter_plants/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 enum ServerStatus { Online, Offline, Connecting }
 
 class SocketService with ChangeNotifier {
+  final prefs = new AuthUserPreferences();
+
   ServerStatus _serverStatus = ServerStatus.Connecting;
   IO.Socket _socket;
 
@@ -16,7 +19,7 @@ class SocketService with ChangeNotifier {
   Function get emit => this._socket.emit;
 
   void connect() async {
-    final token = await AuthService.getToken();
+    final token = prefs.token;
 
     // Dart client
     this._socket = IO.io(Environment.socketUrl, {

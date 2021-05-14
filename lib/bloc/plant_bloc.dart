@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:chat/bloc/validators.dart';
-import 'package:chat/models/plant.dart';
-import 'package:chat/models/plants_response.dart';
-import 'package:chat/models/fromPlant.dart';
-import 'package:chat/providers/plants_provider.dart';
-import 'package:chat/repository/plants_repository.dart';
+import 'package:flutter_plants/bloc/validators.dart';
+import 'package:flutter_plants/models/plant.dart';
+import 'package:flutter_plants/models/plants_response.dart';
+import 'package:flutter_plants/models/fromPlant.dart';
+import 'package:flutter_plants/providers/plants_provider.dart';
+import 'package:flutter_plants/repository/plants_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PlantBloc with Validators {

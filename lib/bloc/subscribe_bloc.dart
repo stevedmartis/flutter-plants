@@ -1,8 +1,8 @@
-import 'package:chat/bloc/validators.dart';
-import 'package:chat/models/profilesDispensaries_response.dart';
-import 'package:chat/models/profiles_response.dart';
-import 'package:chat/models/subscribe.dart';
-import 'package:chat/repository/subscription_repository.dart';
+import 'package:flutter_plants/bloc/validators.dart';
+import 'package:flutter_plants/models/profilesDispensaries_response.dart';
+import 'package:flutter_plants/models/profiles_response.dart';
+import 'package:flutter_plants/models/subscribe.dart';
+import 'package:flutter_plants/repository/subscription_repository.dart';
 
 import 'package:rxdart/rxdart.dart';
 

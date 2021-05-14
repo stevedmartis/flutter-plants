@@ -1,14 +1,14 @@
-import 'package:chat/bloc/air_bloc.dart';
-import 'package:chat/bloc/catalogo_bloc.dart';
-import 'package:chat/bloc/light_bloc.dart';
-import 'package:chat/bloc/login_bloc.dart';
-import 'package:chat/bloc/plant_bloc.dart';
-import 'package:chat/bloc/product_bloc.dart';
-import 'package:chat/bloc/profile_bloc.dart';
-import 'package:chat/bloc/register_bloc.dart';
-import 'package:chat/bloc/room_bloc.dart';
-import 'package:chat/bloc/subscribe_bloc.dart';
-import 'package:chat/bloc/visit_bloc.dart';
+import 'package:flutter_plants/bloc/air_bloc.dart';
+import 'package:flutter_plants/bloc/catalogo_bloc.dart';
+import 'package:flutter_plants/bloc/light_bloc.dart';
+import 'package:flutter_plants/bloc/login_bloc.dart';
+import 'package:flutter_plants/bloc/plant_bloc.dart';
+import 'package:flutter_plants/bloc/product_bloc.dart';
+import 'package:flutter_plants/bloc/profile_bloc.dart';
+import 'package:flutter_plants/bloc/register_bloc.dart';
+import 'package:flutter_plants/bloc/room_bloc.dart';
+import 'package:flutter_plants/bloc/subscribe_bloc.dart';
+import 'package:flutter_plants/bloc/visit_bloc.dart';
 import 'package:flutter/material.dart';
 
 class CustomProvider extends InheritedWidget {

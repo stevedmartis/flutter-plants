@@ -1,21 +1,21 @@
-import 'package:chat/bloc/provider.dart';
-import 'package:chat/bloc/register_bloc.dart';
-import 'package:chat/helpers/ui_overlay_style.dart';
-import 'package:chat/pages/principal_page.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/clip_oval.dart';
-import 'package:chat/widgets/header_curve_signin.dart';
-import 'package:chat/widgets/labels.dart';
-import 'package:chat/widgets/myprofile.dart';
+import 'package:flutter_plants/bloc/provider.dart';
+import 'package:flutter_plants/bloc/register_bloc.dart';
+import 'package:flutter_plants/helpers/ui_overlay_style.dart';
+import 'package:flutter_plants/pages/principal_page.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/clip_oval.dart';
+import 'package:flutter_plants/widgets/header_curve_signin.dart';
+import 'package:flutter_plants/widgets/labels.dart';
+import 'package:flutter_plants/widgets/myprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/socket_service.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/socket_service.dart';
 
-import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:flutter_plants/helpers/mostrar_alerta.dart';
 
 import 'dart:ui' as ui;
 
@@ -586,7 +586,7 @@ _register(RegisterBloc bloc, BuildContext context) async {
 
   if (registroOk != null) {
     if (registroOk == true) {
-      socketService.connect();
+      print('helloooo');
       Navigator.of(context)
           .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
     } else {

@@ -1,25 +1,25 @@
-import 'package:chat/bloc/plant_bloc.dart';
-import 'package:chat/bloc/product_bloc.dart';
-import 'package:chat/bloc/provider.dart';
+import 'package:flutter_plants/bloc/plant_bloc.dart';
+import 'package:flutter_plants/bloc/product_bloc.dart';
+import 'package:flutter_plants/bloc/provider.dart';
 
-import 'package:chat/helpers/mostrar_alerta.dart';
-import 'package:chat/models/catalogo.dart';
-import 'package:chat/models/plant.dart';
+import 'package:flutter_plants/helpers/mostrar_alerta.dart';
+import 'package:flutter_plants/models/catalogo.dart';
+import 'package:flutter_plants/models/plant.dart';
 
-import 'package:chat/models/products.dart';
-import 'package:chat/models/profiles.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/models/profiles.dart';
 
-import 'package:chat/pages/profile_page.dart';
-import 'package:chat/pages/room_list_page.dart';
+import 'package:flutter_plants/pages/profile_page.dart';
+import 'package:flutter_plants/pages/room_list_page.dart';
 
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/aws_service.dart';
-import 'package:chat/services/product_services.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/aws_service.dart';
+import 'package:flutter_plants/services/product_services.dart';
 
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/button_gold.dart';
-import 'package:chat/widgets/plant_card_widget.dart';
-import 'package:chat/widgets/productProfile_card.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/button_gold.dart';
+import 'package:flutter_plants/widgets/plant_card_widget.dart';
+import 'package:flutter_plants/widgets/productProfile_card.dart';
 
 import 'package:flutter/material.dart';
 

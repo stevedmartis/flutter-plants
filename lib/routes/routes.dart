@@ -1,22 +1,22 @@
-import 'package:chat/pages/messages.dart';
-import 'package:chat/pages/my_profile.dart';
-import 'package:chat/pages/notification_page.dart';
-import 'package:chat/pages/onBoarding_page.dart';
-import 'package:chat/pages/principalCustom_page.dart';
-import 'package:chat/pages/catalogs_list_page.dart';
-import 'package:chat/pages/profile_edit.dart';
-import 'package:chat/pages/profile_page.dart';
-import 'package:chat/pages/room_list_page.dart';
-import 'package:chat/pages/subscriptors_page.dart';
-import 'package:chat/pages/tabs.dart';
-import 'package:chat/pages/user_page.dart';
+import 'package:flutter_plants/pages/messages.dart';
+import 'package:flutter_plants/pages/my_profile.dart';
+import 'package:flutter_plants/pages/notification_page.dart';
+import 'package:flutter_plants/pages/onBoarding_page.dart';
+import 'package:flutter_plants/pages/principalCustom_page.dart';
+import 'package:flutter_plants/pages/catalogs_list_page.dart';
+import 'package:flutter_plants/pages/profile_edit.dart';
+import 'package:flutter_plants/pages/profile_page.dart';
+import 'package:flutter_plants/pages/room_list_page.dart';
+import 'package:flutter_plants/pages/subscriptors_page.dart';
+import 'package:flutter_plants/pages/tabs.dart';
+import 'package:flutter_plants/pages/user_page.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chat/pages/chat_page.dart';
-import 'package:chat/pages/loading_page.dart';
-import 'package:chat/pages/login_page.dart';
-import 'package:chat/pages/register_page.dart';
-import 'package:chat/pages/principal_page.dart';
+import 'package:flutter_plants/pages/chat_page.dart';
+import 'package:flutter_plants/pages/loading_page.dart';
+import 'package:flutter_plants/pages/login_page.dart';
+import 'package:flutter_plants/pages/register_page.dart';
+import 'package:flutter_plants/pages/principal_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 final Map<String, Widget Function(BuildContext)> appRoutes = {

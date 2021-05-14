@@ -1,5 +1,5 @@
-import 'package:chat/models/air.dart';
-import 'package:chat/theme/theme.dart';
+import 'package:flutter_plants/models/air.dart';
+import 'package:flutter_plants/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../utils/extension.dart';

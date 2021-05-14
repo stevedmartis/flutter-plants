@@ -1,17 +1,20 @@
-import 'package:chat/models/message_error.dart';
-import 'package:chat/models/plant.dart';
-import 'package:chat/models/plant_response.dart';
-import 'package:chat/models/plants_response.dart';
+import 'package:flutter_plants/models/message_error.dart';
+import 'package:flutter_plants/models/plant.dart';
+import 'package:flutter_plants/models/plant_response.dart';
+import 'package:flutter_plants/models/plants_response.dart';
 
-import 'package:chat/models/room.dart';
+import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:chat/global/environment.dart';
+import 'package:flutter_plants/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class PlantService with ChangeNotifier {
+  final prefs = new AuthUserPreferences();
+
   Plant _plant;
   Plant get plant => this._plant;
 
@@ -37,16 +40,14 @@ class PlantService with ChangeNotifier {
     notifyListeners();
   }
 
-  final _storage = new FlutterSecureStorage();
-
   Future createPlant(Plant plant) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal = Uri.https('${Environment.apiUrl}', '/api/plant/new');
+    final urlFinal = ('${Environment.apiUrl}/api/plant/new');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(plant),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -66,12 +67,11 @@ class PlantService with ChangeNotifier {
   Future editPlant(Plant plant) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/plant/update/plant');
+    final urlFinal = ('${Environment.apiUrl}/api/plant/update/plant');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(plant),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -89,13 +89,12 @@ class PlantService with ChangeNotifier {
   }
 
   Future deletePlant(String plantId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/room/delete/$plantId');
+    final urlFinal = ('${Environment.apiUrl}/api/room/delete/$plantId');
 
     try {
-      await http.delete(urlFinal,
+      await http.delete(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       return true;
@@ -108,15 +107,14 @@ class PlantService with ChangeNotifier {
       List<Room> rooms, int position, String userId) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/room/update/position');
+    final urlFinal = ('${Environment.apiUrl}/api/room/update/position');
 
     //final data = {'name': name, 'email': description, 'uid': uid};
     final data = {'rooms': rooms, 'userId': userId};
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: json.encode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -134,12 +132,11 @@ class PlantService with ChangeNotifier {
 
   Future<List<Plant>> getLastPlantsByUser(String userId) async {
     try {
-      final token = await this._storage.read(key: 'token');
+      final token = prefs.token;
 
-      final urlFinal =
-          Uri.https('${Environment.apiUrl}', '/api/plant/plants/user/$userId');
+      final urlFinal = ('${Environment.apiUrl}/api/plant/plants/user/$userId');
 
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final plantsResponse = plantsResponseFromJson(resp.body);

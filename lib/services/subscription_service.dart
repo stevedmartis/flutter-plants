@@ -1,27 +1,27 @@
-import 'package:chat/models/message_error.dart';
+import 'package:flutter_plants/models/message_error.dart';
 
-import 'package:chat/models/subscribe.dart';
-import 'package:chat/models/subscription_response.dart';
-import 'package:chat/models/subscriptions_dispensaries.dart';
+import 'package:flutter_plants/models/subscribe.dart';
+import 'package:flutter_plants/models/subscription_response.dart';
+import 'package:flutter_plants/models/subscriptions_dispensaries.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:chat/global/environment.dart';
+import 'package:flutter_plants/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class SubscriptionService with ChangeNotifier {
-  final _storage = new FlutterSecureStorage();
+  final prefs = new AuthUserPreferences();
 
   Future createSubscription(Subscription subscription) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/subscription/new');
+    final urlFinal = ('${Environment.apiUrl}/api/subscription/new');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(subscription),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -41,11 +41,11 @@ class SubscriptionService with ChangeNotifier {
   Future unSubscription(Subscription subscription) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/subscription/unsubscribe');
+    final token = prefs.token;
 
-    final resp = await http.post(urlFinal,
+    final urlFinal = ('${Environment.apiUrl}/api/subscription/unsubscribe');
+
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(subscription),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -64,13 +64,13 @@ class SubscriptionService with ChangeNotifier {
 
   Future<DispensariesSubscriptorResponse> getSubscriptionsDispensaries(
       String clubId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal = Uri.https('${Environment.apiUrl}',
-        '/api/subscription/subscriptions/profile/dispensaries/$clubId');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/subscription/subscriptions/profile/dispensaries/$clubId');
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final productsResponse =

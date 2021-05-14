@@ -1,6 +1,6 @@
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/socket_service.dart';
-import 'package:chat/theme/theme.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/socket_service.dart';
+import 'package:flutter_plants/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +44,7 @@ class PrincipalMenu extends StatelessWidget {
 
                     Navigator.pushNamedAndRemoveUntil(
                         context, "login", (Route<dynamic> route) => false);
-                    AuthService.deleteToken();
+                    AuthService.logout();
                   },
                   child: ListTile(
                     leading: Icon(Icons.exit_to_app, color: accentColor),

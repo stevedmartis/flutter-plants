@@ -1,19 +1,21 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-import 'package:chat/global/environment.dart';
+import 'package:flutter_plants/global/environment.dart';
 
 import 'package:mime_type/mime_type.dart';
 
 class AwsService with ChangeNotifier {
+  final prefs = new AuthUserPreferences();
+
   String _image;
 
   bool _isUpload = false;
@@ -28,8 +30,6 @@ class AwsService with ChangeNotifier {
   String imageUpdatePlant;
 
   // static String redirectUri = 'https://api.gettymarket.com/api/aws/';
-
-  final _storage = new FlutterSecureStorage();
 
   bool get isUploadImagePlant => this._isUploadImagePlant;
   set isUploadImagePlant(bool valor) {
@@ -63,11 +63,6 @@ class AwsService with ChangeNotifier {
   }
 
   // Getters del token de forma estática
-  static Future<String> getToken() async {
-    final _storage = new FlutterSecureStorage();
-    final token = await _storage.read(key: 'token');
-    return token;
-  }
 
   Future<String> uploadImageAvatar(
       String uid, String fileName, String fileType, File image) async {
@@ -75,8 +70,7 @@ class AwsService with ChangeNotifier {
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
-    final token = await this._storage.read(key: 'token');
-
+    final token = prefs.token;
     Map<String, String> headers = {
       "Content-Type": "image/mimeType",
       "x-token": token,
@@ -114,7 +108,7 @@ class AwsService with ChangeNotifier {
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     Map<String, String> headers = {
       "Content-Type": "image/mimeType",
@@ -157,7 +151,7 @@ class AwsService with ChangeNotifier {
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     Map<String, String> headers = {
       "Content-Type": "image/mimeType",
@@ -198,7 +192,7 @@ class AwsService with ChangeNotifier {
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     Map<String, String> headers = {
       "Content-Type": "image/mimeType",
@@ -240,7 +234,7 @@ class AwsService with ChangeNotifier {
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     Map<String, String> headers = {
       "Content-Type": "image/mimeType",
@@ -282,7 +276,7 @@ class AwsService with ChangeNotifier {
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     Map<String, String> headers = {
       "Content-Type": "image/mimeType",
@@ -323,7 +317,7 @@ class AwsService with ChangeNotifier {
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     Map<String, String> headers = {
       "Content-Type": "image/mimeType",

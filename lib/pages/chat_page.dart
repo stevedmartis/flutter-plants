@@ -1,19 +1,19 @@
-import 'package:chat/models/notification.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/avatar_user_chat.dart';
-import 'package:chat/widgets/carousel_users.dart';
-import 'package:chat/widgets/sliver_header.dart';
+import 'package:flutter_plants/models/notification.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/avatar_user_chat.dart';
+import 'package:flutter_plants/widgets/carousel_users.dart';
+import 'package:flutter_plants/widgets/sliver_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/chat_service.dart';
-import 'package:chat/services/socket_service.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/chat_service.dart';
+import 'package:flutter_plants/services/socket_service.dart';
 
-import 'package:chat/models/mensajes_response.dart';
-import 'package:chat/widgets/chat_message.dart';
+import 'package:flutter_plants/models/mensajes_response.dart';
+import 'package:flutter_plants/widgets/chat_message.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   @override

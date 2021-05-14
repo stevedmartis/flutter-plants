@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:chat/bloc/validators.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/models/profiles_response.dart';
+import 'package:flutter_plants/bloc/validators.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/models/profiles_response.dart';
 
-import 'package:chat/repository/users_repository.dart';
+import 'package:flutter_plants/repository/users_repository.dart';
 
 import 'package:rxdart/rxdart.dart';
 

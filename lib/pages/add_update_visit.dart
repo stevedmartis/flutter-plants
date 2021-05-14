@@ -1,18 +1,18 @@
-import 'package:chat/bloc/provider.dart';
-import 'package:chat/bloc/visit_bloc.dart';
+import 'package:flutter_plants/bloc/provider.dart';
+import 'package:flutter_plants/bloc/visit_bloc.dart';
 
-import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:flutter_plants/helpers/mostrar_alerta.dart';
 
-import 'package:chat/models/visit.dart';
-import 'package:chat/pages/cover_image_visit.dart';
-import 'package:chat/pages/profile_page.dart';
+import 'package:flutter_plants/models/visit.dart';
+import 'package:flutter_plants/pages/cover_image_visit.dart';
+import 'package:flutter_plants/pages/profile_page.dart';
 
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/aws_service.dart';
-import 'package:chat/services/visit_service.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/aws_service.dart';
+import 'package:flutter_plants/services/visit_service.dart';
 
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/productProfile_card.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/productProfile_card.dart';
 
 import 'package:flutter/material.dart';
 

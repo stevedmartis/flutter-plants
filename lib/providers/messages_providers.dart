@@ -1,22 +1,21 @@
-import 'package:chat/global/environment.dart';
-import 'package:chat/models/profiles_response.dart';
-import 'package:chat/services/auth_service.dart';
+import 'package:flutter_plants/global/environment.dart';
+import 'package:flutter_plants/models/profiles_response.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:async';
 
 class MessagesProvider {
+  final prefs = new AuthUserPreferences();
+
   Future<ProfilesResponse> getProfilesChatByUser(String userId) async {
     try {
-      final urlFinal =
-          Uri.https('${Environment.apiUrl}', '/api/messages/profiles/$userId');
+      final urlFinal = ('${Environment.apiUrl}/api/messages/profiles/$userId');
 
       final resp = await http.get(
-        urlFinal,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-token': await AuthService.getToken(),
-        },
+        Uri.parse(urlFinal),
+        headers: {'Content-Type': 'application/json', 'x-token': prefs.token},
       );
 
       final profilesResponse = profilesResponseFromJson(resp.body);

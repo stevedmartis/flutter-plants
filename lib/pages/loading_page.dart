@@ -1,11 +1,11 @@
-import 'package:chat/pages/onBoarding_page.dart';
+import 'package:flutter_plants/pages/onBoarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:chat/services/socket_service.dart';
-import 'package:chat/services/auth_service.dart';
+import 'package:flutter_plants/services/socket_service.dart';
+import 'package:flutter_plants/services/auth_service.dart';
 
-import 'package:chat/pages/principal_page.dart';
+import 'package:flutter_plants/pages/principal_page.dart';
 import 'package:upgrader/upgrader.dart';
 
 class LoadingPage extends StatelessWidget {

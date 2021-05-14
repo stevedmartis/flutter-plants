@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:chat/models/dispensaries_products_response%20copy.dart';
-import 'package:chat/models/products.dart';
-import 'package:chat/theme/theme.dart';
+import 'package:flutter_plants/models/dispensaries_products_response%20copy.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';

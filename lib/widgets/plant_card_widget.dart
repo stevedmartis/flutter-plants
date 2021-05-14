@@ -1,7 +1,7 @@
-import 'package:chat/bloc/plant_bloc.dart';
-import 'package:chat/models/plant.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/productProfile_card.dart';
+import 'package:flutter_plants/bloc/plant_bloc.dart';
+import 'package:flutter_plants/models/plant.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/productProfile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';

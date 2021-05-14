@@ -1,22 +1,22 @@
-import 'package:chat/global/environment.dart';
-import 'package:chat/models/plant.dart';
-import 'package:chat/models/plant_response.dart';
-import 'package:chat/models/visit.dart';
-import 'package:chat/models/visits_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_plants/global/environment.dart';
+import 'package:flutter_plants/models/plant.dart';
+import 'package:flutter_plants/models/plant_response.dart';
+import 'package:flutter_plants/models/visit.dart';
+import 'package:flutter_plants/models/visits_response.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 class VisitApiProvider {
-  final _storage = new FlutterSecureStorage();
+  final prefs = new AuthUserPreferences();
 
   Future<VisitsResponse> getVisit(String plantId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/visit/visits/plant/$plantId');
+    final urlFinal = ('${Environment.apiUrl}/api/visit/visits/plant/$plantId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final visitResponse = visitsResponseFromJson(resp.body);
@@ -28,13 +28,12 @@ class VisitApiProvider {
   }
 
   Future<List<Visit>> getVisitPlant(String plantId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/visit/visits/plant/$plantId');
+    final urlFinal = ('${Environment.apiUrl}/api/visit/visits/plant/$plantId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final visitResponse = visitsResponseFromJson(resp.body);
@@ -46,12 +45,11 @@ class VisitApiProvider {
 
   Future<VisitsResponse> getLastVisitsByUser(String userId) async {
     try {
-      final token = await this._storage.read(key: 'token');
+      final token = prefs.token;
 
-      final urlFinal =
-          Uri.https('${Environment.apiUrl}', '/api/visit/visits/user/$userId');
+      final urlFinal = ('${Environment.apiUrl}/api/visit/visits/user/$userId');
 
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final visitsResponse = visitsResponseFromJson(resp.body);
@@ -63,13 +61,12 @@ class VisitApiProvider {
   }
 
   Future<Plant> getPlant(String roomId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/plant/plant/$roomId');
+    final urlFinal = ('${Environment.apiUrl}/api/plant/plant/$roomId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final plantResponse = plantResponseFromJson(resp.body);
@@ -81,13 +78,12 @@ class VisitApiProvider {
   }
 
   Future deletePlant(String plantId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/plant/delete/$plantId');
+    final urlFinal = ('${Environment.apiUrl}/api/plant/delete/$plantId');
 
     try {
-      await http.delete(urlFinal,
+      await http.delete(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       return true;

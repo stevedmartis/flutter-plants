@@ -1,12 +1,12 @@
-import 'package:chat/bloc/profile_bloc.dart';
-import 'package:chat/bloc/provider.dart';
-import 'package:chat/helpers/mostrar_alerta.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/pages/profile_page.dart';
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/socket_service.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/button_gold.dart';
+import 'package:flutter_plants/bloc/profile_bloc.dart';
+import 'package:flutter_plants/bloc/provider.dart';
+import 'package:flutter_plants/helpers/mostrar_alerta.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/pages/profile_page.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/socket_service.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/button_gold.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -205,7 +205,7 @@ class FormNewProductPageState extends State<FormNewProductPage> {
                                     socketService.disconnect();
                                     Navigator.pushReplacementNamed(
                                         context, 'login');
-                                    AuthService.deleteToken();
+                                    AuthService.logout();
                                   },
                           ),
                         ],

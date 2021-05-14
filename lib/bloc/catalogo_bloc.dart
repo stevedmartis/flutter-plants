@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:chat/bloc/validators.dart';
-import 'package:chat/models/catalogo.dart';
-import 'package:chat/models/catalogos_products_response.dart';
-import 'package:chat/models/catalogos_response.dart';
-import 'package:chat/models/room.dart';
-import 'package:chat/models/rooms_response.dart';
-import 'package:chat/repository/catalogos_repository.dart';
+import 'package:flutter_plants/bloc/validators.dart';
+import 'package:flutter_plants/models/catalogo.dart';
+import 'package:flutter_plants/models/catalogos_products_response.dart';
+import 'package:flutter_plants/models/catalogos_response.dart';
+import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/models/rooms_response.dart';
+import 'package:flutter_plants/repository/catalogos_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CatalogoBloc with Validators {

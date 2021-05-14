@@ -1,16 +1,16 @@
-import 'package:chat/bloc/profile_bloc.dart';
-import 'package:chat/bloc/provider.dart';
-import 'package:chat/helpers/mostrar_alerta.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/pages/avatar_image.dart';
-import 'package:chat/pages/header_image.dart';
-import 'package:chat/pages/profile_card.dart';
-import 'package:chat/pages/profile_page.dart';
-import 'package:chat/services/auth_service.dart';
+import 'package:flutter_plants/bloc/profile_bloc.dart';
+import 'package:flutter_plants/bloc/provider.dart';
+import 'package:flutter_plants/helpers/mostrar_alerta.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/pages/avatar_image.dart';
+import 'package:flutter_plants/pages/header_image.dart';
+import 'package:flutter_plants/pages/profile_card.dart';
+import 'package:flutter_plants/pages/profile_page.dart';
+import 'package:flutter_plants/services/auth_service.dart';
 
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/avatar_user_chat.dart';
-import 'package:chat/widgets/productProfile_card.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/avatar_user_chat.dart';
+import 'package:flutter_plants/widgets/productProfile_card.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';

@@ -1,31 +1,31 @@
 import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:chat/bloc/room_bloc.dart';
-import 'package:chat/models/products.dart';
+import 'package:flutter_plants/bloc/room_bloc.dart';
+import 'package:flutter_plants/models/products.dart';
 
-import 'package:chat/models/profiles.dart';
-import 'package:chat/models/room.dart';
-import 'package:chat/models/rooms_response.dart';
-import 'package:chat/pages/add_room.dart';
-import 'package:chat/pages/plants_room.dart';
-import 'package:chat/pages/principalCustom_page.dart';
-import 'package:chat/pages/profile_page.dart';
-import 'package:chat/pages/room_detail.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/models/rooms_response.dart';
+import 'package:flutter_plants/pages/add_room.dart';
+import 'package:flutter_plants/pages/plants_room.dart';
+import 'package:flutter_plants/pages/principalCustom_page.dart';
+import 'package:flutter_plants/pages/profile_page.dart';
+import 'package:flutter_plants/pages/room_detail.dart';
 
-import 'package:chat/services/room_services.dart';
+import 'package:flutter_plants/services/room_services.dart';
 
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/header_appbar_pages.dart';
-import 'package:chat/widgets/room_card.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/header_appbar_pages.dart';
+import 'package:flutter_plants/widgets/room_card.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/socket_service.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/socket_service.dart';
 
 class RoomsListPage extends StatefulWidget {
   final bool plantOrigen;

@@ -1,15 +1,15 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
-import 'package:chat/models/notification.dart';
-import 'package:chat/models/profiles.dart';
+import 'package:flutter_plants/models/notification.dart';
+import 'package:flutter_plants/models/profiles.dart';
 
-import 'package:chat/routes/routes.dart';
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/notification_service.dart';
-import 'package:chat/services/socket_service.dart';
+import 'package:flutter_plants/routes/routes.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/notification_service.dart';
+import 'package:flutter_plants/services/socket_service.dart';
 
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/menu_drawer.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/menu_drawer.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

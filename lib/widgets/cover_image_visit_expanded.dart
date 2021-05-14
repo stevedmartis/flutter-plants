@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chat/models/visit.dart';
-import 'package:chat/services/visit_service.dart';
+import 'package:flutter_plants/models/visit.dart';
+import 'package:flutter_plants/services/visit_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

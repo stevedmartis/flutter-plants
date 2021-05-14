@@ -1,22 +1,21 @@
-import 'package:chat/models/mensajes_response.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/services/auth_service.dart';
+import 'package:flutter_plants/models/mensajes_response.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:chat/global/environment.dart';
+import 'package:flutter_plants/global/environment.dart';
 
 class ChatService with ChangeNotifier {
   Profiles userFor;
+  final prefs = new AuthUserPreferences();
 
   Future<List<Message>> getChat(String userID) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/messages/$userID');
+    final urlFinal = ('${Environment.apiUrl}/api/messages/$userID');
 
-    final resp = await http.get(urlFinal, headers: {
-      'Content-Type': 'application/json',
-      'x-token': await AuthService.getToken()
-    });
+    final resp = await http.get(Uri.parse(urlFinal),
+        headers: {'Content-Type': 'application/json', 'x-token': prefs.token});
 
     final messageResponse = messageResponseFromJson(resp.body);
 

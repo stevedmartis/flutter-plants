@@ -1,17 +1,17 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:chat/bloc/catalogo_bloc.dart';
-import 'package:chat/bloc/room_bloc.dart';
-import 'package:chat/models/catalogo.dart';
-import 'package:chat/models/catalogos_response.dart';
+import 'package:flutter_plants/bloc/catalogo_bloc.dart';
+import 'package:flutter_plants/bloc/room_bloc.dart';
+import 'package:flutter_plants/models/catalogo.dart';
+import 'package:flutter_plants/models/catalogos_response.dart';
 
-import 'package:chat/models/profiles.dart';
-import 'package:chat/pages/catalogo_detail.dart';
-import 'package:chat/pages/principalCustom_page.dart';
-import 'package:chat/pages/profile_page.dart';
-import 'package:chat/services/catalogo_service.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/pages/catalogo_detail.dart';
+import 'package:flutter_plants/pages/principalCustom_page.dart';
+import 'package:flutter_plants/pages/profile_page.dart';
+import 'package:flutter_plants/services/catalogo_service.dart';
 
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/header_appbar_pages.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/header_appbar_pages.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +19,8 @@ import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/socket_service.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/socket_service.dart';
 
 import 'add_update_catalogo.dart';
 

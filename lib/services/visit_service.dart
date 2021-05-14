@@ -1,16 +1,19 @@
-import 'package:chat/models/message_error.dart';
+import 'package:flutter_plants/models/message_error.dart';
 
-import 'package:chat/models/visit.dart';
-import 'package:chat/models/visit_response.dart';
-import 'package:chat/models/visits_response.dart';
+import 'package:flutter_plants/models/visit.dart';
+import 'package:flutter_plants/models/visit_response.dart';
+import 'package:flutter_plants/models/visits_response.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:chat/global/environment.dart';
+import 'package:flutter_plants/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class VisitService with ChangeNotifier {
+  final prefs = new AuthUserPreferences();
+
   Visit _visit;
   Visit get visit => this._visit;
 
@@ -19,16 +22,14 @@ class VisitService with ChangeNotifier {
     notifyListeners();
   }
 
-  final _storage = new FlutterSecureStorage();
-
   Future createVisit(Visit visit) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal = Uri.https('${Environment.apiUrl}', 'api/visit/new');
+    final urlFinal = ('${Environment.apiUrl}/api/visit/new');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(visit),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -48,12 +49,11 @@ class VisitService with ChangeNotifier {
   Future editVisit(Visit visit) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', 'api/visit/update/visit');
+    final urlFinal = ('${Environment.apiUrl}/api/visit/update/visit');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(visit),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -70,13 +70,12 @@ class VisitService with ChangeNotifier {
   }
 
   Future deleteVisit(String visitId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', 'api/visit/delete/$visitId');
+    final urlFinal = ('${Environment.apiUrl}/api/visit/delete/$visitId');
 
     try {
-      await http.delete(urlFinal,
+      await http.delete(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       return true;
@@ -86,13 +85,12 @@ class VisitService with ChangeNotifier {
   }
 
   Future<List<Visit>> getLastVisitsByUser(String userId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', 'api/visit/visits/user/$userId');
+    final urlFinal = ('${Environment.apiUrl}/api/visit/visits/user/$userId');
 
     try {
-      final token = await this._storage.read(key: 'token');
+      final token = prefs.token;
 
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final visitsResponse = visitsResponseFromJson(resp.body);

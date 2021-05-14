@@ -1,6 +1,6 @@
-import 'package:chat/models/room.dart';
-import 'package:chat/models/rooms_response.dart';
-import 'package:chat/providers/rooms_provider.dart';
+import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/models/rooms_response.dart';
+import 'package:flutter_plants/providers/rooms_provider.dart';
 
 class RoomsRepository {
   RoomsApiProvider _apiProvider = RoomsApiProvider();

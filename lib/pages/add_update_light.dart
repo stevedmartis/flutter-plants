@@ -1,17 +1,17 @@
-import 'package:chat/bloc/light_bloc.dart';
-import 'package:chat/bloc/provider.dart';
-import 'package:chat/bloc/room_bloc.dart';
+import 'package:flutter_plants/bloc/light_bloc.dart';
+import 'package:flutter_plants/bloc/provider.dart';
+import 'package:flutter_plants/bloc/room_bloc.dart';
 
-import 'package:chat/helpers/mostrar_alerta.dart';
-import 'package:chat/models/light.dart';
+import 'package:flutter_plants/helpers/mostrar_alerta.dart';
+import 'package:flutter_plants/models/light.dart';
 
-import 'package:chat/models/room.dart';
-import 'package:chat/pages/profile_page.dart';
+import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/pages/profile_page.dart';
 
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/light_service.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/light_service.dart';
 
-import 'package:chat/theme/theme.dart';
+import 'package:flutter_plants/theme/theme.dart';
 
 import 'package:flutter/material.dart';
 

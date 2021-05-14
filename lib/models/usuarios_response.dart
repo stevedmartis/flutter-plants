@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/usuario.dart';
+import 'package:flutter_plants/models/usuario.dart';
 
 UsuariosResponse usuariosResponseFromJson(String str) =>
     UsuariosResponse.fromJson(json.decode(str));

@@ -1,8 +1,8 @@
-import 'package:chat/models/profiles.dart';
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/aws_service.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/avatar_user_chat.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/aws_service.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/avatar_user_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';

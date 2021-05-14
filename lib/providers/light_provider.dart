@@ -1,22 +1,22 @@
-import 'package:chat/global/environment.dart';
-import 'package:chat/models/light.dart';
-import 'package:chat/models/lights_response.dart';
-import 'package:chat/models/plant.dart';
-import 'package:chat/models/plant_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_plants/global/environment.dart';
+import 'package:flutter_plants/models/light.dart';
+import 'package:flutter_plants/models/lights_response.dart';
+import 'package:flutter_plants/models/plant.dart';
+import 'package:flutter_plants/models/plant_response.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 class LightApiProvider {
-  final _storage = new FlutterSecureStorage();
+  final prefs = new AuthUserPreferences();
 
   Future<LightsResponse> getLight(String roomId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/light/lights/room/$roomId');
+    final urlFinal = ('${Environment.apiUrl}/api/light/lights/room/$roomId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final lightsResponse = lightsResponseFromJson(resp.body);
@@ -28,13 +28,12 @@ class LightApiProvider {
   }
 
   Future<List<Light>> getLightsRoom(String roomId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/light/lights/room/$roomId');
+    final urlFinal = ('${Environment.apiUrl}/api/light/lights/room/$roomId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final lightsResponse = lightsResponseFromJson(resp.body);
@@ -45,13 +44,12 @@ class LightApiProvider {
   }
 
   Future<Plant> getPlant(String roomId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/plant/plant/$roomId');
+    final urlFinal = ('${Environment.apiUrl}/api/plant/plant/$roomId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final plantResponse = plantResponseFromJson(resp.body);
@@ -63,13 +61,12 @@ class LightApiProvider {
   }
 
   Future deleteLight(String lightId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/light/delete/$lightId');
+    final urlFinal = ('${Environment.apiUrl}/api/light/delete/$lightId');
 
     try {
-      await http.delete(urlFinal,
+      await http.delete(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       return true;

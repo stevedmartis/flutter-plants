@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/product_principal.dart';
+import 'package:flutter_plants/models/product_principal.dart';
 
 DispensaryProductsProfileResponse dispensaryProductsResponseFromJson(
         String str) =>

@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/subscribe.dart';
+import 'package:flutter_plants/models/subscribe.dart';
 
 SubscriptionResponse subscriptionResponseFromJson(String str) =>
     SubscriptionResponse.fromJson(json.decode(str));

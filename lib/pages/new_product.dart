@@ -1,8 +1,8 @@
-/* import 'package:chat/models/room.dart';
-import 'package:chat/pages/form_new_product.dart';
-import 'package:chat/pages/profile_page.dart';
+/* import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/pages/form_new_product.dart';
+import 'package:flutter_plants/pages/profile_page.dart';
 
-import 'package:chat/theme/theme.dart';
+import 'package:flutter_plants/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

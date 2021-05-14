@@ -1,14 +1,17 @@
-import 'package:chat/models/message_error.dart';
-import 'package:chat/models/room.dart';
-import 'package:chat/models/room_response.dart';
-import 'package:chat/models/rooms_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_plants/models/message_error.dart';
+import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/models/room_response.dart';
+import 'package:flutter_plants/models/rooms_response.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:chat/global/environment.dart';
+import 'package:flutter_plants/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class RoomService with ChangeNotifier {
+  final prefs = new AuthUserPreferences();
+
   Room _room;
 
   Room get room => this._room;
@@ -18,16 +21,13 @@ class RoomService with ChangeNotifier {
     //notifyListeners();
   }
 
-  final _storage = new FlutterSecureStorage();
-
   Future<List<Room>> getRoomsUser(String userId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/room/rooms/user/$userId');
+    final urlFinal = ('${Environment.apiUrl}/api/room/rooms/user/$userId');
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final roomsResponse = roomsResponseFromJson(resp.body);
@@ -47,10 +47,11 @@ class RoomService with ChangeNotifier {
   Future createRoom(Room room) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
-    final urlFinal = Uri.https('${Environment.apiUrl}', '/api/room/new');
+    final token = prefs.token;
 
-    final resp = await http.post(urlFinal,
+    final urlFinal = ('${Environment.apiUrl}/api/room/new');
+
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(room),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -70,11 +71,11 @@ class RoomService with ChangeNotifier {
   Future editRoom(Room room) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/room/update/room');
+    final token = prefs.token;
 
-    final resp = await http.post(urlFinal,
+    final urlFinal = ('${Environment.apiUrl}/api/room/update/room');
+
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(room),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -92,12 +93,12 @@ class RoomService with ChangeNotifier {
   }
 
   Future deleteRoom(String roomId) async {
-    final token = await this._storage.read(key: 'token');
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/room/delete/$roomId');
+    final token = prefs.token;
+
+    final urlFinal = ('${Environment.apiUrl}/api/room/delete/$roomId');
 
     try {
-      await http.delete(urlFinal,
+      await http.delete(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       return true;
@@ -109,15 +110,14 @@ class RoomService with ChangeNotifier {
   Future updatePositionRoom(
       List<Room> rooms, int position, String userId) async {
     // this.authenticated = true;
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/room/update/position');
+    final urlFinal = ('${Environment.apiUrl}/api/room/update/position');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     //final data = {'name': name, 'email': description, 'uid': uid};
     final data = {'rooms': rooms, 'userId': userId};
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: json.encode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 

@@ -1,4 +1,4 @@
-import 'package:chat/services/users_service.dart';
+import 'package:flutter_plants/services/users_service.dart';
 import 'package:flutter/material.dart';
 
 class UserList extends StatefulWidget {

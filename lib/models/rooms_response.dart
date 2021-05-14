@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/room.dart';
+import 'package:flutter_plants/models/room.dart';
 
 RoomsResponse roomsResponseFromJson(String str) =>
     RoomsResponse.fromJson(json.decode(str));

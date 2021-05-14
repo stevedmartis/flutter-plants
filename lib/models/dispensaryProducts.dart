@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:chat/models/product_dispensary.dart';
+import 'package:flutter_plants/models/product_dispensary.dart';
 
 DispensaryProducts dispensaryFromJson(String str) =>
     DispensaryProducts.fromJson(json.decode(str));

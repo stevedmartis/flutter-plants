@@ -1,10 +1,10 @@
-import 'package:chat/helpers/mostrar_alerta.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/aws_service.dart';
+import 'package:flutter_plants/helpers/mostrar_alerta.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/aws_service.dart';
 
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/recipe_image.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/recipe_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';

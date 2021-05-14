@@ -1,11 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/services/chat_service.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/avatar_user_chat.dart';
-import 'package:chat/widgets/myprofile.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/services/chat_service.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/avatar_user_chat.dart';
+import 'package:flutter_plants/widgets/myprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

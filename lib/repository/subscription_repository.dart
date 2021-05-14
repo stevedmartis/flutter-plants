@@ -1,8 +1,8 @@
-import 'package:chat/models/profilesDispensaries_response.dart';
-import 'package:chat/models/profiles_response.dart';
-import 'package:chat/models/subscribe.dart';
+import 'package:flutter_plants/models/profilesDispensaries_response.dart';
+import 'package:flutter_plants/models/profiles_response.dart';
+import 'package:flutter_plants/models/subscribe.dart';
 
-import 'package:chat/providers/subscription_provider.dart';
+import 'package:flutter_plants/providers/subscription_provider.dart';
 
 class SubscriptionRepository {
   SubscriptionApiProvider _apiProvider = SubscriptionApiProvider();

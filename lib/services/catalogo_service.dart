@@ -1,14 +1,17 @@
-import 'package:chat/models/catalogo.dart';
-import 'package:chat/models/catalogo_response.dart';
-import 'package:chat/models/message_error.dart';
+import 'package:flutter_plants/models/catalogo.dart';
+import 'package:flutter_plants/models/catalogo_response.dart';
+import 'package:flutter_plants/models/message_error.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:chat/global/environment.dart';
+import 'package:flutter_plants/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class CatalogoService with ChangeNotifier {
+  final prefs = new AuthUserPreferences();
+
   Catalogo _catalogo;
   Catalogo get catalogo => this._catalogo;
 
@@ -17,16 +20,13 @@ class CatalogoService with ChangeNotifier {
     // notifyListeners();
   }
 
-  final _storage = new FlutterSecureStorage();
-
   Future createCatalogo(Catalogo catalogo) async {
     // this.authenticated = true;
 
-    final urlFinal = Uri.https('${Environment.apiUrl}', '/api/catalogo/new');
+    final urlFinal = ('${Environment.apiUrl}/api/catalogo/new');
+    final token = prefs.token;
 
-    final token = await this._storage.read(key: 'token');
-
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(catalogo),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -46,11 +46,11 @@ class CatalogoService with ChangeNotifier {
   Future editCatalogo(Catalogo plant) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/catalogo/update/catalogo');
+    final token = prefs.token;
 
-    final resp = await http.post(urlFinal,
+    final urlFinal = ('${Environment.apiUrl}/api/catalogo/update/catalogo');
+
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(plant),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -68,13 +68,12 @@ class CatalogoService with ChangeNotifier {
   }
 
   Future deleteCatalogo(String catalogoId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/catalogo/delete/$catalogoId');
+    final urlFinal = ('${Environment.apiUrl}/api/catalogo/delete/$catalogoId');
 
     try {
-      await http.delete(urlFinal,
+      await http.delete(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       return true;
@@ -87,15 +86,14 @@ class CatalogoService with ChangeNotifier {
       List<Catalogo> catalogos, int position, String userId) async {
     // this.authenticated = true;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/catalogo/update/position');
+    final urlFinal = ('${Environment.apiUrl}/api/catalogo/update/position');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     //final data = {'name': name, 'email': description, 'uid': uid};
     final data = {'catalogos': catalogos, 'userId': userId};
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: json.encode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 

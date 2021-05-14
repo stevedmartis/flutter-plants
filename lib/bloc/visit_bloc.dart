@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:chat/bloc/validators.dart';
-import 'package:chat/models/aires_response.dart';
-import 'package:chat/models/visit.dart';
-import 'package:chat/models/visits_response.dart';
-import 'package:chat/repository/aires_repository.dart';
-import 'package:chat/repository/visits_repository.dart';
+import 'package:flutter_plants/bloc/validators.dart';
+import 'package:flutter_plants/models/aires_response.dart';
+import 'package:flutter_plants/models/visit.dart';
+import 'package:flutter_plants/models/visits_response.dart';
+import 'package:flutter_plants/repository/aires_repository.dart';
+import 'package:flutter_plants/repository/visits_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class VisitBloc with Validators {

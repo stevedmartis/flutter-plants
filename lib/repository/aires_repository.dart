@@ -1,7 +1,7 @@
-import 'package:chat/models/air.dart';
-import 'package:chat/models/aires_response.dart';
+import 'package:flutter_plants/models/air.dart';
+import 'package:flutter_plants/models/aires_response.dart';
 
-import 'package:chat/providers/air_provider.dart';
+import 'package:flutter_plants/providers/air_provider.dart';
 
 class AirRepository {
   AiresApiProvider _apiProvider = AiresApiProvider();

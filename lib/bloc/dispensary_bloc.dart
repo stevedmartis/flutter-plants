@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:chat/bloc/validators.dart';
-import 'package:chat/models/dispensaries_products_response%20copy.dart';
-import 'package:chat/models/product_principal.dart';
-import 'package:chat/models/products.dart';
-import 'package:chat/models/products_dispensary.dart';
-import 'package:chat/repository/products_repository.dart';
+import 'package:flutter_plants/bloc/validators.dart';
+import 'package:flutter_plants/models/dispensaries_products_response%20copy.dart';
+import 'package:flutter_plants/models/product_principal.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/models/products_dispensary.dart';
+import 'package:flutter_plants/repository/products_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProductDispensaryBloc with Validators {

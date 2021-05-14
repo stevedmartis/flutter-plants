@@ -1,6 +1,6 @@
-import 'package:chat/models/plant.dart';
-import 'package:chat/pages/plant_cover_image.dart';
-import 'package:chat/theme/theme.dart';
+import 'package:flutter_plants/models/plant.dart';
+import 'package:flutter_plants/pages/plant_cover_image.dart';
+import 'package:flutter_plants/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

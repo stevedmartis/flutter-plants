@@ -2,8 +2,8 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/products.dart';
-import 'package:chat/models/profiles.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/models/profiles.dart';
 
 ProductProfile profilesResponseFromJson(String str) =>
     ProductProfile.fromJson(json.decode(str));

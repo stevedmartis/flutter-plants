@@ -1,7 +1,7 @@
-import 'package:chat/models/profiles.dart';
+import 'package:flutter_plants/models/profiles.dart';
 
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/widgets/myprofile.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/widgets/myprofile.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 

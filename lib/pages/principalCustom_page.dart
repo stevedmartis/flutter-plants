@@ -2,33 +2,33 @@ import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:chat/bloc/plant_bloc.dart';
-import 'package:chat/bloc/product_bloc.dart';
-import 'package:chat/bloc/room_bloc.dart';
-import 'package:chat/bloc/visit_bloc.dart';
-import 'package:chat/models/plant.dart';
-import 'package:chat/models/plants_response.dart';
-import 'package:chat/models/product_principal.dart';
-import 'package:chat/models/products_profiles_response.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/models/rooms_response.dart';
-import 'package:chat/models/visit.dart';
-import 'package:chat/models/visits_response.dart';
-import 'package:chat/pages/plant_detail.dart';
-import 'package:chat/pages/product_profile_detail.dart';
-import 'package:chat/pages/room_detail.dart';
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/plant_services.dart';
-import 'package:chat/services/users_service.dart';
-import 'package:chat/services/visit_service.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/card_product.dart';
-import 'package:chat/widgets/carousel_users.dart';
-import 'package:chat/widgets/header_appbar_pages.dart';
-import 'package:chat/widgets/plant_card.dart';
-import 'package:chat/widgets/productProfile_card.dart';
-import 'package:chat/widgets/sliver_appBar_snap.dart';
-import 'package:chat/widgets/visit_card.dart';
+import 'package:flutter_plants/bloc/plant_bloc.dart';
+import 'package:flutter_plants/bloc/product_bloc.dart';
+import 'package:flutter_plants/bloc/room_bloc.dart';
+import 'package:flutter_plants/bloc/visit_bloc.dart';
+import 'package:flutter_plants/models/plant.dart';
+import 'package:flutter_plants/models/plants_response.dart';
+import 'package:flutter_plants/models/product_principal.dart';
+import 'package:flutter_plants/models/products_profiles_response.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/models/rooms_response.dart';
+import 'package:flutter_plants/models/visit.dart';
+import 'package:flutter_plants/models/visits_response.dart';
+import 'package:flutter_plants/pages/plant_detail.dart';
+import 'package:flutter_plants/pages/product_profile_detail.dart';
+import 'package:flutter_plants/pages/room_detail.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/plant_services.dart';
+import 'package:flutter_plants/services/users_service.dart';
+import 'package:flutter_plants/services/visit_service.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/card_product.dart';
+import 'package:flutter_plants/widgets/carousel_users.dart';
+import 'package:flutter_plants/widgets/header_appbar_pages.dart';
+import 'package:flutter_plants/widgets/plant_card.dart';
+import 'package:flutter_plants/widgets/productProfile_card.dart';
+import 'package:flutter_plants/widgets/sliver_appBar_snap.dart';
+import 'package:flutter_plants/widgets/visit_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -339,7 +339,7 @@ class _CollapsingListState extends State<CollapsingList>
               ),
             ),
             Container(
-                padding: EdgeInsets.only(top: 20),
+                padding: EdgeInsets.only(top: 30),
                 child: StreamBuilder<ProductsProfilesResponse>(
                   stream: productBloc.produtsProfiles.stream,
                   builder: (context,
@@ -731,7 +731,7 @@ Widget _buildWidgetProducts(
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
-                      top: size.height / 30,
+                      top: 20,
                     ),
                     child: OpenContainer(
                         closedElevation: 5,

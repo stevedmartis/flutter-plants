@@ -1,4 +1,4 @@
-import 'package:chat/models/usuario.dart';
+import 'package:flutter_plants/models/usuario.dart';
 import 'package:flutter/material.dart';
 
 class MovieHorizontal extends StatelessWidget {

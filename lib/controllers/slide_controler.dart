@@ -1,7 +1,7 @@
-import 'package:chat/pages/login_page.dart';
-import 'package:chat/pages/register_page.dart';
+import 'package:flutter_plants/pages/login_page.dart';
+import 'package:flutter_plants/pages/register_page.dart';
 
-import 'package:chat/widgets/header_curve_signin.dart';
+import 'package:flutter_plants/widgets/header_curve_signin.dart';
 import 'package:flutter/material.dart';
 
 class OnBoardingSelector extends StatefulWidget {

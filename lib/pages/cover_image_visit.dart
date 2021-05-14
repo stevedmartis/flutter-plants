@@ -1,9 +1,9 @@
-import 'package:chat/bloc/visit_bloc.dart';
-import 'package:chat/models/visit.dart';
-import 'package:chat/services/aws_service.dart';
-import 'package:chat/services/visit_service.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/cover_image_visit_expanded.dart';
+import 'package:flutter_plants/bloc/visit_bloc.dart';
+import 'package:flutter_plants/models/visit.dart';
+import 'package:flutter_plants/services/aws_service.dart';
+import 'package:flutter_plants/services/visit_service.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/cover_image_visit_expanded.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';

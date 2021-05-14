@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:chat/bloc/validators.dart';
+import 'package:flutter_plants/bloc/validators.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoginBloc with Validators {

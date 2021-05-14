@@ -1,5 +1,5 @@
-import 'package:chat/controllers/slide_controler.dart';
-import 'package:chat/widgets/onboarding_message.dart';
+import 'package:flutter_plants/controllers/slide_controler.dart';
+import 'package:flutter_plants/widgets/onboarding_message.dart';
 import 'package:flutter/material.dart';
 
 class OnBoardingScreen extends StatefulWidget {

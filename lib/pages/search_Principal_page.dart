@@ -1,13 +1,13 @@
 import 'dart:ui';
 
-import 'package:chat/models/profiles.dart';
-import 'package:chat/models/profiles_response.dart';
-import 'package:chat/pages/profile_edit.dart';
-import 'package:chat/providers/users_provider.dart';
-import 'package:chat/services/chat_service.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/avatar_user_chat.dart';
-import 'package:chat/widgets/myprofile.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/models/profiles_response.dart';
+import 'package:flutter_plants/pages/profile_edit.dart';
+import 'package:flutter_plants/providers/users_provider.dart';
+import 'package:flutter_plants/services/chat_service.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/avatar_user_chat.dart';
+import 'package:flutter_plants/widgets/myprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

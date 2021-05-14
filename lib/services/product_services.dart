@@ -1,15 +1,18 @@
-import 'package:chat/models/plant.dart';
-import 'package:chat/models/product_principal.dart';
-import 'package:chat/models/product_response.dart';
-import 'package:chat/models/products.dart';
-import 'package:chat/models/products_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_plants/models/plant.dart';
+import 'package:flutter_plants/models/product_principal.dart';
+import 'package:flutter_plants/models/product_response.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/models/products_response.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:chat/global/environment.dart';
+import 'package:flutter_plants/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class ProductService with ChangeNotifier {
+  final prefs = new AuthUserPreferences();
+
   Product productModel;
 
   Product _product;
@@ -38,16 +41,14 @@ class ProductService with ChangeNotifier {
     //notifyListeners();
   }
 
-  final _storage = new FlutterSecureStorage();
-
   Future<List<Product>> geProductByRoom(String roomId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal = Uri.https(
-        '${Environment.apiUrl}', '/api/product/products/room/$roomId');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/product/products/room/$roomId');
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final productsResponse = productsResponseFromJson(resp.body);
@@ -67,9 +68,9 @@ class ProductService with ChangeNotifier {
   Future createProduct(Product product, List<Plant> plants) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal = Uri.https('${Environment.apiUrl}', '/api/product/new');
+    final urlFinal = ('${Environment.apiUrl}/api/product/new');
 
     final data = {
       'name': product.name,
@@ -82,7 +83,7 @@ class ProductService with ChangeNotifier {
       'thc': product.thc,
       'plants': plants
     };
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: json.encode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -101,7 +102,7 @@ class ProductService with ChangeNotifier {
   Future editProduct(Product product, List<Plant> plants) async {
     // this.authenticated = true;
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     //final data = {'name': name, 'email': description, 'uid': uid};
 
@@ -118,10 +119,9 @@ class ProductService with ChangeNotifier {
       'plants': plants
     };
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/product/update/product');
+    final urlFinal = ('${Environment.apiUrl}/api/product/update/product');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: json.encode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -138,12 +138,12 @@ class ProductService with ChangeNotifier {
   }
 
   Future deleteRoom(String roomId) async {
-    final token = await this._storage.read(key: 'token');
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/room/delete/$roomId');
+    final token = prefs.token;
+
+    final urlFinal = ('${Environment.apiUrl}/api/room/delete/$roomId');
 
     try {
-      await http.delete(urlFinal,
+      await http.delete(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       return true;

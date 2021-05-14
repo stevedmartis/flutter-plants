@@ -4,8 +4,8 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/profiles.dart';
-import 'package:chat/models/subscribe.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/models/subscribe.dart';
 
 DispensariesSubscriptorResponse dispensariesSubscriptorResponseFromJson(
         String str) =>

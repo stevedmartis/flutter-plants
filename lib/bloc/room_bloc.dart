@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:chat/bloc/validators.dart';
-import 'package:chat/models/room.dart';
-import 'package:chat/models/rooms_response.dart';
-import 'package:chat/models/fromPlant.dart';
-import 'package:chat/repository/rooms_repository.dart';
+import 'package:flutter_plants/bloc/validators.dart';
+import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/models/rooms_response.dart';
+import 'package:flutter_plants/models/fromPlant.dart';
+import 'package:flutter_plants/repository/rooms_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class RoomBloc with Validators {

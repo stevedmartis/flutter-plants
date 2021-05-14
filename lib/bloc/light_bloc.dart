@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:chat/bloc/validators.dart';
-import 'package:chat/models/air.dart';
-import 'package:chat/models/aires_response.dart';
-import 'package:chat/repository/aires_repository.dart';
+import 'package:flutter_plants/bloc/validators.dart';
+import 'package:flutter_plants/models/air.dart';
+import 'package:flutter_plants/models/aires_response.dart';
+import 'package:flutter_plants/repository/aires_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LightBloc with Validators {

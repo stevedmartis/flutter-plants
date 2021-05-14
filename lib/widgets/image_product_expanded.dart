@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:chat/models/products.dart';
-import 'package:chat/services/product_services.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/services/product_services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:chat/models/profiles.dart';
-import 'package:chat/widgets/productProfile_card.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/widgets/productProfile_card.dart';
 import 'package:flutter/material.dart';
 
 class RecipeImageExpanded extends StatefulWidget {

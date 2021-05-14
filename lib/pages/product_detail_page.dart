@@ -1,5 +1,5 @@
-import 'package:chat/widgets/product_description.dart';
-import 'package:chat/widgets/product_view.dart';
+import 'package:flutter_plants/widgets/product_description.dart';
+import 'package:flutter_plants/widgets/product_view.dart';
 import 'package:flutter/material.dart';
 
 class ShoesDetailPage extends StatelessWidget {

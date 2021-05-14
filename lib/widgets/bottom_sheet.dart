@@ -1,7 +1,7 @@
-import 'package:chat/bloc/provider.dart';
-import 'package:chat/bloc/room_bloc.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/button_gold.dart';
+import 'package:flutter_plants/bloc/provider.dart';
+import 'package:flutter_plants/bloc/room_bloc.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/button_gold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

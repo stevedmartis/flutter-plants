@@ -1,6 +1,6 @@
-import 'package:chat/models/profiles.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/productProfile_card.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/productProfile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -2,8 +2,8 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/dispensary.dart';
-import 'package:chat/models/profiles.dart';
+import 'package:flutter_plants/models/dispensary.dart';
+import 'package:flutter_plants/models/profiles.dart';
 
 ProfileDispensary profileDispensaryResponseFromJson(String str) =>
     ProfileDispensary.fromJson(json.decode(str));

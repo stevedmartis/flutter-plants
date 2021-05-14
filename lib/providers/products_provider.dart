@@ -1,27 +1,28 @@
 import 'dart:convert';
 
-import 'package:chat/global/environment.dart';
-import 'package:chat/models/dispensaries_products_response%20copy.dart';
-import 'package:chat/models/favorite_response.dart';
-import 'package:chat/models/product_response.dart';
-import 'package:chat/models/products.dart';
-import 'package:chat/models/products_dispensary.dart';
-import 'package:chat/models/products_profiles_response.dart';
-import 'package:chat/models/products_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_plants/global/environment.dart';
+import 'package:flutter_plants/models/dispensaries_products_response%20copy.dart';
+import 'package:flutter_plants/models/favorite_response.dart';
+import 'package:flutter_plants/models/product_response.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/models/products_dispensary.dart';
+import 'package:flutter_plants/models/products_profiles_response.dart';
+import 'package:flutter_plants/models/products_response.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 class ProductsApiProvider {
-  final _storage = new FlutterSecureStorage();
+  final prefs = new AuthUserPreferences();
 
   Future<ProductsProfilesResponse> getProductsProfiles(String uid) async {
-    final urlFinal = Uri.https(
-        '${Environment.apiUrl}', '/api/product/principal/products/$uid');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/product/principal/products/$uid');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final productsResponse = productsProfilesResponseFromJson(resp.body);
@@ -33,13 +34,13 @@ class ProductsApiProvider {
   }
 
   Future<List<Product>> getProductCatalogo(String catalogoId) async {
-    final urlFinal = Uri.https(
-        '${Environment.apiUrl}', '/api/product/products/catalogo/$catalogoId');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/product/products/catalogo/$catalogoId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final plantsResponse = productsResponseFromJson(resp.body);
@@ -50,13 +51,12 @@ class ProductsApiProvider {
   }
 
   Future<Product> getProduct(String productId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/product/product/$productId');
+    final urlFinal = ('${Environment.apiUrl}/api/product/product/$productId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final plantResponse = productResponseFromJson(resp.body);
@@ -69,13 +69,12 @@ class ProductsApiProvider {
 
   Future<DispensaryProductsProfileResponse> getProductsDispensary(
       String productId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/product/product/$productId');
+    final urlFinal = ('${Environment.apiUrl}/api/product/product/$productId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final plantResponse = dispensaryProductsResponseFromJson(resp.body);
@@ -87,13 +86,12 @@ class ProductsApiProvider {
   }
 
   Future deleteProduct(String productId) async {
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/product/delete/$productId');
+    final urlFinal = ('${Environment.apiUrl}/api/product/delete/$productId');
 
     try {
-      await http.delete(urlFinal,
+      await http.delete(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       return true;
@@ -108,12 +106,11 @@ class ProductsApiProvider {
 
     final data = {'product': productId, 'user': userId};
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/favorite/update/');
+    final urlFinal = ('${Environment.apiUrl}/api/favorite/update/');
 
-    final resp = await http.post(urlFinal,
+    final resp = await http.post(Uri.parse(urlFinal),
         body: jsonEncode(data),
         headers: {'Content-Type': 'application/json', 'x-token': token});
 
@@ -130,13 +127,13 @@ class ProductsApiProvider {
 
   Future<DispensariesProductsResponse> dispensariesProducts(
       String clubId, subId) async {
-    final urlFinal = Uri.https('${Environment.apiUrl}',
-        '/api/dispensary/dispensaries/products/club/$clubId/user/$subId');
+    final urlFinal =
+        ('${Environment.apiUrl}/api/dispensary/dispensaries/products/club/$clubId/user/$subId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final catalogosResponse = storeFromJson(resp.body);

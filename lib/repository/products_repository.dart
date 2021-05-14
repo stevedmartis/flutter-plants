@@ -1,8 +1,8 @@
-import 'package:chat/models/dispensaries_products_response%20copy.dart';
-import 'package:chat/models/products.dart';
-import 'package:chat/models/products_dispensary.dart';
-import 'package:chat/models/products_profiles_response.dart';
-import 'package:chat/providers/products_provider.dart';
+import 'package:flutter_plants/models/dispensaries_products_response%20copy.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/models/products_dispensary.dart';
+import 'package:flutter_plants/models/products_profiles_response.dart';
+import 'package:flutter_plants/providers/products_provider.dart';
 
 class ProductsRepository {
   ProductsApiProvider _apiProvider = ProductsApiProvider();

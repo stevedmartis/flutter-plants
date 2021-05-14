@@ -1,7 +1,7 @@
-import 'package:chat/models/plant.dart';
-import 'package:chat/pages/chat_page.dart';
-import 'package:chat/services/plant_services.dart';
-import 'package:chat/widgets/productProfile_card.dart';
+import 'package:flutter_plants/models/plant.dart';
+import 'package:flutter_plants/pages/chat_page.dart';
+import 'package:flutter_plants/services/plant_services.dart';
+import 'package:flutter_plants/widgets/productProfile_card.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';

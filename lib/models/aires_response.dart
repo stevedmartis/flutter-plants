@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:chat/models/air.dart';
+import 'package:flutter_plants/models/air.dart';
 
 AiresResponse airesResponseFromJson(String str) =>
     AiresResponse.fromJson(json.decode(str));

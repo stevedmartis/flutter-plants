@@ -1,7 +1,7 @@
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/text_emoji.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/text_emoji.dart';
 import 'package:flutter/material.dart';
-import 'package:chat/services/auth_service.dart';
+import 'package:flutter_plants/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 class ChatMessage extends StatelessWidget {

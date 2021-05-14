@@ -1,21 +1,21 @@
-import 'package:chat/global/environment.dart';
-import 'package:chat/models/room.dart';
-import 'package:chat/models/room_response.dart';
-import 'package:chat/models/rooms_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_plants/global/environment.dart';
+import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/models/room_response.dart';
+import 'package:flutter_plants/models/rooms_response.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 class RoomsApiProvider {
-  final _storage = new FlutterSecureStorage();
+  final prefs = new AuthUserPreferences();
 
   Future<RoomsResponse> getRooms(String userId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/room/rooms/user/$userId');
+    final urlFinal = ('${Environment.apiUrl}/api/room/rooms/user/$userId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final roomsResponse = roomsResponseFromJson(resp.body);
@@ -27,13 +27,12 @@ class RoomsApiProvider {
   }
 
   Future<Room> getRoom(String roomId) async {
-    final urlFinal =
-        Uri.https('${Environment.apiUrl}', '/api/room/room/$roomId');
+    final urlFinal = ('${Environment.apiUrl}/api/room/room/$roomId');
 
-    final token = await this._storage.read(key: 'token');
+    final token = prefs.token;
 
     try {
-      final resp = await http.get(urlFinal,
+      final resp = await http.get(Uri.parse(urlFinal),
           headers: {'Content-Type': 'application/json', 'x-token': token});
 
       final roomsResponse = roomResponseFromJson(resp.body);

@@ -3,37 +3,37 @@ import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
-import 'package:chat/bloc/plant_bloc.dart';
-import 'package:chat/bloc/product_bloc.dart';
-import 'package:chat/bloc/room_bloc.dart';
-import 'package:chat/helpers/ui_overlay_style.dart';
-import 'package:chat/models/product_principal.dart';
-import 'package:chat/models/products.dart';
-import 'package:chat/models/profiles.dart';
-import 'package:chat/models/room.dart';
-import 'package:chat/models/rooms_response.dart';
-import 'package:chat/models/visit.dart';
-import 'package:chat/pages/add_update_product.dart';
-import 'package:chat/pages/add_update_visit.dart';
-import 'package:chat/pages/chat_page.dart';
-import 'package:chat/pages/plant_detail.dart';
-import 'package:chat/pages/principal_page.dart';
-import 'package:chat/pages/room_detail.dart';
-import 'package:chat/pages/room_list_page.dart';
-import 'package:chat/providers/products_provider.dart';
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/aws_service.dart';
-import 'package:chat/services/chat_service.dart';
-import 'package:chat/services/product_services.dart';
-import 'package:chat/services/room_services.dart';
-import 'package:chat/theme/theme.dart';
-import 'package:chat/widgets/avatar_user_chat.dart';
-import 'package:chat/widgets/card_product.dart';
-import 'package:chat/widgets/carousel_tabs.dart';
-import 'package:chat/widgets/myprofile.dart';
-import 'package:chat/widgets/plant_card_widget.dart';
-import 'package:chat/widgets/productProfile_card.dart';
-import 'package:chat/widgets/sliver_appBar_snap.dart';
+import 'package:flutter_plants/bloc/plant_bloc.dart';
+import 'package:flutter_plants/bloc/product_bloc.dart';
+import 'package:flutter_plants/bloc/room_bloc.dart';
+import 'package:flutter_plants/helpers/ui_overlay_style.dart';
+import 'package:flutter_plants/models/product_principal.dart';
+import 'package:flutter_plants/models/products.dart';
+import 'package:flutter_plants/models/profiles.dart';
+import 'package:flutter_plants/models/room.dart';
+import 'package:flutter_plants/models/rooms_response.dart';
+import 'package:flutter_plants/models/visit.dart';
+import 'package:flutter_plants/pages/add_update_product.dart';
+import 'package:flutter_plants/pages/add_update_visit.dart';
+import 'package:flutter_plants/pages/chat_page.dart';
+import 'package:flutter_plants/pages/plant_detail.dart';
+import 'package:flutter_plants/pages/principal_page.dart';
+import 'package:flutter_plants/pages/room_detail.dart';
+import 'package:flutter_plants/pages/room_list_page.dart';
+import 'package:flutter_plants/providers/products_provider.dart';
+import 'package:flutter_plants/services/auth_service.dart';
+import 'package:flutter_plants/services/aws_service.dart';
+import 'package:flutter_plants/services/chat_service.dart';
+import 'package:flutter_plants/services/product_services.dart';
+import 'package:flutter_plants/services/room_services.dart';
+import 'package:flutter_plants/theme/theme.dart';
+import 'package:flutter_plants/widgets/avatar_user_chat.dart';
+import 'package:flutter_plants/widgets/card_product.dart';
+import 'package:flutter_plants/widgets/carousel_tabs.dart';
+import 'package:flutter_plants/widgets/myprofile.dart';
+import 'package:flutter_plants/widgets/plant_card_widget.dart';
+import 'package:flutter_plants/widgets/productProfile_card.dart';
+import 'package:flutter_plants/widgets/sliver_appBar_snap.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -631,7 +631,10 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                   return Stack(
                     children: [
                       Container(
-                          alignment: Alignment.center,
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(
+                            left: 20,
+                          ),
                           child: Text(
                               (plants.length == 1)
                                   ? 'Planta Madre'
@@ -643,7 +646,9 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                                     ? Colors.white54
                                     : Colors.black54,
                               ))),
-                      Container(child: _buildWidgetPlant(plants))
+                      Container(
+                          padding: EdgeInsets.only(top: 20),
+                          child: _buildWidgetPlant(plants))
                     ],
                   );
                 } else {
@@ -688,10 +693,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                 children: [
                   Container(
                     padding: EdgeInsets.only(
-                        left: 20,
-                        right: 20,
-                        bottom: 0.0,
-                        top: size.height / 35),
+                        left: 20, right: 20, bottom: 0.0, top: 20),
                     child: OpenContainer(
                         closedElevation: 5,
                         openElevation: 5,
@@ -855,7 +857,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
               ),
               Container(
                   width: size.width - 5,
-                  padding: EdgeInsets.only(left: size.width / 10.0, right: 30),
+                  padding: EdgeInsets.only(left: 20, right: 30),
                   //margin: EdgeInsets.only(left: size.width / 6, top: 10),
 
                   child: (about.length > 0)
@@ -864,147 +866,149 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
               SizedBox(
                 height: 10.0,
               ),
-              Container(
-                padding:
-                    EdgeInsets.only(top: 10, left: size.width / 5, bottom: 5.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    (ratingDouble >= 1)
-                        ? Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.grey,
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(top: 10, left: 20, bottom: 5.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        (ratingDouble >= 1)
+                            ? Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.orangeAccent,
+                              )
+                            : Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
+                        (ratingDouble >= 2)
+                            ? Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.orangeAccent,
+                              )
+                            : Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
+                        (ratingDouble >= 3)
+                            ? Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.orangeAccent,
+                              )
+                            : Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
+                        (ratingDouble >= 4)
+                            ? Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.orangeAccent,
+                              )
+                            : Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
+                        (ratingDouble == 5)
+                            ? Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.orangeAccent,
+                              )
+                            : Icon(
+                                Icons.star,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          child: Text(
+                            '$ratingDouble',
+                            style: TextStyle(
+                                color: (currentTheme.customTheme)
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontSize: 20),
                           ),
-                    (ratingDouble >= 2)
-                        ? Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.grey,
-                          ),
-                    (ratingDouble >= 3)
-                        ? Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.grey,
-                          ),
-                    (ratingDouble >= 4)
-                        ? Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.grey,
-                          ),
-                    (ratingDouble == 5)
-                        ? Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.orangeAccent,
-                          )
-                        : Icon(
-                            Icons.star,
-                            size: 30,
-                            color: Colors.grey,
-                          ),
-                    SizedBox(
-                      width: 20,
+                        ),
+                      ],
                     ),
-                    Container(
-                      child: Text(
-                        '$ratingDouble',
-                        style: TextStyle(
-                            color: (currentTheme.customTheme)
-                                ? Colors.white
-                                : Colors.black,
-                            fontSize: 20),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      //profile.user.uid = '';
+                      //Navigator.pushNamed(context, 'detail', arguments: profile);
+
+                      if (productProfile.profile.user.uid != profile.user.uid) {
+                        final chatService =
+                            Provider.of<ChatService>(context, listen: false);
+                        chatService.userFor = productProfile.profile;
+                        Navigator.push(context,
+                            createRouteProfileSelect(productProfile.profile));
+                      } else {
+                        Navigator.push(context, createRouteProfile());
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(top: 10, left: 20, bottom: 20.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(2.0),
+                            decoration: new BoxDecoration(
+                              color: currentTheme
+                                  .currentTheme.accentColor, // border color
+                              shape: BoxShape.circle,
+                            ),
+                            child: ImageUserChat(
+                                width: 100,
+                                height: 100,
+                                profile: productProfile.profile,
+                                fontsize: 20),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    productProfile.profile.name,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: (currentTheme.customTheme)
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                              Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    '@' + productProfile.profile.user.username,
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.grey),
+                                  )),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 10.0,
-              ),
-              GestureDetector(
-                onTap: () {
-                  //profile.user.uid = '';
-                  //Navigator.pushNamed(context, 'detail', arguments: profile);
-
-                  if (productProfile.profile.user.uid != profile.user.uid) {
-                    final chatService =
-                        Provider.of<ChatService>(context, listen: false);
-                    chatService.userFor = productProfile.profile;
-                    Navigator.push(context,
-                        createRouteProfileSelect(productProfile.profile));
-                  } else {
-                    Navigator.push(context, createRouteProfile());
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.only(
-                      top: 10, left: size.width / 5, bottom: 20.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(2.0),
-                        decoration: new BoxDecoration(
-                          color: currentTheme
-                              .currentTheme.accentColor, // border color
-                          shape: BoxShape.circle,
-                        ),
-                        child: ImageUserChat(
-                            width: 100,
-                            height: 100,
-                            profile: productProfile.profile,
-                            fontsize: 20),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Text(
-                                productProfile.profile.name,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    color: (currentTheme.customTheme)
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                          Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Text(
-                                '@' + productProfile.profile.user.username,
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.grey),
-                              )),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),
