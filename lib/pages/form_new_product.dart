@@ -5,6 +5,7 @@ import 'package:flutter_plants/models/profiles.dart';
 import 'package:flutter_plants/pages/profile_page.dart';
 import 'package:flutter_plants/services/auth_service.dart';
 import 'package:flutter_plants/services/socket_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:flutter_plants/theme/theme.dart';
 import 'package:flutter_plants/widgets/button_gold.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class FormNewProductPage extends StatefulWidget {
 
 class FormNewProductPageState extends State<FormNewProductPage> {
   Profiles profile;
+
+  final prefs = new AuthUserPreferences();
 
   final usernameCtrl = TextEditingController();
   final nameCtrl = TextEditingController();
@@ -205,7 +208,7 @@ class FormNewProductPageState extends State<FormNewProductPage> {
                                     socketService.disconnect();
                                     Navigator.pushReplacementNamed(
                                         context, 'login');
-                                    AuthService.logout();
+                                    logout();
                                   },
                           ),
                         ],
@@ -215,6 +218,11 @@ class FormNewProductPageState extends State<FormNewProductPage> {
         ),
       ),
     );
+  }
+
+  void logout() {
+    prefs.setToken = '';
+    AuthService.signOut();
   }
 
   Widget _createButton(ProfileBloc bloc, bool isUsernameChange,

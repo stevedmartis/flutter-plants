@@ -1,5 +1,6 @@
 import 'package:flutter_plants/services/auth_service.dart';
 import 'package:flutter_plants/services/socket_service.dart';
+import 'package:flutter_plants/shared_preferences/auth_storage.dart';
 import 'package:flutter_plants/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ class PrincipalMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final appTheme = Provider.of<ThemeChanger>(context);
     final accentColor = appTheme.currentTheme.accentColor;
+    final prefs = new AuthUserPreferences();
 
     final size = MediaQuery.of(context).size;
 
@@ -44,7 +46,9 @@ class PrincipalMenu extends StatelessWidget {
 
                     Navigator.pushNamedAndRemoveUntil(
                         context, "login", (Route<dynamic> route) => false);
-                    AuthService.logout();
+
+                    prefs.setToken = '';
+                    AuthService.signOut();
                   },
                   child: ListTile(
                     leading: Icon(Icons.exit_to_app, color: accentColor),

@@ -79,8 +79,8 @@ class AuthService with ChangeNotifier {
     notifyListeners();
   }
 
-  static logout() {
-    //_prefs.remove('token');
+  void logout() {
+    prefs.setToken = '';
     signOut();
   }
 
@@ -129,6 +129,7 @@ class AuthService with ChangeNotifier {
 
   Future signInWitchGoogle() async {
     try {
+      print('her');
       final account = await _googleSignIn.signIn();
 
       final googleKey = await account.authentication;
