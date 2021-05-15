@@ -2,33 +2,33 @@ import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter_plants/bloc/plant_bloc.dart';
-import 'package:flutter_plants/bloc/product_bloc.dart';
-import 'package:flutter_plants/bloc/room_bloc.dart';
-import 'package:flutter_plants/bloc/visit_bloc.dart';
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/models/plants_response.dart';
-import 'package:flutter_plants/models/product_principal.dart';
-import 'package:flutter_plants/models/products_profiles_response.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/models/rooms_response.dart';
-import 'package:flutter_plants/models/visit.dart';
-import 'package:flutter_plants/models/visits_response.dart';
-import 'package:flutter_plants/pages/plant_detail.dart';
-import 'package:flutter_plants/pages/product_profile_detail.dart';
-import 'package:flutter_plants/pages/room_detail.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/plant_services.dart';
-import 'package:flutter_plants/services/users_service.dart';
-import 'package:flutter_plants/services/visit_service.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/card_product.dart';
-import 'package:flutter_plants/widgets/carousel_users.dart';
-import 'package:flutter_plants/widgets/header_appbar_pages.dart';
-import 'package:flutter_plants/widgets/plant_card.dart';
-import 'package:flutter_plants/widgets/productProfile_card.dart';
-import 'package:flutter_plants/widgets/sliver_appBar_snap.dart';
-import 'package:flutter_plants/widgets/visit_card.dart';
+import 'package:leafety/bloc/plant_bloc.dart';
+import 'package:leafety/bloc/product_bloc.dart';
+import 'package:leafety/bloc/room_bloc.dart';
+import 'package:leafety/bloc/visit_bloc.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/models/plants_response.dart';
+import 'package:leafety/models/product_principal.dart';
+import 'package:leafety/models/products_profiles_response.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/models/rooms_response.dart';
+import 'package:leafety/models/visit.dart';
+import 'package:leafety/models/visits_response.dart';
+import 'package:leafety/pages/plant_detail.dart';
+import 'package:leafety/pages/product_profile_detail.dart';
+import 'package:leafety/pages/room_detail.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/plant_services.dart';
+import 'package:leafety/services/users_service.dart';
+import 'package:leafety/services/visit_service.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/card_product.dart';
+import 'package:leafety/widgets/carousel_users.dart';
+import 'package:leafety/widgets/header_appbar_pages.dart';
+import 'package:leafety/widgets/plant_card.dart';
+import 'package:leafety/widgets/productProfile_card.dart';
+import 'package:leafety/widgets/sliver_appBar_snap.dart';
+import 'package:leafety/widgets/visit_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -283,7 +283,7 @@ class _CollapsingListState extends State<CollapsingList>
                       ? FadeIn(
                           child: Container(
                             padding: EdgeInsets.only(
-                                left: 40, top: size.height / 30, bottom: 0),
+                                left: 40, top: size.height / 50, bottom: 0),
                             child: Text(
                               'Ultimas Visitas',
                               style: TextStyle(
@@ -660,7 +660,7 @@ Widget _buildWidgetVisits(List<Visit> visits, context) {
   return (visits.length > 0)
       ? CarouselSlider.builder(
           options: CarouselOptions(
-            height: size.height / 3.5,
+            height: size.height / 3,
             viewportFraction: 0.80,
             initialPage: 0,
             enableInfiniteScroll: false,
@@ -707,7 +707,6 @@ Widget _buildWidgetVisits(List<Visit> visits, context) {
 Widget _buildWidgetProducts(
     List<ProductProfile> productsProfiles, context, profile) {
   final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
-  final size = MediaQuery.of(context).size;
 
   return Container(
     child: SizedBox(

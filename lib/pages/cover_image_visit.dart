@@ -1,9 +1,9 @@
-import 'package:flutter_plants/bloc/visit_bloc.dart';
-import 'package:flutter_plants/models/visit.dart';
-import 'package:flutter_plants/services/aws_service.dart';
-import 'package:flutter_plants/services/visit_service.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/cover_image_visit_expanded.dart';
+import 'package:leafety/bloc/visit_bloc.dart';
+import 'package:leafety/models/visit.dart';
+import 'package:leafety/services/aws_service.dart';
+import 'package:leafety/services/visit_service.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/cover_image_visit_expanded.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';

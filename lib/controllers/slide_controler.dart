@@ -1,7 +1,7 @@
-import 'package:flutter_plants/pages/login_page.dart';
-import 'package:flutter_plants/pages/register_page.dart';
+import 'package:leafety/pages/login_page.dart';
+import 'package:leafety/pages/register_page.dart';
 
-import 'package:flutter_plants/widgets/header_curve_signin.dart';
+import 'package:leafety/widgets/header_curve_signin.dart';
 import 'package:flutter/material.dart';
 
 class OnBoardingSelector extends StatefulWidget {
@@ -22,16 +22,16 @@ class _OnBoardingSelectorState extends State<OnBoardingSelector> {
 
   @override
   Widget build(BuildContext context) {
-    bool _isLastPage = widget.pages.length == this._currentPage + 1;
+    // bool _isLastPage = widget.pages.length == this._currentPage + 1;
 
     Size _size = MediaQuery.of(context).size;
 
-    return Stack(
+    return Column(
       children: [
         Container(
-          padding: EdgeInsets.only(top: 30),
-          width: double.infinity,
-          height: _size.height,
+          padding: EdgeInsets.only(top: 10),
+          width: _size.width,
+          height: _size.height / 1.4,
           child: PageView(
             physics: ClampingScrollPhysics(),
             controller: _pageController,
@@ -44,9 +44,7 @@ class _OnBoardingSelectorState extends State<OnBoardingSelector> {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(
-            top: _size.height / 2,
-          ),
+          padding: EdgeInsets.only(top: 0, bottom: 30),
           alignment: Alignment.center,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -54,23 +52,22 @@ class _OnBoardingSelectorState extends State<OnBoardingSelector> {
             children: _buildPageIndicator(),
           ),
         ),
-        SizedBox(
-          height: (_isLastPage) ? 115 : 150,
-        ),
         Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.only(
-              top: _size.height * 0.82, bottom: _size.height * 0.1),
+          padding:
+              EdgeInsets.only(left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
           child: GestureDetector(
               child: roundedRectButton("Entrar!", orangeGradients, false, true),
               onTap: () => {Navigator.push(context, _createRuteLogIn())}),
         ),
         Container(
           alignment: Alignment.center,
-          padding:
-              EdgeInsets.only(top: _size.height * 0.9, left: 60, right: 60),
+          padding: EdgeInsets.only(top: 10, left: 60, right: 60),
           child: GestureDetector(
-              child: Text('Registrarme'),
+              child: Text(
+                'Registrarme',
+                style: TextStyle(color: Colors.white),
+              ),
               onTap: () => {Navigator.push(context, _createRuteSignUp())}),
         ),
       ],

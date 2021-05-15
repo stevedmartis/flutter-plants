@@ -1,15 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
-import 'package:flutter_plants/global/environment.dart';
+import 'package:leafety/global/environment.dart';
 
 import 'package:mime_type/mime_type.dart';
 

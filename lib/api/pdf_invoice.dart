@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:flutter_plants/api/pdf_api.dart';
-import 'package:flutter_plants/models/invoice.dart';
+import 'package:leafety/api/pdf_api.dart';
+import 'package:leafety/models/invoice.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';

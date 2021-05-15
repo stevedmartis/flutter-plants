@@ -1,31 +1,31 @@
 import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_plants/bloc/room_bloc.dart';
-import 'package:flutter_plants/models/products.dart';
+import 'package:leafety/bloc/room_bloc.dart';
+import 'package:leafety/models/products.dart';
 
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/models/rooms_response.dart';
-import 'package:flutter_plants/pages/add_room.dart';
-import 'package:flutter_plants/pages/plants_room.dart';
-import 'package:flutter_plants/pages/principalCustom_page.dart';
-import 'package:flutter_plants/pages/profile_page.dart';
-import 'package:flutter_plants/pages/room_detail.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/models/rooms_response.dart';
+import 'package:leafety/pages/add_room.dart';
+import 'package:leafety/pages/plants_room.dart';
+import 'package:leafety/pages/principalCustom_page.dart';
+import 'package:leafety/pages/profile_page.dart';
+import 'package:leafety/pages/room_detail.dart';
 
-import 'package:flutter_plants/services/room_services.dart';
+import 'package:leafety/services/room_services.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/header_appbar_pages.dart';
-import 'package:flutter_plants/widgets/room_card.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/header_appbar_pages.dart';
+import 'package:leafety/widgets/room_card.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/socket_service.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/socket_service.dart';
 
 class RoomsListPage extends StatefulWidget {
   final bool plantOrigen;

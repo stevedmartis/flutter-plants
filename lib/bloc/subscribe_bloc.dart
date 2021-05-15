@@ -1,8 +1,8 @@
-import 'package:flutter_plants/bloc/validators.dart';
-import 'package:flutter_plants/models/profilesDispensaries_response.dart';
-import 'package:flutter_plants/models/profiles_response.dart';
-import 'package:flutter_plants/models/subscribe.dart';
-import 'package:flutter_plants/repository/subscription_repository.dart';
+import 'package:leafety/bloc/validators.dart';
+import 'package:leafety/models/profilesDispensaries_response.dart';
+import 'package:leafety/models/profiles_response.dart';
+import 'package:leafety/models/subscribe.dart';
+import 'package:leafety/repository/subscription_repository.dart';
 
 import 'package:rxdart/rxdart.dart';
 

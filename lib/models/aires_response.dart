@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/air.dart';
+import 'package:leafety/models/air.dart';
 
 AiresResponse airesResponseFromJson(String str) =>
     AiresResponse.fromJson(json.decode(str));

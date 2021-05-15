@@ -1,7 +1,7 @@
-import 'package:flutter_plants/models/catalogo.dart';
-import 'package:flutter_plants/models/catalogos_products_response.dart';
-import 'package:flutter_plants/models/catalogos_response.dart';
-import 'package:flutter_plants/providers/catalogos_provider.dart';
+import 'package:leafety/models/catalogo.dart';
+import 'package:leafety/models/catalogos_products_response.dart';
+import 'package:leafety/models/catalogos_response.dart';
+import 'package:leafety/providers/catalogos_provider.dart';
 
 class CatalogosRepository {
   CatalogosApiProvider _apiProvider = CatalogosApiProvider();

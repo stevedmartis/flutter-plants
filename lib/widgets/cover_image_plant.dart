@@ -1,5 +1,5 @@
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/widgets/productProfile_card.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/widgets/productProfile_card.dart';
 
 import 'package:flutter/material.dart';
 

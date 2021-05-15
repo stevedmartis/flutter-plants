@@ -1,18 +1,18 @@
-import 'package:flutter_plants/bloc/provider.dart';
-import 'package:flutter_plants/bloc/visit_bloc.dart';
+import 'package:leafety/bloc/provider.dart';
+import 'package:leafety/bloc/visit_bloc.dart';
 
-import 'package:flutter_plants/helpers/mostrar_alerta.dart';
+import 'package:leafety/helpers/mostrar_alerta.dart';
 
-import 'package:flutter_plants/models/visit.dart';
-import 'package:flutter_plants/pages/cover_image_visit.dart';
-import 'package:flutter_plants/pages/profile_page.dart';
+import 'package:leafety/models/visit.dart';
+import 'package:leafety/pages/cover_image_visit.dart';
+import 'package:leafety/pages/profile_page.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/aws_service.dart';
-import 'package:flutter_plants/services/visit_service.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/aws_service.dart';
+import 'package:leafety/services/visit_service.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/productProfile_card.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/productProfile_card.dart';
 
 import 'package:flutter/material.dart';
 

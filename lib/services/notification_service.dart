@@ -1,11 +1,10 @@
-import 'package:flutter_plants/models/notirications_response.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/services/auth_service.dart';
+import 'package:leafety/models/notirications_response.dart';
+import 'package:leafety/models/profiles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:flutter_plants/global/environment.dart';
+import 'package:leafety/global/environment.dart';
 
 class NotificationService with ChangeNotifier {
   final prefs = new AuthUserPreferences();

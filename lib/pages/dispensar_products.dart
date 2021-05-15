@@ -1,56 +1,56 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
-import 'package:flutter_plants/bloc/dispensary_bloc.dart';
-import 'package:flutter_plants/bloc/plant_bloc.dart';
-import 'package:flutter_plants/bloc/product_bloc.dart';
-import 'package:flutter_plants/bloc/subscribe_bloc.dart';
-import 'package:flutter_plants/helpers/mostrar_alerta.dart';
+import 'package:leafety/bloc/dispensary_bloc.dart';
+import 'package:leafety/bloc/plant_bloc.dart';
+import 'package:leafety/bloc/product_bloc.dart';
+import 'package:leafety/bloc/subscribe_bloc.dart';
+import 'package:leafety/helpers/mostrar_alerta.dart';
 
-import 'package:flutter_plants/models/air.dart';
-import 'package:flutter_plants/models/catalogo.dart';
-import 'package:flutter_plants/models/dispensaries_products_response%20copy.dart';
-import 'package:flutter_plants/models/dispensary.dart';
-import 'package:flutter_plants/models/light.dart';
+import 'package:leafety/models/air.dart';
+import 'package:leafety/models/catalogo.dart';
+import 'package:leafety/models/dispensaries_products_response%20copy.dart';
+import 'package:leafety/models/dispensary.dart';
+import 'package:leafety/models/light.dart';
 
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/models/product_principal.dart';
-import 'package:flutter_plants/models/products.dart';
-import 'package:flutter_plants/models/products_dispensary.dart';
-import 'package:flutter_plants/models/profiles.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/models/product_principal.dart';
+import 'package:leafety/models/products.dart';
+import 'package:leafety/models/products_dispensary.dart';
+import 'package:leafety/models/profiles.dart';
 
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/pages/add_update_air.dart';
-import 'package:flutter_plants/pages/add_update_light.dart';
-import 'package:flutter_plants/pages/add_update_plant.dart';
-import 'package:flutter_plants/pages/add_update_product.dart';
-import 'package:flutter_plants/pages/plant_detail.dart';
-import 'package:flutter_plants/pages/product_profile_detail.dart';
-import 'package:flutter_plants/pages/profile_page.dart';
-import 'package:flutter_plants/pages/room_list_page.dart';
-import 'package:flutter_plants/providers/air_provider.dart';
-import 'package:flutter_plants/providers/light_provider.dart';
-import 'package:flutter_plants/providers/plants_provider.dart';
-import 'package:flutter_plants/providers/rooms_provider.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/dispensary_service.dart';
-import 'package:flutter_plants/services/room_services.dart';
-import 'package:flutter_plants/services/socket_service.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/pages/add_update_air.dart';
+import 'package:leafety/pages/add_update_light.dart';
+import 'package:leafety/pages/add_update_plant.dart';
+import 'package:leafety/pages/add_update_product.dart';
+import 'package:leafety/pages/plant_detail.dart';
+import 'package:leafety/pages/product_profile_detail.dart';
+import 'package:leafety/pages/profile_page.dart';
+import 'package:leafety/pages/room_list_page.dart';
+import 'package:leafety/providers/air_provider.dart';
+import 'package:leafety/providers/light_provider.dart';
+import 'package:leafety/providers/plants_provider.dart';
+import 'package:leafety/providers/rooms_provider.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/dispensary_service.dart';
+import 'package:leafety/services/room_services.dart';
+import 'package:leafety/services/socket_service.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/button_gold.dart';
-import 'package:flutter_plants/widgets/productProfile_card.dart';
-import 'package:flutter_plants/widgets/room_card.dart';
-import 'package:flutter_plants/widgets/sliver_appBar_snap.dart';
-import 'package:flutter_plants/widgets/text_emoji.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/button_gold.dart';
+import 'package:leafety/widgets/productProfile_card.dart';
+import 'package:leafety/widgets/room_card.dart';
+import 'package:leafety/widgets/sliver_appBar_snap.dart';
+import 'package:leafety/widgets/text_emoji.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_platform/universal_platform.dart';
 import '../utils/extension.dart';
 
 class DispensarProductPage extends StatefulWidget {
@@ -460,7 +460,11 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     final currentTheme =
         Provider.of<ThemeChanger>(context, listen: false).currentTheme;
 
-    if (Platform.isAndroid) {
+    bool isIos = UniversalPlatform.isIOS;
+    bool isAndroid = UniversalPlatform.isAndroid;
+    // bool isWeb = UniversalPlatform.isWeb;
+
+    if (isAndroid) {
       return showDialog(
           context: context,
           builder: (_) => AlertDialog(
@@ -493,42 +497,42 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                           }),
                 ],
               ));
+    } else if (isIos) {
+      showCupertinoDialog(
+          context: context,
+          builder: (_) => CupertinoAlertDialog(
+                title: Text(
+                  title,
+                  style: TextStyle(color: Colors.white),
+                ),
+                content: Text(
+                  subTitle,
+                  style: TextStyle(color: Colors.white54),
+                ),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    isDefaultAction: false,
+                    child: Text(
+                      'Cancelar',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    onPressed: () => {Navigator.pop(context)},
+                  ),
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    child: Text(
+                      'Aceptar',
+                      style: TextStyle(color: currentTheme.accentColor),
+                    ),
+                    onPressed: () => {
+                      (!isDelivered)
+                          ? createUpdateDispensary(isEdit)
+                          : dispensaryDelivered(context)
+                    },
+                  ),
+                ],
+              ));
     }
-
-    showCupertinoDialog(
-        context: context,
-        builder: (_) => CupertinoAlertDialog(
-              title: Text(
-                title,
-                style: TextStyle(color: Colors.white),
-              ),
-              content: Text(
-                subTitle,
-                style: TextStyle(color: Colors.white54),
-              ),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  isDefaultAction: false,
-                  child: Text(
-                    'Cancelar',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  onPressed: () => {Navigator.pop(context)},
-                ),
-                CupertinoDialogAction(
-                  isDefaultAction: true,
-                  child: Text(
-                    'Aceptar',
-                    style: TextStyle(color: currentTheme.accentColor),
-                  ),
-                  onPressed: () => {
-                    (!isDelivered)
-                        ? createUpdateDispensary(isEdit)
-                        : dispensaryDelivered(context)
-                  },
-                ),
-              ],
-            ));
   }
 
   Widget _buildLoadingWidget() {

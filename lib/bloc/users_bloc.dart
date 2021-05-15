@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:flutter_plants/bloc/validators.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/models/profiles_response.dart';
+import 'package:leafety/bloc/validators.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/models/profiles_response.dart';
 
-import 'package:flutter_plants/repository/users_repository.dart';
+import 'package:leafety/repository/users_repository.dart';
 
 import 'package:rxdart/rxdart.dart';
 

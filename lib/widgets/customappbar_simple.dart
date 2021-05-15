@@ -1,6 +1,6 @@
-import 'package:flutter_plants/models/usuario.dart';
+import 'package:leafety/models/usuario.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
+import 'package:leafety/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

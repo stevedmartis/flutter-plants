@@ -1,6 +1,6 @@
-import 'package:flutter_plants/bloc/dispensary_bloc.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/theme/theme.dart';
+import 'package:leafety/bloc/dispensary_bloc.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

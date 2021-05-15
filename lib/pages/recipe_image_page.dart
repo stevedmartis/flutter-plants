@@ -1,10 +1,10 @@
-import 'package:flutter_plants/helpers/mostrar_alerta.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/aws_service.dart';
+import 'package:leafety/helpers/mostrar_alerta.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/aws_service.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/recipe_image.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/recipe_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';

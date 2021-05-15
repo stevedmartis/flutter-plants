@@ -1,23 +1,23 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_plants/bloc/dispensary_bloc.dart';
-import 'package:flutter_plants/bloc/subscribe_bloc.dart';
-import 'package:flutter_plants/models/dispensaries_products_response%20copy.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/models/subscribe.dart';
-import 'package:flutter_plants/pages/chat_page.dart';
-import 'package:flutter_plants/pages/recipe_image_page.dart';
-import 'package:flutter_plants/pages/register_page.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/aws_service.dart';
-import 'package:flutter_plants/services/chat_service.dart';
-import 'package:flutter_plants/services/socket_service.dart';
-import 'package:flutter_plants/services/subscription_service.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/avatar_user_chat.dart';
-import 'package:flutter_plants/widgets/button_gold.dart';
-import 'package:flutter_plants/widgets/productProfile_card.dart';
-import 'package:flutter_plants/widgets/sliver_header.dart';
-import 'package:flutter_plants/widgets/text_emoji.dart';
+import 'package:leafety/bloc/dispensary_bloc.dart';
+import 'package:leafety/bloc/subscribe_bloc.dart';
+import 'package:leafety/models/dispensaries_products_response%20copy.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/models/subscribe.dart';
+import 'package:leafety/pages/chat_page.dart';
+import 'package:leafety/pages/recipe_image_page.dart';
+import 'package:leafety/pages/register_page.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/aws_service.dart';
+import 'package:leafety/services/chat_service.dart';
+import 'package:leafety/services/socket_service.dart';
+import 'package:leafety/services/subscription_service.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/avatar_user_chat.dart';
+import 'package:leafety/widgets/button_gold.dart';
+import 'package:leafety/widgets/productProfile_card.dart';
+import 'package:leafety/widgets/sliver_header.dart';
+import 'package:leafety/widgets/text_emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,6 +26,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'dart:ui' as ui;
+
+import 'package:universal_platform/universal_platform.dart';
 
 class ProfileCard extends StatefulWidget {
   ProfileCard(
@@ -400,7 +402,11 @@ class _ProfileCardState extends State<ProfileCard> {
       Color(0xff1C3041),
     ];
 
-    if (Platform.isAndroid) {
+    bool isIos = UniversalPlatform.isIOS;
+    bool isAndroid = UniversalPlatform.isAndroid;
+    //bool isWeb = UniversalPlatform.isWeb;
+
+    if (isAndroid) {
       // Android
       return showDialog(
           context: context,
@@ -558,97 +564,98 @@ class _ProfileCardState extends State<ProfileCard> {
                       }),
                 ],
               ));
-    }
+    } else if (isIos) {
+      showCupertinoDialog(
+          context: context,
+          builder: (_) => CupertinoAlertDialog(
+                title: Text(
+                  'Suscribirme',
+                  style: TextStyle(color: Colors.white54, fontSize: 20),
+                ),
+                content: StreamBuilder(
+                    stream: subscriptionBlocUser.subscription.stream,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      final isHasData = snapshot.hasData;
 
-    showCupertinoDialog(
-        context: context,
-        builder: (_) => CupertinoAlertDialog(
-              title: Text(
-                'Suscribirme',
-                style: TextStyle(color: Colors.white54, fontSize: 20),
-              ),
-              content: StreamBuilder(
-                  stream: subscriptionBlocUser.subscription.stream,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    final isHasData = snapshot.hasData;
+                      if (isHasData) {
+                        final imageRecipe =
+                            (snapshot.data.imageRecipe == "") ? false : true;
 
-                    if (isHasData) {
-                      final imageRecipe =
-                          (snapshot.data.imageRecipe == "") ? false : true;
-
-                      if (!imageRecipe &&
-                          !snapshot.data.isUpload &&
-                          !snapshot.data.subscribeApproved &&
-                          !snapshot.data.subscribeActive) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Subir mi receta',
-                              style: TextStyle(
-                                  color: Colors.white54, fontSize: 15),
-                            ),
-                            GestureDetector(
-                                child: roundedRectButtonIcon(
-                                    "Desde mis fotos",
-                                    orangeGradients,
-                                    FontAwesomeIcons.fileUpload),
-                                onTap: !isHasData
-                                    ? null
-                                    : () => {_selectImage(false)}),
-                            GestureDetector(
-                                child: roundedRectButtonIcon("Desde mi camara",
-                                    orangeGradients, FontAwesomeIcons.camera),
-                                onTap: !isHasData
-                                    ? null
-                                    : () => {_selectImage(true)}),
-                          ],
-                        );
-                      } else if (isHasData ||
-                          imageRecipe &&
-                              !snapshot.data.subscribeApproved &&
-                              !snapshot.data.subscribeActive) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: () => {
-                                Navigator.push(context,
-                                    createRouteRecipeViewImage(profileMyUser))
-                                //_selectImage(false)
-                              },
-                              child: Container(
-                                padding: EdgeInsets.only(top: 10.0),
-                                child: ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
-                                    child: Container(
-                                        child: Container(
-                                      padding: EdgeInsets.only(
-                                          left: size.width / 20, top: 10),
+                        if (!imageRecipe &&
+                            !snapshot.data.isUpload &&
+                            !snapshot.data.subscribeApproved &&
+                            !snapshot.data.subscribeActive) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Subir mi receta',
+                                style: TextStyle(
+                                    color: Colors.white54, fontSize: 15),
+                              ),
+                              GestureDetector(
+                                  child: roundedRectButtonIcon(
+                                      "Desde mis fotos",
+                                      orangeGradients,
+                                      FontAwesomeIcons.fileUpload),
+                                  onTap: !isHasData
+                                      ? null
+                                      : () => {_selectImage(false)}),
+                              GestureDetector(
+                                  child: roundedRectButtonIcon(
+                                      "Desde mi camara",
+                                      orangeGradients,
+                                      FontAwesomeIcons.camera),
+                                  onTap: !isHasData
+                                      ? null
+                                      : () => {_selectImage(true)}),
+                            ],
+                          );
+                        } else if (isHasData ||
+                            imageRecipe &&
+                                !snapshot.data.subscribeApproved &&
+                                !snapshot.data.subscribeActive) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: () => {
+                                  Navigator.push(context,
+                                      createRouteRecipeViewImage(profileMyUser))
+                                  //_selectImage(false)
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 10.0),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0)),
                                       child: Container(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            FaIcon(
-                                              FontAwesomeIcons.notesMedical,
-                                              size: 20,
-                                              color: color,
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              'Mi receta',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: color),
-                                            )
-                                          ],
+                                          child: Container(
+                                        padding: EdgeInsets.only(
+                                            left: size.width / 20, top: 10),
+                                        child: Container(
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              FaIcon(
+                                                FontAwesomeIcons.notesMedical,
+                                                size: 20,
+                                                color: color,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                'Mi receta',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: color),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ) /* FadeInImage(
+                                      ) /* FadeInImage(
 
                                       image:
                                           NetworkImage(snapshot.data.imageRecipe),
@@ -659,60 +666,61 @@ class _ProfileCardState extends State<ProfileCard> {
                                       width: double.infinity,
                                       alignment: Alignment.center,
                                     ), */
-                                        )),
+                                          )),
+                                ),
                               ),
-                            ),
-                          ],
-                        );
-                      }
-                    } else {
-                      return Container();
-                    }
-
-                    return Container();
-                  }),
-              actions: <Widget>[
-                StreamBuilder(
-                    stream: subscriptionBlocUser.subscription.stream,
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      isData = snapshot.hasData;
-
-                      if (isData) {
-                        final imageRecipe =
-                            (snapshot.data.imageRecipe == "") ? false : true;
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: CupertinoDialogAction(
-                                  isDefaultAction: true,
-                                  child: Text(
-                                    'ENVIAR',
-                                    style: TextStyle(
-                                        color: (imageRecipe)
-                                            ? color
-                                            : Colors.white54),
-                                  ),
-                                  onPressed: () => (imageRecipe)
-                                      ? addSubscription(context)
-                                      : null),
-                            ),
-                            Expanded(
-                              child: CupertinoDialogAction(
-                                  isDestructiveAction: true,
-                                  child: Text(
-                                    'Cancelar',
-                                    style: TextStyle(color: Colors.white54),
-                                  ),
-                                  onPressed: () => Navigator.pop(context)),
-                            ),
-                          ],
-                        );
+                            ],
+                          );
+                        }
                       } else {
                         return Container();
                       }
+
+                      return Container();
                     }),
-              ],
-            ));
+                actions: <Widget>[
+                  StreamBuilder(
+                      stream: subscriptionBlocUser.subscription.stream,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        isData = snapshot.hasData;
+
+                        if (isData) {
+                          final imageRecipe =
+                              (snapshot.data.imageRecipe == "") ? false : true;
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: CupertinoDialogAction(
+                                    isDefaultAction: true,
+                                    child: Text(
+                                      'ENVIAR',
+                                      style: TextStyle(
+                                          color: (imageRecipe)
+                                              ? color
+                                              : Colors.white54),
+                                    ),
+                                    onPressed: () => (imageRecipe)
+                                        ? addSubscription(context)
+                                        : null),
+                              ),
+                              Expanded(
+                                child: CupertinoDialogAction(
+                                    isDestructiveAction: true,
+                                    child: Text(
+                                      'Cancelar',
+                                      style: TextStyle(color: Colors.white54),
+                                    ),
+                                    onPressed: () => Navigator.pop(context)),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
+                ],
+              ));
+    }
   }
 
   unSubscribe(context, color, bool isUploadRecipe) {
@@ -724,7 +732,11 @@ class _ProfileCardState extends State<ProfileCard> {
 
     final nameClub = widget.profile.name;
 
-    if (Platform.isAndroid) {
+    bool isIos = UniversalPlatform.isIOS;
+    bool isAndroid = UniversalPlatform.isAndroid;
+    //bool isWeb = UniversalPlatform.isWeb;
+//
+    if (isAndroid) {
       // Android
       return showDialog(
           context: context,
@@ -758,40 +770,40 @@ class _ProfileCardState extends State<ProfileCard> {
                       ],
                     )
                   ]));
-    }
-
-    showCupertinoDialog(
-        context: context,
-        builder: (_) => CupertinoAlertDialog(
-                title: Container(
-                  child: Text(
-                    '¿Deseas anular tu suscripción a $nameClub ?',
-                    style: TextStyle(color: Colors.white54, fontSize: 15),
+    } else if (isIos) {
+      showCupertinoDialog(
+          context: context,
+          builder: (_) => CupertinoAlertDialog(
+                  title: Container(
+                    child: Text(
+                      '¿Deseas anular tu suscripción a $nameClub ?',
+                      style: TextStyle(color: Colors.white54, fontSize: 15),
+                    ),
                   ),
-                ),
-                actions: <Widget>[
-                  Column(
-                    children: [
-                      CupertinoDialogAction(
-                          isDefaultAction: true,
-                          child: Text(
-                            'ANULAR SUSCRIPCIÓN',
-                            style: TextStyle(color: color, fontSize: 15),
-                          ),
-                          onPressed: () => (loadSub)
-                              ? unSubscription(context, subscriptionBlocUser)
-                              : null),
-                      CupertinoDialogAction(
-                          isDestructiveAction: true,
-                          child: Text(
-                            'Cancelar',
-                            style:
-                                TextStyle(color: Colors.white54, fontSize: 15),
-                          ),
-                          onPressed: () => Navigator.pop(context)),
-                    ],
-                  )
-                ]));
+                  actions: <Widget>[
+                    Column(
+                      children: [
+                        CupertinoDialogAction(
+                            isDefaultAction: true,
+                            child: Text(
+                              'ANULAR SUSCRIPCIÓN',
+                              style: TextStyle(color: color, fontSize: 15),
+                            ),
+                            onPressed: () => (loadSub)
+                                ? unSubscription(context, subscriptionBlocUser)
+                                : null),
+                        CupertinoDialogAction(
+                            isDestructiveAction: true,
+                            child: Text(
+                              'Cancelar',
+                              style: TextStyle(
+                                  color: Colors.white54, fontSize: 15),
+                            ),
+                            onPressed: () => Navigator.pop(context)),
+                      ],
+                    )
+                  ]));
+    }
   }
 
   _selectImage(

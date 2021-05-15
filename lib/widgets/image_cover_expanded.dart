@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/services/plant_services.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/services/plant_services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

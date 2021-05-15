@@ -1,8 +1,8 @@
-import 'package:flutter_plants/models/catalogo.dart';
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/models/usuario.dart';
+import 'package:leafety/models/catalogo.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/models/usuario.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
+import 'package:leafety/theme/theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

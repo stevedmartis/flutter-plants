@@ -1,14 +1,14 @@
-import 'package:flutter_plants/bloc/air_bloc.dart';
-import 'package:flutter_plants/bloc/catalogo_bloc.dart';
-import 'package:flutter_plants/bloc/light_bloc.dart';
-import 'package:flutter_plants/bloc/login_bloc.dart';
-import 'package:flutter_plants/bloc/plant_bloc.dart';
-import 'package:flutter_plants/bloc/product_bloc.dart';
-import 'package:flutter_plants/bloc/profile_bloc.dart';
-import 'package:flutter_plants/bloc/register_bloc.dart';
-import 'package:flutter_plants/bloc/room_bloc.dart';
-import 'package:flutter_plants/bloc/subscribe_bloc.dart';
-import 'package:flutter_plants/bloc/visit_bloc.dart';
+import 'package:leafety/bloc/air_bloc.dart';
+import 'package:leafety/bloc/catalogo_bloc.dart';
+import 'package:leafety/bloc/light_bloc.dart';
+import 'package:leafety/bloc/login_bloc.dart';
+import 'package:leafety/bloc/plant_bloc.dart';
+import 'package:leafety/bloc/product_bloc.dart';
+import 'package:leafety/bloc/profile_bloc.dart';
+import 'package:leafety/bloc/register_bloc.dart';
+import 'package:leafety/bloc/room_bloc.dart';
+import 'package:leafety/bloc/subscribe_bloc.dart';
+import 'package:leafety/bloc/visit_bloc.dart';
 import 'package:flutter/material.dart';
 
 class CustomProvider extends InheritedWidget {

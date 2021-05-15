@@ -2,8 +2,8 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/catalogo.dart';
-import 'package:flutter_plants/models/products.dart';
+import 'package:leafety/models/catalogo.dart';
+import 'package:leafety/models/products.dart';
 
 CatalogoProducts catalogoProductsFromJson(String str) =>
     CatalogoProducts.fromJson(json.decode(str));

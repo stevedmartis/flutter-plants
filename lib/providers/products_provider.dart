@@ -1,15 +1,14 @@
 import 'dart:convert';
 
-import 'package:flutter_plants/global/environment.dart';
-import 'package:flutter_plants/models/dispensaries_products_response%20copy.dart';
-import 'package:flutter_plants/models/favorite_response.dart';
-import 'package:flutter_plants/models/product_response.dart';
-import 'package:flutter_plants/models/products.dart';
-import 'package:flutter_plants/models/products_dispensary.dart';
-import 'package:flutter_plants/models/products_profiles_response.dart';
-import 'package:flutter_plants/models/products_response.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
+import 'package:leafety/global/environment.dart';
+import 'package:leafety/models/dispensaries_products_response%20copy.dart';
+import 'package:leafety/models/favorite_response.dart';
+import 'package:leafety/models/product_response.dart';
+import 'package:leafety/models/products.dart';
+import 'package:leafety/models/products_dispensary.dart';
+import 'package:leafety/models/products_profiles_response.dart';
+import 'package:leafety/models/products_response.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 class ProductsApiProvider {

@@ -1,23 +1,23 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_plants/models/notification.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/models/profiles_response.dart';
-import 'package:flutter_plants/pages/chat_page.dart';
-import 'package:flutter_plants/pages/principalCustom_page.dart';
-import 'package:flutter_plants/providers/messages_providers.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/avatar_user_chat.dart';
-import 'package:flutter_plants/widgets/customappbar_simple.dart';
-import 'package:flutter_plants/widgets/text_emoji.dart';
+import 'package:leafety/models/notification.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/models/profiles_response.dart';
+import 'package:leafety/pages/chat_page.dart';
+import 'package:leafety/pages/principalCustom_page.dart';
+import 'package:leafety/providers/messages_providers.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/avatar_user_chat.dart';
+import 'package:leafety/widgets/customappbar_simple.dart';
+import 'package:leafety/widgets/text_emoji.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/chat_service.dart';
-import 'package:flutter_plants/services/socket_service.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/chat_service.dart';
+import 'package:leafety/services/socket_service.dart';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';

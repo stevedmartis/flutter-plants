@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/light.dart';
+import 'package:leafety/models/light.dart';
 
 LightsResponse lightsResponseFromJson(String str) =>
     LightsResponse.fromJson(json.decode(str));

@@ -1,4 +1,4 @@
-import 'package:flutter_plants/models/usuario.dart';
+import 'package:leafety/models/usuario.dart';
 import 'package:flutter/material.dart';
 
 class MovieHorizontal extends StatelessWidget {

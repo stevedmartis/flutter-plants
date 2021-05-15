@@ -1,7 +1,7 @@
-import 'package:flutter_plants/bloc/provider.dart';
-import 'package:flutter_plants/bloc/room_bloc.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/button_gold.dart';
+import 'package:leafety/bloc/provider.dart';
+import 'package:leafety/bloc/room_bloc.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/button_gold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

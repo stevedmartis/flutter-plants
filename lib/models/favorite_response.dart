@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/favorite.dart';
+import 'package:leafety/models/favorite.dart';
 
 FavoriteResponse favoriteResponseFromJson(String str) =>
     FavoriteResponse.fromJson(json.decode(str));

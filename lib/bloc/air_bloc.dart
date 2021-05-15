@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:flutter_plants/bloc/validators.dart';
-import 'package:flutter_plants/models/air.dart';
-import 'package:flutter_plants/models/aires_response.dart';
-import 'package:flutter_plants/repository/aires_repository.dart';
+import 'package:leafety/bloc/validators.dart';
+import 'package:leafety/models/air.dart';
+import 'package:leafety/models/aires_response.dart';
+import 'package:leafety/repository/aires_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AirBloc with Validators {

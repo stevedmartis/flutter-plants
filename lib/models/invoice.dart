@@ -1,4 +1,4 @@
-import 'package:flutter_plants/models/subscriptions_dispensaries.dart';
+import 'package:leafety/models/subscriptions_dispensaries.dart';
 import 'package:flutter/material.dart';
 
 class Customer {

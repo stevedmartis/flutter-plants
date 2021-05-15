@@ -1,4 +1,4 @@
-name: flutter_plants
+name: leafety
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -43,6 +43,7 @@ dependencies:
   pdf: ^3.2.0
   open_file: ^3.1.0
   path_provider: ^2.0.1
+  universal_platform: ^0.1.3
   
   
 

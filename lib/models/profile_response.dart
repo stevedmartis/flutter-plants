@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter_plants/models/profiles.dart';
+import 'package:leafety/models/profiles.dart';
 
 LoginResponse profileResponseFromJson(String str) =>
     LoginResponse.fromJson(json.decode(str));

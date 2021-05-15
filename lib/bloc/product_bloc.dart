@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:flutter_plants/bloc/validators.dart';
-import 'package:flutter_plants/models/catalogos_products_response.dart';
-import 'package:flutter_plants/models/products.dart';
-import 'package:flutter_plants/models/products_dispensary.dart';
-import 'package:flutter_plants/models/products_profiles_response.dart';
-import 'package:flutter_plants/providers/catalogos_provider.dart';
-import 'package:flutter_plants/repository/products_repository.dart';
+import 'package:leafety/bloc/validators.dart';
+import 'package:leafety/models/catalogos_products_response.dart';
+import 'package:leafety/models/products.dart';
+import 'package:leafety/models/products_dispensary.dart';
+import 'package:leafety/models/products_profiles_response.dart';
+import 'package:leafety/providers/catalogos_provider.dart';
+import 'package:leafety/repository/products_repository.dart';
 
 import 'package:rxdart/rxdart.dart';
 

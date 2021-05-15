@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/room.dart';
+import 'package:leafety/models/room.dart';
 
 RoomsResponse roomsResponseFromJson(String str) =>
     RoomsResponse.fromJson(json.decode(str));

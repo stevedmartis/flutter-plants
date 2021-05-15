@@ -1,17 +1,17 @@
-import 'package:flutter_plants/bloc/light_bloc.dart';
-import 'package:flutter_plants/bloc/provider.dart';
-import 'package:flutter_plants/bloc/room_bloc.dart';
+import 'package:leafety/bloc/light_bloc.dart';
+import 'package:leafety/bloc/provider.dart';
+import 'package:leafety/bloc/room_bloc.dart';
 
-import 'package:flutter_plants/helpers/mostrar_alerta.dart';
-import 'package:flutter_plants/models/light.dart';
+import 'package:leafety/helpers/mostrar_alerta.dart';
+import 'package:leafety/models/light.dart';
 
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/pages/profile_page.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/pages/profile_page.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/light_service.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/light_service.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
+import 'package:leafety/theme/theme.dart';
 
 import 'package:flutter/material.dart';
 

@@ -1,25 +1,25 @@
-import 'package:flutter_plants/bloc/plant_bloc.dart';
-import 'package:flutter_plants/bloc/product_bloc.dart';
-import 'package:flutter_plants/bloc/provider.dart';
+import 'package:leafety/bloc/plant_bloc.dart';
+import 'package:leafety/bloc/product_bloc.dart';
+import 'package:leafety/bloc/provider.dart';
 
-import 'package:flutter_plants/helpers/mostrar_alerta.dart';
-import 'package:flutter_plants/models/catalogo.dart';
-import 'package:flutter_plants/models/plant.dart';
+import 'package:leafety/helpers/mostrar_alerta.dart';
+import 'package:leafety/models/catalogo.dart';
+import 'package:leafety/models/plant.dart';
 
-import 'package:flutter_plants/models/products.dart';
-import 'package:flutter_plants/models/profiles.dart';
+import 'package:leafety/models/products.dart';
+import 'package:leafety/models/profiles.dart';
 
-import 'package:flutter_plants/pages/profile_page.dart';
-import 'package:flutter_plants/pages/room_list_page.dart';
+import 'package:leafety/pages/profile_page.dart';
+import 'package:leafety/pages/room_list_page.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/aws_service.dart';
-import 'package:flutter_plants/services/product_services.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/aws_service.dart';
+import 'package:leafety/services/product_services.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/button_gold.dart';
-import 'package:flutter_plants/widgets/plant_card_widget.dart';
-import 'package:flutter_plants/widgets/productProfile_card.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/button_gold.dart';
+import 'package:leafety/widgets/plant_card_widget.dart';
+import 'package:leafety/widgets/productProfile_card.dart';
 
 import 'package:flutter/material.dart';
 

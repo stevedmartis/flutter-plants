@@ -1,6 +1,6 @@
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/productProfile_card.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/productProfile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';

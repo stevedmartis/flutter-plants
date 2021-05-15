@@ -1,38 +1,38 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
-import 'package:flutter_plants/bloc/plant_bloc.dart';
-import 'package:flutter_plants/bloc/room_bloc.dart';
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/models/rooms_response.dart';
-import 'package:flutter_plants/models/visit.dart';
-import 'package:flutter_plants/pages/add_update_plant.dart';
-import 'package:flutter_plants/pages/add_update_visit.dart';
-import 'package:flutter_plants/pages/chat_page.dart';
-import 'package:flutter_plants/pages/principal_page.dart';
-import 'package:flutter_plants/pages/product_detail.dart';
-import 'package:flutter_plants/pages/room_list_page.dart';
-import 'package:flutter_plants/providers/plants_provider.dart';
-import 'package:flutter_plants/providers/visit_provider.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/aws_service.dart';
-import 'package:flutter_plants/services/plant_services.dart';
-import 'package:flutter_plants/services/room_services.dart';
-import 'package:flutter_plants/services/visit_service.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/card_product.dart';
-import 'package:flutter_plants/widgets/carousel_tabs.dart';
-import 'package:flutter_plants/widgets/productProfile_card.dart';
-import 'package:flutter_plants/widgets/sliver_appBar_snap.dart';
-import 'package:flutter_plants/widgets/visit_card.dart';
+import 'package:leafety/bloc/plant_bloc.dart';
+import 'package:leafety/bloc/room_bloc.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/models/rooms_response.dart';
+import 'package:leafety/models/visit.dart';
+import 'package:leafety/pages/add_update_plant.dart';
+import 'package:leafety/pages/add_update_visit.dart';
+import 'package:leafety/pages/chat_page.dart';
+import 'package:leafety/pages/principal_page.dart';
+import 'package:leafety/pages/product_detail.dart';
+import 'package:leafety/pages/room_list_page.dart';
+import 'package:leafety/providers/plants_provider.dart';
+import 'package:leafety/providers/visit_provider.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/aws_service.dart';
+import 'package:leafety/services/plant_services.dart';
+import 'package:leafety/services/room_services.dart';
+import 'package:leafety/services/visit_service.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/card_product.dart';
+import 'package:leafety/widgets/carousel_tabs.dart';
+import 'package:leafety/widgets/productProfile_card.dart';
+import 'package:leafety/widgets/sliver_appBar_snap.dart';
+import 'package:leafety/widgets/visit_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_platform/universal_platform.dart';
 import 'dart:ui' as ui;
 import '../utils//extension.dart';
 
@@ -949,7 +949,11 @@ class _PlantDetailPageState extends State<PlantDetailPage>
 
   confirmDelete(BuildContext context, String titulo, String subtitulo,
       String id, Color cardColor) {
-    if (Platform.isAndroid) {
+    bool isIos = UniversalPlatform.isIOS;
+    bool isAndroid = UniversalPlatform.isAndroid;
+    //bool isWeb = UniversalPlatform.isWeb;
+
+    if (isAndroid) {
       return showDialog(
           context: context,
           builder: (_) => AlertDialog(
@@ -979,29 +983,30 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                   )
                 ],
               ));
-    }
-
-    showCupertinoDialog(
-        context: context,
-        builder: (_) => CupertinoAlertDialog(
-              title: Text(
-                titulo,
-              ),
-              content: Text(subtitulo),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  isDefaultAction: true,
-                  child: Text('Eliminar', style: TextStyle(color: Colors.red)),
-                  onPressed: () => _deletePlant(id),
+    } else if (isIos) {
+      showCupertinoDialog(
+          context: context,
+          builder: (_) => CupertinoAlertDialog(
+                title: Text(
+                  titulo,
                 ),
-                CupertinoDialogAction(
-                  isDefaultAction: true,
-                  child:
-                      Text('Cancelar', style: TextStyle(color: Colors.white54)),
-                  onPressed: () => Navigator.pop(context),
-                )
-              ],
-            ));
+                content: Text(subtitulo),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    child:
+                        Text('Eliminar', style: TextStyle(color: Colors.red)),
+                    onPressed: () => _deletePlant(id),
+                  ),
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    child: Text('Cancelar',
+                        style: TextStyle(color: Colors.white54)),
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ],
+              ));
+    }
   }
 
   Widget _buildUserWidget(RoomsResponse data) {

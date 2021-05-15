@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/usuario.dart';
+import 'package:leafety/models/usuario.dart';
 
 Profiles profilesFromJson(String str) => Profiles.fromJson(json.decode(str));
 

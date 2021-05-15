@@ -4,9 +4,9 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/dispensary.dart';
-import 'package:flutter_plants/models/mensajes_response.dart';
-import 'package:flutter_plants/models/subscribe.dart';
+import 'package:leafety/models/dispensary.dart';
+import 'package:leafety/models/mensajes_response.dart';
+import 'package:leafety/models/subscribe.dart';
 
 NotificationsResponse notificationsResponseFromJson(String str) =>
     NotificationsResponse.fromJson(json.decode(str));

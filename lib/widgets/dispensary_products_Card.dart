@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_plants/models/dispensaries_products_response%20copy.dart';
-import 'package:flutter_plants/models/products.dart';
-import 'package:flutter_plants/theme/theme.dart';
+import 'package:leafety/models/dispensaries_products_response%20copy.dart';
+import 'package:leafety/models/products.dart';
+import 'package:leafety/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -191,7 +191,9 @@ class _CardDispensaryProductsState extends State<CardDispensaryProducts> {
             margin: EdgeInsets.only(left: 50, top: 0),
             width: 30.0,
             height: 30.0,
-            child: Center(child: Text('$quantityDispensary')),
+            child: Center(
+                child: Text('$quantityDispensary',
+                    style: TextStyle(color: Colors.white))),
           ),
         ],
       ),

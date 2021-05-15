@@ -1,9 +1,8 @@
-import 'package:flutter_plants/global/environment.dart';
-import 'package:flutter_plants/models/air.dart';
-import 'package:flutter_plants/models/air_response.dart';
-import 'package:flutter_plants/models/aires_response.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
+import 'package:leafety/global/environment.dart';
+import 'package:leafety/models/air.dart';
+import 'package:leafety/models/air_response.dart';
+import 'package:leafety/models/aires_response.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AiresApiProvider {

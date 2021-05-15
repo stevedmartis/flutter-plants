@@ -1,5 +1,5 @@
-import 'package:flutter_plants/models/profiles_response.dart';
-import 'package:flutter_plants/providers/users_provider.dart';
+import 'package:leafety/models/profiles_response.dart';
+import 'package:leafety/providers/users_provider.dart';
 
 class UsersRepository {
   UsersProvider _apiProvider = UsersProvider();

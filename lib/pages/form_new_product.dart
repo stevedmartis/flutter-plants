@@ -1,13 +1,13 @@
-import 'package:flutter_plants/bloc/profile_bloc.dart';
-import 'package:flutter_plants/bloc/provider.dart';
-import 'package:flutter_plants/helpers/mostrar_alerta.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/pages/profile_page.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/socket_service.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/button_gold.dart';
+import 'package:leafety/bloc/profile_bloc.dart';
+import 'package:leafety/bloc/provider.dart';
+import 'package:leafety/helpers/mostrar_alerta.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/pages/profile_page.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/socket_service.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/button_gold.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';

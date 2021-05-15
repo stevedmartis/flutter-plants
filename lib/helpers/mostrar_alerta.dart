@@ -1,10 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 mostrarAlerta(BuildContext context, String titulo, String subtitulo) {
-  if (Platform.isAndroid) {
+  bool isIos = UniversalPlatform.isIOS;
+  bool isAndroid = UniversalPlatform.isAndroid;
+
+  if (isAndroid) {
     return showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -18,19 +20,19 @@ mostrarAlerta(BuildContext context, String titulo, String subtitulo) {
                     onPressed: () => Navigator.pop(context))
               ],
             ));
+  } else if (isIos) {
+    showCupertinoDialog(
+        context: context,
+        builder: (_) => CupertinoAlertDialog(
+              title: Text(titulo),
+              content: Text(subtitulo),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  child: Text('Aceptar'),
+                  onPressed: () => Navigator.pop(context),
+                )
+              ],
+            ));
   }
-
-  showCupertinoDialog(
-      context: context,
-      builder: (_) => CupertinoAlertDialog(
-            title: Text(titulo),
-            content: Text(subtitulo),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                isDefaultAction: true,
-                child: Text('Aceptar'),
-                onPressed: () => Navigator.pop(context),
-              )
-            ],
-          ));
 }

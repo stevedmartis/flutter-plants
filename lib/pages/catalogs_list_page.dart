@@ -1,17 +1,17 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_plants/bloc/catalogo_bloc.dart';
-import 'package:flutter_plants/bloc/room_bloc.dart';
-import 'package:flutter_plants/models/catalogo.dart';
-import 'package:flutter_plants/models/catalogos_response.dart';
+import 'package:leafety/bloc/catalogo_bloc.dart';
+import 'package:leafety/bloc/room_bloc.dart';
+import 'package:leafety/models/catalogo.dart';
+import 'package:leafety/models/catalogos_response.dart';
 
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/pages/catalogo_detail.dart';
-import 'package:flutter_plants/pages/principalCustom_page.dart';
-import 'package:flutter_plants/pages/profile_page.dart';
-import 'package:flutter_plants/services/catalogo_service.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/pages/catalogo_detail.dart';
+import 'package:leafety/pages/principalCustom_page.dart';
+import 'package:leafety/pages/profile_page.dart';
+import 'package:leafety/services/catalogo_service.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/header_appbar_pages.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/header_appbar_pages.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +19,8 @@ import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/socket_service.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/socket_service.dart';
 
 import 'add_update_catalogo.dart';
 

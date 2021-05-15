@@ -1,21 +1,21 @@
-import 'package:flutter_plants/bloc/provider.dart';
-import 'package:flutter_plants/bloc/register_bloc.dart';
-import 'package:flutter_plants/helpers/ui_overlay_style.dart';
-import 'package:flutter_plants/pages/principal_page.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/clip_oval.dart';
-import 'package:flutter_plants/widgets/header_curve_signin.dart';
-import 'package:flutter_plants/widgets/labels.dart';
-import 'package:flutter_plants/widgets/myprofile.dart';
+import 'package:leafety/bloc/provider.dart';
+import 'package:leafety/bloc/register_bloc.dart';
+import 'package:leafety/helpers/ui_overlay_style.dart';
+import 'package:leafety/pages/principal_page.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/clip_oval.dart';
+import 'package:leafety/widgets/header_curve_signin.dart';
+import 'package:leafety/widgets/labels.dart';
+import 'package:leafety/widgets/myprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/socket_service.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/socket_service.dart';
 
-import 'package:flutter_plants/helpers/mostrar_alerta.dart';
+import 'package:leafety/helpers/mostrar_alerta.dart';
 
 import 'dart:ui' as ui;
 
@@ -32,74 +32,114 @@ class RegisterPage extends StatelessWidget {
     changeStatusDark();
     return Scaffold(
         backgroundColor: currentTheme.scaffoldBackgroundColor,
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).requestFocus(new FocusNode());
-          },
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Container(
-              height: _size.height,
-              child: Stack(
-                children: <Widget>[
-                  WavyHeader(),
-                  Container(
-                    margin: EdgeInsets.only(top: _size.height / 6),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+        body: LayoutBuilder(builder: (context, constraints) {
+          return AnimatedContainer(
+            decoration: new BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xff1C181D),
+                  Colors.black,
+                ],
+                stops: [0, 1],
+                begin: Alignment(-0.00, -5.00),
+                end: Alignment(0.00, 5.00),
+              ),
+            ),
+            duration: Duration(milliseconds: 500),
+            child: Center(
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 500, minWidth: 500),
+                width: _size.width,
+                height: _size.height,
+                child: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                  },
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
                       children: [
-                        Container(
-                          width: _size.width / 5.0,
-                          height: _size.height / 5.0,
-                          child: Image.asset('assets/icons/leafety.png'),
-                          alignment: Alignment.topCenter,
+                        Stack(
+                          children: <Widget>[
+                            WavyHeader(),
+                            Container(
+                              margin: EdgeInsets.only(top: _size.height / 6),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 100,
+                                    height: 70,
+                                    child:
+                                        Image.asset('assets/icons/leafety.png'),
+                                    alignment: Alignment.topCenter,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 30),
+                                    child: Text(
+                                      'leafety',
+                                      style: TextStyle(
+                                          letterSpacing: -1.0,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                          fontSize: 40),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Center(child: _Form()),
+                          ],
                         ),
                         Container(
-                          margin: EdgeInsets.only(top: 30),
+                          padding: EdgeInsets.only(top: _size.height / 40),
                           child: Text(
-                            'leafety',
+                            'o accede con:',
                             style: TextStyle(
-                                letterSpacing: -1.0,
-                                fontWeight: FontWeight.w600,
-                                color: currentTheme.accentColor,
-                                fontSize: _size.height / 30),
+                                color: Colors.grey,
+                                fontSize: _size.height / 40),
                           ),
-                        )
+                          alignment: Alignment.center,
+                        ),
+                        Container(
+                            padding: EdgeInsets.only(top: 30),
+                            alignment: Alignment.center,
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  _buildCircleGoogle(context),
+                                  _buildCircleApple(context),
+                                ])),
+                        Center(
+                          child: Container(
+                            padding: EdgeInsets.only(top: _size.height / 8),
+                            alignment: Alignment.bottomCenter,
+                            child: Labels(
+                              rute: 'login',
+                              title: '¿Ya tienes una cuenta?',
+                              subTitulo: 'Inicia sesión aquí!',
+                              colortText1: Colors.grey,
+                              colortText2: currentTheme.accentColor,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  Center(child: _Form()),
-                  Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(
-                        top: _size.height / 1.5,
-                      ),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _buildCircleGoogle(context),
-                            _buildCircleApple(context),
-                          ])),
-                  Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: _size.height / 1.1),
-                      child: Labels(
-                        rute: 'login',
-                        title: '¿Ya tienes una cuenta?',
-                        subTitulo: 'Inicia sesión aquí!',
-                        colortText1: Colors.grey,
-                        colortText2: currentTheme.accentColor,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ));
+          );
+        }));
   }
+}
+
+bool loading = false;
+Widget _buildLoadingWidget() {
+  return Container(
+      height: 50.0, child: Center(child: CircularProgressIndicator()));
 }
 
 Container _buildCircleGoogle(context) {
@@ -199,7 +239,7 @@ class __FormState extends State<_Form> {
     final _size = MediaQuery.of(context).size;
 
     return Container(
-      margin: EdgeInsets.only(top: _size.height / 20),
+      margin: EdgeInsets.only(top: _size.height / 3.5),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -216,15 +256,11 @@ class __FormState extends State<_Form> {
               padding: EdgeInsets.only(
                   left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
               child: _createPassword(bloc)),
-          _createButton(bloc),
-          Container(
-            padding: EdgeInsets.only(top: _size.height / 40),
-            child: Text(
-              'o accede con:',
-              style: TextStyle(color: Colors.grey, fontSize: _size.height / 40),
-            ),
-            alignment: Alignment.center,
-          ),
+          Padding(
+              padding: EdgeInsets.only(
+                  left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
+              child: _createButton(bloc)),
+          //_createButton(bloc),
         ],
       ),
     );
@@ -247,24 +283,26 @@ Widget roundedRectButton(
       child: Stack(
         alignment: Alignment(1.0, 0.0),
         children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width / 1.7,
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0)),
-              gradient: LinearGradient(
-                  colors: gradient,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight),
-            ),
-            child: Text(title,
-                style: TextStyle(
-                    color: (isBlack) ? Colors.black : Colors.white,
-                    fontSize: _size.height / 40,
-                    fontWeight: FontWeight.w500)),
-            padding: EdgeInsets.only(top: 16, bottom: 16),
-          ),
+          (loading)
+              ? _buildLoadingWidget()
+              : Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width / 1.7,
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    gradient: LinearGradient(
+                        colors: gradient,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight),
+                  ),
+                  child: Text(title,
+                      style: TextStyle(
+                          color: (isBlack) ? Colors.black : Colors.white,
+                          fontSize: _size.height / 40,
+                          fontWeight: FontWeight.w500)),
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                ),
           Visibility(
             visible: isEndIconVisible,
             child: Padding(
@@ -388,6 +426,7 @@ Widget _createButton(RegisterBloc bloc) {
                 ? null
                 : !snapshot.hasError
                     ? () => {
+                          loading = true,
                           FocusScope.of(context).unfocus(),
                           _register(bloc, context)
                         }
@@ -549,6 +588,7 @@ _signInGoogle(BuildContext context) async {
   final socketService = Provider.of<SocketService>(context, listen: false);
   final authService = Provider.of<AuthService>(context, listen: false);
 
+  loading = true;
   final signInGoogleOk = await authService.signInWitchGoogle();
 
   if (signInGoogleOk) {
@@ -556,6 +596,8 @@ _signInGoogle(BuildContext context) async {
     Navigator.of(context)
         .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
   } else {
+    loading = false;
+
     // Mostara alerta
     mostrarAlerta(context, 'Login incorrecto', 'El correo ya existe');
   }
@@ -579,7 +621,6 @@ _signIApple(BuildContext context) async {
 
 _register(RegisterBloc bloc, BuildContext context) async {
   final authService = Provider.of<AuthService>(context, listen: false);
-  final socketService = Provider.of<SocketService>(context, listen: false);
 
   final registroOk = await authService.register(
       bloc.username.trim(), bloc.email.trim(), bloc.password.trim());
@@ -589,10 +630,17 @@ _register(RegisterBloc bloc, BuildContext context) async {
       print('helloooo');
       Navigator.of(context)
           .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
+
+      loading = false;
     } else {
+      print('bad');
+      loading = false;
+
       mostrarAlerta(context, 'Registro incorrecto', registroOk);
     }
   } else {
+    loading = false;
+
     mostrarAlerta(context, 'Correo electrónico invalido',
         'Ingrese un correo electrónico valido');
   }

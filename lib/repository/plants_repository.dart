@@ -1,6 +1,6 @@
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/models/plants_response.dart';
-import 'package:flutter_plants/providers/plants_provider.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/models/plants_response.dart';
+import 'package:leafety/providers/plants_provider.dart';
 
 class PlantsRepository {
   PlantsApiProvider _apiProvider = PlantsApiProvider();

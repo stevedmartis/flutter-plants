@@ -1,7 +1,7 @@
-import 'package:flutter_plants/models/air.dart';
-import 'package:flutter_plants/models/aires_response.dart';
+import 'package:leafety/models/air.dart';
+import 'package:leafety/models/aires_response.dart';
 
-import 'package:flutter_plants/providers/air_provider.dart';
+import 'package:leafety/providers/air_provider.dart';
 
 class AirRepository {
   AiresApiProvider _apiProvider = AiresApiProvider();

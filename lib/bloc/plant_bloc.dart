@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:flutter_plants/bloc/validators.dart';
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/models/plants_response.dart';
-import 'package:flutter_plants/models/fromPlant.dart';
-import 'package:flutter_plants/providers/plants_provider.dart';
-import 'package:flutter_plants/repository/plants_repository.dart';
+import 'package:leafety/bloc/validators.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/models/plants_response.dart';
+import 'package:leafety/models/fromPlant.dart';
+import 'package:leafety/providers/plants_provider.dart';
+import 'package:leafety/repository/plants_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PlantBloc with Validators {

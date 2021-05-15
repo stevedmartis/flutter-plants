@@ -1,19 +1,19 @@
-import 'package:flutter_plants/models/notification.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/avatar_user_chat.dart';
-import 'package:flutter_plants/widgets/carousel_users.dart';
-import 'package:flutter_plants/widgets/sliver_header.dart';
+import 'package:leafety/models/notification.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/avatar_user_chat.dart';
+import 'package:leafety/widgets/carousel_users.dart';
+import 'package:leafety/widgets/sliver_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/chat_service.dart';
-import 'package:flutter_plants/services/socket_service.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/chat_service.dart';
+import 'package:leafety/services/socket_service.dart';
 
-import 'package:flutter_plants/models/mensajes_response.dart';
-import 'package:flutter_plants/widgets/chat_message.dart';
+import 'package:leafety/models/mensajes_response.dart';
+import 'package:leafety/widgets/chat_message.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   @override

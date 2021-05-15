@@ -1,4 +1,4 @@
-import 'package:flutter_plants/pages/sliver_fab.dart';
+import 'package:leafety/pages/sliver_fab.dart';
 import 'package:flutter/material.dart';
 
 class CollapsingProfile extends StatefulWidget {

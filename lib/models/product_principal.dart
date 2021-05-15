@@ -2,8 +2,8 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/products.dart';
-import 'package:flutter_plants/models/profiles.dart';
+import 'package:leafety/models/products.dart';
+import 'package:leafety/models/profiles.dart';
 
 ProductProfile profilesResponseFromJson(String str) =>
     ProductProfile.fromJson(json.decode(str));

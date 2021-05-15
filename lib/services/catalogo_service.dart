@@ -1,12 +1,11 @@
-import 'package:flutter_plants/models/catalogo.dart';
-import 'package:flutter_plants/models/catalogo_response.dart';
-import 'package:flutter_plants/models/message_error.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
+import 'package:leafety/models/catalogo.dart';
+import 'package:leafety/models/catalogo_response.dart';
+import 'package:leafety/models/message_error.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_plants/global/environment.dart';
+import 'package:leafety/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class CatalogoService with ChangeNotifier {

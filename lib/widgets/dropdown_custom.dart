@@ -1,5 +1,5 @@
-import 'package:flutter_plants/models/dropdown_menu.dart';
-import 'package:flutter_plants/theme/theme.dart';
+import 'package:leafety/models/dropdown_menu.dart';
+import 'package:leafety/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

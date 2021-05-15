@@ -1,20 +1,18 @@
 import 'dart:convert';
 
-import 'dart:io';
-
-import 'package:flutter_plants/models/profile_response.dart';
-import 'package:flutter_plants/models/profiles.dart';
-import 'package:flutter_plants/models/room.dart';
+import 'package:leafety/models/profile_response.dart';
+import 'package:leafety/models/profiles.dart';
+import 'package:leafety/models/room.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:flutter_plants/global/environment.dart';
+import 'package:leafety/global/environment.dart';
 
-import 'package:flutter_plants/models/login_response.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:leafety/models/login_response.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class AuthService with ChangeNotifier {
   final prefs = new AuthUserPreferences();
@@ -35,6 +33,9 @@ class AuthService with ChangeNotifier {
   );
 
   appleSignIn() async {
+    bool isIos = UniversalPlatform.isIOS;
+    //bool isWeb = UniversalPlatform.isWeb;
+
     try {
       final credential = await SignInWithApple.getAppleIDCredential(
           scopes: [
@@ -44,7 +45,7 @@ class AuthService with ChangeNotifier {
           webAuthenticationOptions: WebAuthenticationOptions(
               clientId: clientId, redirectUri: Uri.parse(redirectUri)));
 
-      final useBundleId = Platform.isIOS ? true : false;
+      final useBundleId = isIos ? true : false;
 
       final res = await this.siginWithApple(
           credential.authorizationCode,

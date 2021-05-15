@@ -1,4 +1,4 @@
-package com.budanty.flutter_plants
+package com.budanty.leafety
 
 import io.flutter.embedding.android.FlutterActivity
 

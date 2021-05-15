@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:flutter_plants/bloc/validators.dart';
-import 'package:flutter_plants/models/catalogo.dart';
-import 'package:flutter_plants/models/catalogos_products_response.dart';
-import 'package:flutter_plants/models/catalogos_response.dart';
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/models/rooms_response.dart';
-import 'package:flutter_plants/repository/catalogos_repository.dart';
+import 'package:leafety/bloc/validators.dart';
+import 'package:leafety/models/catalogo.dart';
+import 'package:leafety/models/catalogos_products_response.dart';
+import 'package:leafety/models/catalogos_response.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/models/rooms_response.dart';
+import 'package:leafety/repository/catalogos_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CatalogoBloc with Validators {

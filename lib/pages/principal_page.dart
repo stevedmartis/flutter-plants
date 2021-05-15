@@ -1,15 +1,15 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
-import 'package:flutter_plants/models/notification.dart';
-import 'package:flutter_plants/models/profiles.dart';
+import 'package:leafety/models/notification.dart';
+import 'package:leafety/models/profiles.dart';
 
-import 'package:flutter_plants/routes/routes.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/notification_service.dart';
-import 'package:flutter_plants/services/socket_service.dart';
+import 'package:leafety/routes/routes.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/notification_service.dart';
+import 'package:leafety/services/socket_service.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/menu_drawer.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/menu_drawer.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -147,31 +147,44 @@ class _PrincipalPageState extends State<PrincipalPage> {
     appTheme.customTheme = darkModeOn;
 
     final _onFirstPage = (currentPage == 0) ? true : false;
+    Size _size = MediaQuery.of(context).size;
 
-    return SafeArea(
-        child: Scaffold(
-      endDrawer: PrincipalMenu(),
-      body: PageTransitionSwitcher(
+    return SafeArea(child: LayoutBuilder(builder: (context, constraints) {
+      return AnimatedContainer(
+        padding: constraints.maxWidth < 500 ? EdgeInsets.zero : EdgeInsets.zero,
         duration: Duration(milliseconds: 500),
-        reverse: !_onFirstPage,
-        transitionBuilder: (Widget child, Animation<double> animation,
-            Animation<double> secondaryAnimation) {
-          return SharedAxisTransition(
-            fillColor: currentTheme.currentTheme.scaffoldBackgroundColor,
-            transitionType: SharedAxisTransitionType.horizontal,
-            animation: animation,
-            secondaryAnimation: secondaryAnimation,
-            child: child,
-          );
-        },
-        child: pageRouter[currentPage].page,
-      ),
 
-      //CollapsingList(_hideBottomNavController),
-      bottomNavigationBar:
-          BottomNavigation(isVisible: authService.bottomVisible),
-      // floatingActionButton: ButtomFloating(),
-    ));
+        child: Container(
+          constraints: BoxConstraints(maxWidth: 500, minWidth: 500),
+          width: _size.width,
+          height: _size.height,
+          child: Scaffold(
+            endDrawer: PrincipalMenu(),
+            body: PageTransitionSwitcher(
+                duration: Duration(milliseconds: 500),
+                reverse: !_onFirstPage,
+                transitionBuilder: (Widget child, Animation<double> animation,
+                    Animation<double> secondaryAnimation) {
+                  return SharedAxisTransition(
+                    fillColor:
+                        currentTheme.currentTheme.scaffoldBackgroundColor,
+                    transitionType: SharedAxisTransitionType.horizontal,
+                    animation: animation,
+                    secondaryAnimation: secondaryAnimation,
+                    child: child,
+                  );
+                },
+                child: pageRouter[currentPage].page),
+            bottomNavigationBar:
+                BottomNavigation(isVisible: authService.bottomVisible),
+          ),
+        ),
+
+        //CollapsingList(_hideBottomNavController),
+
+        // floatingActionButton: ButtomFloating(),
+      );
+    }));
   }
 }
 

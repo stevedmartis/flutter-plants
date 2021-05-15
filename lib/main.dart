@@ -1,27 +1,27 @@
-import 'package:flutter_plants/models/notification.dart';
-import 'package:flutter_plants/models/shoes.dart';
-import 'package:flutter_plants/pages/principal_page.dart';
-import 'package:flutter_plants/services/air_service.dart';
-import 'package:flutter_plants/services/aws_service.dart';
-import 'package:flutter_plants/services/catalogo_service.dart';
-import 'package:flutter_plants/services/dispensary_service.dart';
-import 'package:flutter_plants/services/light_service.dart';
-import 'package:flutter_plants/services/notification_service.dart';
-import 'package:flutter_plants/services/plant_services.dart';
-import 'package:flutter_plants/services/product_services.dart';
-import 'package:flutter_plants/services/room_services.dart';
-import 'package:flutter_plants/services/subscription_service.dart';
-import 'package:flutter_plants/services/visit_service.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
-import 'package:flutter_plants/theme/theme.dart';
+import 'package:leafety/models/notification.dart';
+import 'package:leafety/models/shoes.dart';
+import 'package:leafety/pages/principal_page.dart';
+import 'package:leafety/services/air_service.dart';
+import 'package:leafety/services/aws_service.dart';
+import 'package:leafety/services/catalogo_service.dart';
+import 'package:leafety/services/dispensary_service.dart';
+import 'package:leafety/services/light_service.dart';
+import 'package:leafety/services/notification_service.dart';
+import 'package:leafety/services/plant_services.dart';
+import 'package:leafety/services/product_services.dart';
+import 'package:leafety/services/room_services.dart';
+import 'package:leafety/services/subscription_service.dart';
+import 'package:leafety/services/visit_service.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
+import 'package:leafety/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/chat_service.dart';
-import 'package:flutter_plants/services/socket_service.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/chat_service.dart';
+import 'package:leafety/services/socket_service.dart';
 
-import 'package:flutter_plants/routes/routes.dart';
+import 'package:leafety/routes/routes.dart';
 
 import 'bloc/provider.dart';
 import 'package:flutter/services.dart';

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_plants/models/visit.dart';
+import 'package:leafety/models/visit.dart';
 
 VisitsResponse visitsResponseFromJson(String str) =>
     VisitsResponse.fromJson(json.decode(str));

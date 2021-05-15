@@ -1,13 +1,12 @@
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/models/product_principal.dart';
-import 'package:flutter_plants/models/product_response.dart';
-import 'package:flutter_plants/models/products.dart';
-import 'package:flutter_plants/models/products_response.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/models/product_principal.dart';
+import 'package:leafety/models/product_response.dart';
+import 'package:leafety/models/products.dart';
+import 'package:leafety/models/products_response.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_plants/global/environment.dart';
+import 'package:leafety/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class ProductService with ChangeNotifier {

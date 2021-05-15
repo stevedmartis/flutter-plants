@@ -1,6 +1,6 @@
-import 'package:flutter_plants/models/product_principal.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/avatar_user_chat.dart';
+import 'package:leafety/models/product_principal.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/avatar_user_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../utils/extension.dart';

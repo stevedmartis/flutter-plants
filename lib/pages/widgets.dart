@@ -1,4 +1,4 @@
-import 'package:flutter_plants/pages/profile_model.dart';
+import 'package:leafety/pages/profile_model.dart';
 import 'package:flutter/material.dart';
 
 class LifeTime extends StatelessWidget {

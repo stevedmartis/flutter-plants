@@ -1,18 +1,17 @@
-import 'package:flutter_plants/models/dispensary.dart';
-import 'package:flutter_plants/models/dispensary_products_response.dart';
-import 'package:flutter_plants/models/dispensary_response.dart';
-import 'package:flutter_plants/models/message_error.dart';
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/models/plant_response.dart';
-import 'package:flutter_plants/models/products.dart';
+import 'package:leafety/models/dispensary.dart';
+import 'package:leafety/models/dispensary_products_response.dart';
+import 'package:leafety/models/dispensary_response.dart';
+import 'package:leafety/models/message_error.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/models/plant_response.dart';
+import 'package:leafety/models/products.dart';
 
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_plants/global/environment.dart';
+import 'package:leafety/global/environment.dart';
 import 'package:flutter/material.dart';
 
 class DispensaryService with ChangeNotifier {

@@ -1,9 +1,8 @@
-import 'package:flutter_plants/global/environment.dart';
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/models/room_response.dart';
-import 'package:flutter_plants/models/rooms_response.dart';
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/shared_preferences/auth_storage.dart';
+import 'package:leafety/global/environment.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/models/room_response.dart';
+import 'package:leafety/models/rooms_response.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 import 'package:http/http.dart' as http;
 
 class RoomsApiProvider {

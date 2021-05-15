@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/models/usuario.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/models/usuario.dart';
 
 Image imageFromJson(String str) => Image.fromJson(json.decode(str));
 

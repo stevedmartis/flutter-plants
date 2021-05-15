@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/usuario.dart';
+import 'package:leafety/models/usuario.dart';
 
 UsuariosResponse usuariosResponseFromJson(String str) =>
     UsuariosResponse.fromJson(json.decode(str));

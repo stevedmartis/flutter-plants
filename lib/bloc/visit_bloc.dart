@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:flutter_plants/bloc/validators.dart';
-import 'package:flutter_plants/models/aires_response.dart';
-import 'package:flutter_plants/models/visit.dart';
-import 'package:flutter_plants/models/visits_response.dart';
-import 'package:flutter_plants/repository/aires_repository.dart';
-import 'package:flutter_plants/repository/visits_repository.dart';
+import 'package:leafety/bloc/validators.dart';
+import 'package:leafety/models/aires_response.dart';
+import 'package:leafety/models/visit.dart';
+import 'package:leafety/models/visits_response.dart';
+import 'package:leafety/repository/aires_repository.dart';
+import 'package:leafety/repository/visits_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class VisitBloc with Validators {

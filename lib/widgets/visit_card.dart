@@ -1,7 +1,7 @@
-import 'package:flutter_plants/models/plant.dart';
-import 'package:flutter_plants/models/visit.dart';
-import 'package:flutter_plants/theme/theme.dart';
-import 'package:flutter_plants/widgets/productProfile_card.dart';
+import 'package:leafety/models/plant.dart';
+import 'package:leafety/models/visit.dart';
+import 'package:leafety/theme/theme.dart';
+import 'package:leafety/widgets/productProfile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +40,7 @@ class _CardVisitState extends State<CardVisit> {
           Container(
               color: Colors.black,
               width: size.width,
-              height: size.height / 4.5,
+              height: size.height / 3,
               child: ColorFiltered(
                   colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.50), BlendMode.dstATop),

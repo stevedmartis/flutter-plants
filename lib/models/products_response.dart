@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:flutter_plants/models/products.dart';
+import 'package:leafety/models/products.dart';
 
 ProductsResponse productsResponseFromJson(String str) =>
     ProductsResponse.fromJson(json.decode(str));

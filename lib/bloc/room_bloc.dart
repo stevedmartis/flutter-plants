@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:flutter_plants/bloc/validators.dart';
-import 'package:flutter_plants/models/room.dart';
-import 'package:flutter_plants/models/rooms_response.dart';
-import 'package:flutter_plants/models/fromPlant.dart';
-import 'package:flutter_plants/repository/rooms_repository.dart';
+import 'package:leafety/bloc/validators.dart';
+import 'package:leafety/models/room.dart';
+import 'package:leafety/models/rooms_response.dart';
+import 'package:leafety/models/fromPlant.dart';
+import 'package:leafety/repository/rooms_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class RoomBloc with Validators {

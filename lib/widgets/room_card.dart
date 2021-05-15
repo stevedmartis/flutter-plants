@@ -1,4 +1,4 @@
-import 'package:flutter_plants/theme/theme.dart';
+import 'package:leafety/theme/theme.dart';
 
 /// This is the stateless widget that the main application instantiates.
 import 'package:flutter/material.dart';

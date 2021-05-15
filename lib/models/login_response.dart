@@ -3,7 +3,7 @@
 //  final loginResponse = loginResponseFromJson(jsonString);
 
 import 'dart:convert';
-import 'package:flutter_plants/models/profiles.dart';
+import 'package:leafety/models/profiles.dart';
 
 LoginResponse loginResponseFromJson(String str) =>
     LoginResponse.fromJson(json.decode(str));

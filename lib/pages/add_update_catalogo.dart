@@ -1,15 +1,15 @@
-import 'package:flutter_plants/bloc/catalogo_bloc.dart';
-import 'package:flutter_plants/bloc/provider.dart';
+import 'package:leafety/bloc/catalogo_bloc.dart';
+import 'package:leafety/bloc/provider.dart';
 
-import 'package:flutter_plants/helpers/mostrar_alerta.dart';
-import 'package:flutter_plants/models/catalogo.dart';
+import 'package:leafety/helpers/mostrar_alerta.dart';
+import 'package:leafety/models/catalogo.dart';
 
-import 'package:flutter_plants/pages/profile_page.dart';
+import 'package:leafety/pages/profile_page.dart';
 
-import 'package:flutter_plants/services/auth_service.dart';
-import 'package:flutter_plants/services/catalogo_service.dart';
+import 'package:leafety/services/auth_service.dart';
+import 'package:leafety/services/catalogo_service.dart';
 
-import 'package:flutter_plants/theme/theme.dart';
+import 'package:leafety/theme/theme.dart';
 
 import 'package:flutter/material.dart';
 
