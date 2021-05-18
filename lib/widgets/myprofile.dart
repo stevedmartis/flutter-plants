@@ -1477,7 +1477,12 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                                               ? currentTheme
                                                   .currentTheme.accentColor
                                               : Colors.grey),
-                                    )
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    if (loadinReport)
+                                      _buildReportLoadingWidget()
                                   ],
                                 ),
                               ),
@@ -1492,6 +1497,14 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Widget _buildReportLoadingWidget() {
+    return Container(
+        width: 20,
+        height: 20,
+        padding: EdgeInsets.all(0),
+        child: CircularProgressIndicator());
   }
 
   SliverToBoxAdapter makePrivateAccountMessage(context) {

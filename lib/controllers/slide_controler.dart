@@ -29,7 +29,6 @@ class _OnBoardingSelectorState extends State<OnBoardingSelector> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.only(top: 10),
           width: _size.width,
           height: _size.height / 1.4,
           child: PageView(
@@ -43,32 +42,37 @@ class _OnBoardingSelectorState extends State<OnBoardingSelector> {
             children: widget.pages,
           ),
         ),
-        Container(
-          padding: EdgeInsets.only(top: 0, bottom: 30),
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: _buildPageIndicator(),
+        Expanded(
+          child: Container(
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _buildPageIndicator(),
+            ),
           ),
         ),
-        Container(
-          alignment: Alignment.center,
-          padding:
-              EdgeInsets.only(left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
-          child: GestureDetector(
-              child: roundedRectButton("Entrar!", orangeGradients, false, true),
-              onTap: () => {Navigator.push(context, _createRuteLogIn())}),
+        Expanded(
+          child: Container(
+            alignment: Alignment.center,
+            //padding:EdgeInsets.only(left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
+            child: GestureDetector(
+                child:
+                    roundedRectButton("Entrar!", orangeGradients, false, true),
+                onTap: () => {Navigator.push(context, _createRuteLogIn())}),
+          ),
         ),
-        Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.only(top: 10, left: 60, right: 60),
-          child: GestureDetector(
-              child: Text(
-                'Registrarme',
-                style: TextStyle(color: Colors.white),
-              ),
-              onTap: () => {Navigator.push(context, _createRuteSignUp())}),
+        Expanded(
+          child: Container(
+            alignment: Alignment.center,
+            //padding: EdgeInsets.only(top: 10, left: 60, right: 60),
+            child: GestureDetector(
+                child: Text(
+                  'Registrarme',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onTap: () => {Navigator.push(context, _createRuteSignUp())}),
+          ),
         ),
       ],
     );

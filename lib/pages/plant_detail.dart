@@ -440,15 +440,16 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                     ? Stack(
                         children: [
                           Container(
-                              alignment: Alignment.center,
+                              margin: EdgeInsets.only(left: 20),
+                              alignment: Alignment.centerLeft,
                               child: Text(
                                   (visits.length == 1) ? 'Visita' : 'Visitas',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: (currentTheme.customTheme)
-                                        ? Colors.white54
-                                        : Colors.black54,
+                                        ? Colors.white
+                                        : Colors.black,
                                   ))),
                           Container(
                               margin:
@@ -951,7 +952,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
       String id, Color cardColor) {
     bool isIos = UniversalPlatform.isIOS;
     bool isAndroid = UniversalPlatform.isAndroid;
-    //bool isWeb = UniversalPlatform.isWeb;
+    bool isWeb = UniversalPlatform.isWeb;
 
     if (isAndroid) {
       return showDialog(
@@ -983,7 +984,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                   )
                 ],
               ));
-    } else if (isIos) {
+    } else if (isIos || isWeb) {
       showCupertinoDialog(
           context: context,
           builder: (_) => CupertinoAlertDialog(

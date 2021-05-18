@@ -643,8 +643,8 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: (currentTheme.customTheme)
-                                    ? Colors.white54
-                                    : Colors.black54,
+                                    ? Colors.white
+                                    : Colors.black,
                               ))),
                       Container(
                           padding: EdgeInsets.only(top: 20),
@@ -1020,7 +1020,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
       String id, Color cardColor) {
     bool isIos = UniversalPlatform.isIOS;
     bool isAndroid = UniversalPlatform.isAndroid;
-    //bool isWeb = UniversalPlatform.isWeb;
+    bool isWeb = UniversalPlatform.isWeb;
 
     if (isAndroid) {
       return showDialog(
@@ -1052,7 +1052,7 @@ class _ProductDetailPageState extends State<ProductProfileDetailPage>
                   )
                 ],
               ));
-    } else if (isIos) {
+    } else if (isIos || isWeb) {
       showCupertinoDialog(
           context: context,
           builder: (_) => CupertinoAlertDialog(

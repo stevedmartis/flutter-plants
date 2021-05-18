@@ -37,6 +37,16 @@
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
 
+
+       <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase.js"></script>
+<script>
+  var config = {
+    apiKey: "AIzaSyCcEnkeN8beCf2QfkUT7uF4YHF1Fixj5sI",
+    authDomain: "acquired-goods-313420.firebaseapp.com",
+  };
+  firebase.initializeApp(config);
+</script>
+
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('flutter-first-frame', function () {

@@ -46,14 +46,13 @@ class PrincipalMenu extends StatelessWidget {
 
                     Navigator.pushNamedAndRemoveUntil(
                         context, "login", (Route<dynamic> route) => false);
-
                     prefs.setToken = '';
                     AuthService.signOut();
                   },
                   child: ListTile(
                     leading: Icon(Icons.exit_to_app, color: accentColor),
                     title: Text(
-                      'Sign off',
+                      'Cerrar Sesión',
                       style: TextStyle(
                         color: (currentTheme.customTheme)
                             ? Colors.white

@@ -5,13 +5,16 @@ import 'package:universal_platform/universal_platform.dart';
 mostrarAlerta(BuildContext context, String titulo, String subtitulo) {
   bool isIos = UniversalPlatform.isIOS;
   bool isAndroid = UniversalPlatform.isAndroid;
-
+  bool isWeb = UniversalPlatform.isWeb;
   if (isAndroid) {
     return showDialog(
         context: context,
         builder: (_) => AlertDialog(
-              title: Text(titulo),
-              content: Text(subtitulo),
+              title: Text(
+                titulo,
+                style: TextStyle(color: Colors.white),
+              ),
+              content: Text(subtitulo, style: TextStyle(color: Colors.grey)),
               actions: <Widget>[
                 MaterialButton(
                     child: Text('Aceptar'),
@@ -20,7 +23,7 @@ mostrarAlerta(BuildContext context, String titulo, String subtitulo) {
                     onPressed: () => Navigator.pop(context))
               ],
             ));
-  } else if (isIos) {
+  } else if (isIos || isWeb) {
     showCupertinoDialog(
         context: context,
         builder: (_) => CupertinoAlertDialog(

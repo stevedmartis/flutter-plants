@@ -65,7 +65,7 @@ class AwsService with ChangeNotifier {
 
   Future<String> uploadImageAvatar(
       String uid, String fileName, String fileType, File image) async {
-    final url = Uri.https('${Environment.apiUrl}', '/api/aws/upload/avatar');
+    final url = '${Environment.apiUrl}/api/aws/upload/avatar';
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
@@ -76,7 +76,7 @@ class AwsService with ChangeNotifier {
       'uid': uid
     };
 
-    final imageUploadRequest = http.MultipartRequest('POST', url);
+    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
 
     final file = await http.MultipartFile.fromPath('file', image.path,
         contentType: MediaType(mimeType[0], mimeType[1]));
@@ -103,7 +103,7 @@ class AwsService with ChangeNotifier {
 
   Future<String> uploadImageHeader(
       String uid, String fileName, String fileType, File image) async {
-    final url = Uri.https('${Environment.apiUrl}', '/api/aws/upload/header');
+    final url = ('${Environment.apiUrl}api/aws/upload/header');
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
@@ -115,7 +115,7 @@ class AwsService with ChangeNotifier {
       'uid': uid
     };
 
-    final imageUploadRequest = http.MultipartRequest('POST', url);
+    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
 
     final file = await http.MultipartFile.fromPath('file', image.path,
         contentType: MediaType(mimeType[0], mimeType[1]));
@@ -145,8 +145,7 @@ class AwsService with ChangeNotifier {
 
   Future<String> uploadImageCoverVisit(
       String fileName, String fileType, File image) async {
-    final url =
-        Uri.https('${Environment.apiUrl}', '/api/aws/upload/cover-visit');
+    final url = ('${Environment.apiUrl}api/aws/upload/cover-visit');
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
@@ -157,7 +156,7 @@ class AwsService with ChangeNotifier {
       "x-token": token,
     };
 
-    final imageUploadRequest = http.MultipartRequest('POST', url);
+    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
 
     final file = await http.MultipartFile.fromPath('file', image.path,
         contentType: MediaType(mimeType[0], mimeType[1]));
@@ -186,8 +185,7 @@ class AwsService with ChangeNotifier {
 
   Future<String> updateImageCoverPlant(
       String fileName, String fileType, File image, String id) async {
-    final url = Uri.https(
-        '${Environment.apiUrl}', '/api/aws/upload/update-cover-plant');
+    final url = ('${Environment.apiUrl}/api/aws/upload/update-cover-plant');
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
@@ -199,7 +197,7 @@ class AwsService with ChangeNotifier {
       'id': id,
     };
 
-    final imageUploadRequest = http.MultipartRequest('POST', url);
+    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
 
     final file = await http.MultipartFile.fromPath('file', image.path,
         contentType: MediaType(mimeType[0], mimeType[1]));
@@ -228,8 +226,7 @@ class AwsService with ChangeNotifier {
 
   Future<String> updateImageCoverProduct(
       String fileName, String fileType, File image, String id) async {
-    final url = Uri.https(
-        '${Environment.apiUrl}', '/api/aws/upload/update-cover-product');
+    final url = ('${Environment.apiUrl}/api/aws/upload/update-cover-product');
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
@@ -241,7 +238,7 @@ class AwsService with ChangeNotifier {
       'id': id,
     };
 
-    final imageUploadRequest = http.MultipartRequest('POST', url);
+    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
 
     final file = await http.MultipartFile.fromPath('file', image.path,
         contentType: MediaType(mimeType[0], mimeType[1]));
@@ -270,8 +267,7 @@ class AwsService with ChangeNotifier {
 
   Future<String> uploadImageCoverPlant(
       String fileName, String fileType, File image) async {
-    final url =
-        Uri.https('${Environment.apiUrl}', '/api/aws/upload/cover-plant');
+    final url = ('${Environment.apiUrl}/api/aws/upload/cover-plant');
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
@@ -282,7 +278,7 @@ class AwsService with ChangeNotifier {
       "x-token": token,
     };
 
-    final imageUploadRequest = http.MultipartRequest('POST', url);
+    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
 
     final file = await http.MultipartFile.fromPath('file', image.path,
         contentType: MediaType(mimeType[0], mimeType[1]));
@@ -311,8 +307,7 @@ class AwsService with ChangeNotifier {
 
   Future<String> updateImageCoverVisit(
       String fileName, String fileType, File image, String id) async {
-    final url = Uri.https(
-        '${Environment.apiUrl}', '/api/aws/upload/update-cover-visit');
+    final url = ('${Environment.apiUrl}/api/aws/upload/update-cover-visit');
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
@@ -324,7 +319,7 @@ class AwsService with ChangeNotifier {
       'id': id,
     };
 
-    final imageUploadRequest = http.MultipartRequest('POST', url);
+    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
 
     final file = await http.MultipartFile.fromPath('file', image.path,
         contentType: MediaType(mimeType[0], mimeType[1]));

@@ -57,14 +57,14 @@ class OnboardingMessages extends StatelessWidget {
             children: [
               Container(
                 margin: EdgeInsets.only(top: _size.height / 20, left: 0),
-                width: 400,
+                width: _size.width,
                 height: _size.height / 2.2,
                 child: SvgPicture.asset("assets/images/intro-background.svg",
                     semanticsLabel: 'Acme Logo'),
               ),
               Container(
-                margin: EdgeInsets.only(top: _size.height / 6, left: 70),
-                width: 250,
+                margin: EdgeInsets.only(top: _size.height / 6, left: 0),
+                width: _size.width,
                 height: _size.height / 4,
                 child: SvgPicture.asset(image, semanticsLabel: 'Acme Logo'),
               ),

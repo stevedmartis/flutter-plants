@@ -190,7 +190,7 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
         isCbdChange ||
         isRatingChange;
 
-    final int plantOrigenInitialCount = plantsOrigen.length;
+    final int plantOrigenInitialCount = (plantsOrigen != null) ? plantsOrigen.length: 0;
 
     return SafeArea(
       child: Scaffold(

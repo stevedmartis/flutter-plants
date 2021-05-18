@@ -40,7 +40,7 @@ class _CardVisitState extends State<CardVisit> {
           Container(
               color: Colors.black,
               width: size.width,
-              height: size.height / 3,
+              height: size.height / 4,
               child: ColorFiltered(
                   colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.50), BlendMode.dstATop),

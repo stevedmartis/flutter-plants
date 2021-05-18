@@ -404,7 +404,7 @@ class _ProfileCardState extends State<ProfileCard> {
 
     bool isIos = UniversalPlatform.isIOS;
     bool isAndroid = UniversalPlatform.isAndroid;
-    //bool isWeb = UniversalPlatform.isWeb;
+    bool isWeb = UniversalPlatform.isWeb;
 
     if (isAndroid) {
       // Android
@@ -564,7 +564,7 @@ class _ProfileCardState extends State<ProfileCard> {
                       }),
                 ],
               ));
-    } else if (isIos) {
+    } else if (isIos || isWeb) {
       showCupertinoDialog(
           context: context,
           builder: (_) => CupertinoAlertDialog(
@@ -734,7 +734,7 @@ class _ProfileCardState extends State<ProfileCard> {
 
     bool isIos = UniversalPlatform.isIOS;
     bool isAndroid = UniversalPlatform.isAndroid;
-    //bool isWeb = UniversalPlatform.isWeb;
+    bool isWeb = UniversalPlatform.isWeb;
 //
     if (isAndroid) {
       // Android
@@ -770,7 +770,7 @@ class _ProfileCardState extends State<ProfileCard> {
                       ],
                     )
                   ]));
-    } else if (isIos) {
+    } else if (isIos || isWeb) {
       showCupertinoDialog(
           context: context,
           builder: (_) => CupertinoAlertDialog(

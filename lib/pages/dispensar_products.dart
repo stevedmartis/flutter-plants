@@ -462,7 +462,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
 
     bool isIos = UniversalPlatform.isIOS;
     bool isAndroid = UniversalPlatform.isAndroid;
-    // bool isWeb = UniversalPlatform.isWeb;
+    bool isWeb = UniversalPlatform.isWeb;
 
     if (isAndroid) {
       return showDialog(
@@ -497,7 +497,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                           }),
                 ],
               ));
-    } else if (isIos) {
+    } else if (isIos || isWeb) {
       showCupertinoDialog(
           context: context,
           builder: (_) => CupertinoAlertDialog(

@@ -29,16 +29,20 @@ class RegisterPage extends StatelessWidget {
 
     final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
 
+    final bool isCustom = Provider.of<ThemeChanger>(context).customTheme;
+
     changeStatusDark();
     return Scaffold(
         backgroundColor: currentTheme.scaffoldBackgroundColor,
         body: LayoutBuilder(builder: (context, constraints) {
           return AnimatedContainer(
+            width: _size.width,
+            height: _size.height,
             decoration: new BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xff1C181D),
-                  Colors.black,
+                  currentTheme.scaffoldBackgroundColor,
+                  currentTheme.scaffoldBackgroundColor,
                 ],
                 stops: [0, 1],
                 begin: Alignment(-0.00, -5.00),
@@ -49,84 +53,73 @@ class RegisterPage extends StatelessWidget {
             child: Center(
               child: Container(
                 constraints: BoxConstraints(maxWidth: 500, minWidth: 500),
-                width: _size.width,
-                height: _size.height,
                 child: GestureDetector(
                   onTap: () {
                     FocusScope.of(context).requestFocus(new FocusNode());
                   },
-                  child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: <Widget>[
-                            WavyHeader(),
-                            Container(
-                              margin: EdgeInsets.only(top: _size.height / 6),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 100,
-                                    height: 70,
-                                    child:
-                                        Image.asset('assets/icons/leafety.png'),
-                                    alignment: Alignment.topCenter,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 30),
-                                    child: Text(
-                                      'leafety',
-                                      style: TextStyle(
-                                          letterSpacing: -1.0,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                          fontSize: 40),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Center(child: _Form()),
-                          ],
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(top: _size.height / 40),
-                          child: Text(
-                            'o accede con:',
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: _size.height / 40),
-                          ),
-                          alignment: Alignment.center,
-                        ),
-                        Container(
-                            padding: EdgeInsets.only(top: 30),
-                            alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: <Widget>[
+                          WavyHeader(),
+                          Container(
+                            margin: EdgeInsets.only(top: _size.height / 5),
                             child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  _buildCircleGoogle(context),
-                                  _buildCircleApple(context),
-                                ])),
-                        Center(
-                          child: Container(
-                            padding: EdgeInsets.only(top: _size.height / 8),
-                            alignment: Alignment.bottomCenter,
-                            child: Labels(
-                              rute: 'login',
-                              title: '¿Ya tienes una cuenta?',
-                              subTitulo: 'Inicia sesión aquí!',
-                              colortText1: Colors.grey,
-                              colortText2: currentTheme.accentColor,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 70,
+                                  child:
+                                      Image.asset('assets/icons/leafety.png'),
+                                  alignment: Alignment.topCenter,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 20),
+                                  child: Text(
+                                    'leafety',
+                                    style: TextStyle(
+                                        letterSpacing: -1.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: (isCustom)
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: 40),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
+                          Center(child: _Form()),
+                        ],
+                      ),
+                      if (!loading)
+                        Expanded(
+                          child: Container(
+                              //padding: EdgeInsets.only(top: 30),
+                              alignment: Alignment.center,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    _buildCircleGoogle(context),
+                                    _buildCircleApple(context),
+                                  ])),
                         ),
-                      ],
-                    ),
+                      Expanded(
+                        child: Container(
+                          // margin: EdgeInsets.only(top: 50),
+                          child: Labels(
+                            rute: 'login',
+                            title: '¿Ya tienes una cuenta?',
+                            subTitulo: 'Inicia sesión aquí!',
+                            colortText1: Colors.grey,
+                            colortText2: currentTheme.accentColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -239,7 +232,7 @@ class __FormState extends State<_Form> {
     final _size = MediaQuery.of(context).size;
 
     return Container(
-      margin: EdgeInsets.only(top: _size.height / 3.5),
+      margin: EdgeInsets.only(top: _size.height / 3.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -257,8 +250,8 @@ class __FormState extends State<_Form> {
                   left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
               child: _createPassword(bloc)),
           Padding(
-              padding: EdgeInsets.only(
-                  left: 40.0, right: 20.0, top: 5.0, bottom: 5.0),
+              padding:
+                  EdgeInsets.only(left: 0.0, right: 0.0, top: 5.0, bottom: 5.0),
               child: _createButton(bloc)),
           //_createButton(bloc),
         ],
@@ -298,7 +291,7 @@ Widget roundedRectButton(
                   ),
                   child: Text(title,
                       style: TextStyle(
-                          color: (isBlack) ? Colors.black : Colors.white,
+                          color: (isBlack) ? Colors.black54 : Colors.white,
                           fontSize: _size.height / 40,
                           fontWeight: FontWeight.w500)),
                   padding: EdgeInsets.only(top: 16, bottom: 16),
