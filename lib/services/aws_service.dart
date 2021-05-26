@@ -103,7 +103,7 @@ class AwsService with ChangeNotifier {
 
   Future<String> uploadImageHeader(
       String uid, String fileName, String fileType, File image) async {
-    final url = ('${Environment.apiUrl}api/aws/upload/header');
+    final url = ('${Environment.apiUrl}/api/aws/upload/header');
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 
@@ -145,7 +145,7 @@ class AwsService with ChangeNotifier {
 
   Future<String> uploadImageCoverVisit(
       String fileName, String fileType, File image) async {
-    final url = ('${Environment.apiUrl}api/aws/upload/cover-visit');
+    final url = ('${Environment.apiUrl}/api/aws/upload/cover-visit');
 
     final mimeType = mime(image.path).split('/'); //image/jpeg
 

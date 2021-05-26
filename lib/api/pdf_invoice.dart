@@ -457,7 +457,7 @@ class PdfInvoiceApi {
       return [
         //item.description,
 
-        (item.subscriptor.name != null)
+        (item.subscriptor.name != null && item.subscriptor.name != "")
             ? '${item.subscriptor.name}'
             : '${item.subscriptor.user.username}', //miembro
         Utils.formatDate(item.subscription.updatedAt), // date suscription

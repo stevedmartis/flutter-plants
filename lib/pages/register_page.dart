@@ -588,6 +588,8 @@ _signInGoogle(BuildContext context) async {
     socketService.connect();
     Navigator.of(context)
         .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
+
+    loading = false;
   } else {
     loading = false;
 

@@ -121,7 +121,11 @@ class CoverImageProductPageState extends State<CoverImageProductPage> {
     if (pickedFile != null) {
       imageCover = File(pickedFile.path);
 
+      print(pickedFile.path);
+
       final fileType = pickedFile.path.split('.');
+
+      print(fileType);
 
       setState(() {
         //  plantBlo

@@ -44,10 +44,10 @@ class PrincipalMenu extends StatelessWidget {
                   onTap: () {
                     socketService.disconnect();
 
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "login", (Route<dynamic> route) => false);
                     prefs.setToken = '';
                     AuthService.signOut();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "login", (Route<dynamic> route) => false);
                   },
                   child: ListTile(
                     leading: Icon(Icons.exit_to_app, color: accentColor),

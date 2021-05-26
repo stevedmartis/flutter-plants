@@ -40,7 +40,7 @@ class _CardVisitState extends State<CardVisit> {
           Container(
               color: Colors.black,
               width: size.width,
-              height: size.height / 4,
+              height: size.height / 5,
               child: ColorFiltered(
                   colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.50), BlendMode.dstATop),
@@ -103,7 +103,7 @@ class _CardVisitState extends State<CardVisit> {
                     end: Alignment.topCenter,
                   ),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,

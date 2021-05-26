@@ -70,6 +70,7 @@ class AuthService with ChangeNotifier {
 
   set profile(Profiles valor) {
     this._profile = valor;
+
     notifyListeners();
   }
 
@@ -102,6 +103,8 @@ class AuthService with ChangeNotifier {
       this.profile = loginResponse.profile;
 
       prefs.setToken = loginResponse.token;
+
+      prefs.setCredentialEmail = email;
 
       return true;
     } else {
@@ -190,6 +193,7 @@ class AuthService with ChangeNotifier {
       this.profile = loginResponse.profile;
 
       prefs.setToken = loginResponse.token;
+      prefs.setCredentialEmail = email;
 
       print(prefs.token);
       return true;

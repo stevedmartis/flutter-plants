@@ -177,7 +177,7 @@ class _CollapsingListState extends State<CollapsingList>
         CupertinoSliverRefreshControl(onRefresh: () => pullToRefreshData()),
         makeHeaderSpacerShort(context),
         SliverFixedExtentList(
-          itemExtent: size.height / 4.5,
+          itemExtent: size.height / 5.0,
           delegate: SliverChildListDelegate(
             [FadeIn(child: BannerSlide())],
           ),
@@ -660,7 +660,7 @@ Widget _buildWidgetVisits(List<Visit> visits, context) {
   return (visits.length > 0)
       ? CarouselSlider.builder(
           options: CarouselOptions(
-            height: size.height / 3,
+            height: size.height / 4.0,
             viewportFraction: 0.80,
             initialPage: 0,
             enableInfiniteScroll: false,

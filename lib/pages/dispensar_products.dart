@@ -376,6 +376,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                           ? showAlertDispesary(
                               'Entregar Pedido',
                               'Se Cambiara el estado a Entregado y se notificara al miembro.',
+                              'Entregar',
                               false,
                               true)
                           : (loadingData)
@@ -384,6 +385,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                       showAlertDispesary(
                                           'Crear Pedido',
                                           'Se Creara con estado en curso y se notificara al miembro',
+                                          'Crear',
                                           false,
                                           false)
                                     }
@@ -394,6 +396,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                                       ? showAlertDispesary(
                                           'Editar Pedido',
                                           'Se Editara y se notificara al miembro',
+                                          'Editar',
                                           true,
                                           false)
                                       : null
@@ -455,40 +458,47 @@ class _DispensarProductPageState extends State<DispensarProductPage>
     );
   }
 
-  showAlertDispesary(
-      String title, String subTitle, bool isEdit, bool isDelivered) {
-    final currentTheme =
-        Provider.of<ThemeChanger>(context, listen: false).currentTheme;
+  showAlertDispesary(String title, String subTitle, String action, bool isEdit,
+      bool isDelivered) {
+    final currentTheme = Provider.of<ThemeChanger>(context, listen: false);
 
     bool isIos = UniversalPlatform.isIOS;
     bool isAndroid = UniversalPlatform.isAndroid;
     bool isWeb = UniversalPlatform.isWeb;
 
-    if (isAndroid) {
+    if (!isAndroid) {
       return showDialog(
           context: context,
           builder: (_) => AlertDialog(
-                backgroundColor: currentTheme.cardColor,
-                title: Text(
-                  title,
-                  style: TextStyle(color: Colors.white),
-                ),
+                backgroundColor: currentTheme.currentTheme.cardColor,
+                title: Text(title,
+                    style: TextStyle(
+                        color: (currentTheme.customTheme)
+                            ? Colors.white
+                            : Colors.black)),
                 content: Text(
                   subTitle,
-                  style: TextStyle(color: Colors.white54),
+                  style: TextStyle(
+                      color: (currentTheme.customTheme)
+                          ? Colors.white54
+                          : Colors.black54),
                 ),
                 actions: <Widget>[
                   TextButton(
                     child: Text(
                       'Cancelar',
-                      style: TextStyle(color: Colors.white54),
+                      style: TextStyle(
+                          color: (currentTheme.customTheme)
+                              ? Colors.white54
+                              : Colors.black54),
                     ),
                     onPressed: () => Navigator.of(context).pop(false),
                   ),
                   TextButton(
                       child: Text(
-                        'Aceptar',
-                        style: TextStyle(color: currentTheme.accentColor),
+                        action,
+                        style: TextStyle(
+                            color: currentTheme.currentTheme.accentColor),
                       ),
                       onPressed: () => {
                             (!isDelivered)
@@ -497,7 +507,7 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                           }),
                 ],
               ));
-    } else if (isIos || isWeb) {
+    } else if (!isIos || isWeb) {
       showCupertinoDialog(
           context: context,
           builder: (_) => CupertinoAlertDialog(
@@ -521,8 +531,9 @@ class _DispensarProductPageState extends State<DispensarProductPage>
                   CupertinoDialogAction(
                     isDefaultAction: true,
                     child: Text(
-                      'Aceptar',
-                      style: TextStyle(color: currentTheme.accentColor),
+                      action,
+                      style: TextStyle(
+                          color: currentTheme.currentTheme.accentColor),
                     ),
                     onPressed: () => {
                       (!isDelivered)

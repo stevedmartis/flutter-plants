@@ -4,6 +4,7 @@ import 'package:leafety/helpers/ui_overlay_style.dart';
 import 'package:leafety/pages/principal_page.dart';
 import 'package:leafety/pages/register_page.dart';
 import 'package:leafety/services/socket_service.dart';
+import 'package:leafety/shared_preferences/auth_storage.dart';
 import 'package:leafety/theme/theme.dart';
 import 'package:leafety/widgets/clip_oval.dart';
 import 'package:leafety/widgets/header_curve_signin.dart';
@@ -152,7 +153,6 @@ class _LoginPageState extends State<LoginPage> {
             color: currentTheme.currentTheme.cardColor, // button color
             child: InkWell(
               onTap: () {
-                loading = true;
                 _signInGoogle(context);
               },
               splashColor: Colors.white, // inkwell color
@@ -236,10 +236,15 @@ class _LoginPageState extends State<LoginPage> {
     final authService = Provider.of<AuthService>(context, listen: false);
     final signInGoogleOk = await authService.signInWitchGoogle();
 
+    setState(() {
+      loading = true;
+    });
+
     if (signInGoogleOk) {
       socketService.connect();
       Navigator.of(context)
           .pushAndRemoveUntil(_createRute(), (Route<dynamic> route) => false);
+      loading = false;
     } else {
       loading = false;
       // Mostara alerta
@@ -273,6 +278,17 @@ class _Form extends StatefulWidget {
 }
 
 class __FormState extends State<_Form> {
+  final prefs = new AuthUserPreferences();
+
+  final emailCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    emailCtrl.text = prefs.credentialEmail;
+
+    super.initState();
+  }
+
   //final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
 
@@ -395,6 +411,7 @@ class __FormState extends State<_Form> {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           child: TextField(
+            controller: emailCtrl,
             style: TextStyle(
               color: (currentTheme.customTheme) ? Colors.white : Colors.black,
             ),
@@ -428,14 +445,19 @@ class __FormState extends State<_Form> {
   }
 
   Widget _createPassword(LoginBloc bloc) {
+    final passCtrl = TextEditingController();
+
     return StreamBuilder(
       stream: bloc.passwordStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context);
 
+        passCtrl.text = snapshot.data;
+
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           child: TextField(
+            controller: passCtrl,
             style: TextStyle(
               color: (currentTheme.customTheme) ? Colors.white : Colors.black,
             ),

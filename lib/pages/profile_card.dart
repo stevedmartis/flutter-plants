@@ -7,6 +7,7 @@ import 'package:leafety/models/subscribe.dart';
 import 'package:leafety/pages/chat_page.dart';
 import 'package:leafety/pages/recipe_image_page.dart';
 import 'package:leafety/pages/register_page.dart';
+import 'package:leafety/providers/subscription_provider.dart';
 import 'package:leafety/services/auth_service.dart';
 import 'package:leafety/services/aws_service.dart';
 import 'package:leafety/services/chat_service.dart';
@@ -76,6 +77,8 @@ class _ProfileCardState extends State<ProfileCard> {
   bool isUploadRecipe = false;
 
   SocketService socketService;
+
+  final subscriptionApiProvider = new SubscriptionApiProvider();
 
   final subscriptionBlocUser = new SubscribeBloc();
 
@@ -158,30 +161,79 @@ class _ProfileCardState extends State<ProfileCard> {
                                   )))),
                     )))),
         (!widget.isUserAuth && profileMyUser.isClub && !profileUser.isClub)
-            ? FadeIn(
-                duration: Duration(milliseconds: 500),
-                child: Container(
-                    //top: size.height / 3.5,
+            ? StreamBuilder(
+                stream: subscriptionBlocUser.subscription.stream,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  isData = snapshot.hasData;
 
-                    margin: EdgeInsets.only(
-                        top: size.height / 10.5,
-                        left: size.width / 1.8,
-                        right: size.width / 20),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: ButtonSubEditProfile(
-                          isSub: true,
-                          color: currentTheme.currentTheme.accentColor,
-                          textColor: currentTheme.currentTheme.accentColor,
-                          text: 'DISPENSAR',
-                          onPressed: () {
-                            Navigator.of(context).push(createRouteDispensar(
-                                profileUser,
-                                dispensary,
-                                widget.productsDispensaryBloc));
-                          }),
-                    )),
-              )
+                  if (isData) {
+                    subscription = snapshot.data;
+
+                    if (subscription.subscribeActive &&
+                        subscription.subscribeApproved) {
+                      return FadeIn(
+                        duration: Duration(milliseconds: 500),
+                        child: Container(
+                            //top: size.height / 3.5,
+
+                            margin: EdgeInsets.only(
+                                top: size.height / 10.5,
+                                left: size.width / 1.8,
+                                right: size.width / 20),
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: ButtonSubEditProfile(
+                                  isSub: true,
+                                  color: currentTheme.currentTheme.accentColor,
+                                  textColor:
+                                      currentTheme.currentTheme.accentColor,
+                                  text: 'DISPENSAR',
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        createRouteDispensar(
+                                            profileUser,
+                                            dispensary,
+                                            widget.productsDispensaryBloc));
+                                  }),
+                            )),
+                      );
+                    } else if (subscription.subscribeActive &&
+                        !subscription.subscribeApproved) {
+                      return FadeIn(
+                        duration: Duration(milliseconds: 500),
+                        child: Container(
+                          //top: size.height / 3.5,
+
+                          margin: EdgeInsets.only(
+                              top: size.height / 10.5,
+                              left: size.width / 1.9,
+                              right: size.width / 20),
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: ButtonSubEditProfile(
+                                color: (currentTheme.customTheme)
+                                    ? currentTheme
+                                        .currentTheme.scaffoldBackgroundColor
+                                    : Colors.black54,
+                                textColor: Colors.white,
+                                text: 'Pendiente',
+                                onPressed: () {
+                                  solicitudPendiente(
+                                    context,
+                                    currentTheme.currentTheme.accentColor,
+                                    awsService.isUploadRecipe,
+                                  );
+                                }),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  } else {
+                    return Container();
+                  }
+                })
             : Container(),
         (widget.isUserAuth)
             ? FadeIn(
@@ -292,11 +344,11 @@ class _ProfileCardState extends State<ProfileCard> {
                     ),
                   );
                 } else if (loadSub &&
-                    !widget.isUserAuth &&
-                    imageRecipe &&
-                    profileUser.isClub &&
+                        !widget.isUserAuth &&
+                        imageRecipe &&
+                        profileUser.isClub ||
                     !subscription.subscribeActive &&
-                    !subscription.subscribeApproved) {
+                        !subscription.subscribeApproved) {
                   return FadeIn(
                     duration: Duration(milliseconds: 500),
                     child: Container(
@@ -456,8 +508,8 @@ class _ProfileCardState extends State<ProfileCard> {
                             ],
                           );
                         } else if (isHasData &&
-                            imageRecipe &&
-                            !snapshot.data.subscribeApproved &&
+                                imageRecipe &&
+                                !snapshot.data.subscribeApproved ||
                             !snapshot.data.subscribeActive) {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
@@ -798,6 +850,133 @@ class _ProfileCardState extends State<ProfileCard> {
                               'Cancelar',
                               style: TextStyle(
                                   color: Colors.white54, fontSize: 15),
+                            ),
+                            onPressed: () => Navigator.pop(context)),
+                      ],
+                    )
+                  ]));
+    }
+  }
+
+  solicitudPendiente(context, color, bool isUploadRecipe) {
+    /*   const List<Color> orangeGradients = [
+      Color(0xff34EC9C),
+      Color(0xff1C3041),
+      Color(0xff34EC9C),
+    ]; */
+
+    void approveSubscription() async {
+      final res = await this
+          .subscriptionApiProvider
+          .approveSubscription(widget.profile.subId);
+      if (res) {
+        subscriptionBloc.getSubscriptionsPending(profileMyUser.user.uid);
+
+        subscriptionBlocUser.getSubscription(
+            profileMyUser.user.uid, widget.profile.user.uid);
+
+        this.socketService.emit('principal-notification',
+            {'by': profileMyUser.user.uid, 'for': widget.profile.user.uid});
+
+        Navigator.pop(context);
+        _showSnackBar(
+            context, 'Suscripción Aprobada, Agregado en "Miembros" 👍');
+      }
+    }
+
+    _deleteSubscription() async {
+      final res = await this
+          .subscriptionApiProvider
+          .disapproveSubscription(widget.profile.subId);
+      if (res) {
+        setState(() {
+          subscriptionBloc.getSubscriptionsPending(profileMyUser.user.uid);
+          subscriptionBlocUser.getSubscription(
+              profileMyUser.user.uid, widget.profile.user.uid);
+
+          Navigator.pop(context);
+          Navigator.pop(context);
+
+          _showSnackBar(context, 'Se Rechazo la solicitud');
+        });
+      }
+    }
+
+    bool isIos = UniversalPlatform.isIOS;
+    bool isAndroid = UniversalPlatform.isAndroid;
+    bool isWeb = UniversalPlatform.isWeb;
+//
+    if (isAndroid) {
+      // Android
+      return showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                  title: Container(
+                    child: Text(
+                      'Solicitud Pendiente',
+                      style: TextStyle(color: Colors.white54, fontSize: 15),
+                    ),
+                  ),
+                  content: Text(
+                      '¿Que deseas hacer con esta solicitud de suscripción?',
+                      style: TextStyle(color: Colors.grey)),
+                  actions: <Widget>[
+                    Column(
+                      children: [
+                        MaterialButton(
+                            child: Text('Aceptar'),
+                            elevation: 5,
+                            textColor: color,
+                            onPressed: () => {approveSubscription()}),
+                        MaterialButton(
+                            child: Text('Rechazar'),
+                            elevation: 5,
+                            textColor: Colors.red,
+                            onPressed: () => _deleteSubscription()),
+                        MaterialButton(
+                            child: Text('Cancelar'),
+                            elevation: 5,
+                            textColor: Colors.grey,
+                            onPressed: () => Navigator.pop(context))
+                      ],
+                    )
+                  ]));
+    } else if (isIos || isWeb) {
+      showCupertinoDialog(
+          context: context,
+          builder: (_) => CupertinoAlertDialog(
+                  title: Container(
+                    child: Text(
+                      'Solicitud Pendiente',
+                      style: TextStyle(color: Colors.white54, fontSize: 15),
+                    ),
+                  ),
+                  content: Text(
+                      '¿Que deseas hacer con esta solicitud de suscripción?',
+                      style: TextStyle(color: Colors.grey)),
+                  actions: <Widget>[
+                    Column(
+                      children: [
+                        CupertinoDialogAction(
+                            isDefaultAction: true,
+                            child: Text(
+                              'APROBAR',
+                              style: TextStyle(color: color, fontSize: 15),
+                            ),
+                            onPressed: () => {approveSubscription()}),
+                        CupertinoDialogAction(
+                            isDestructiveAction: true,
+                            child: Text(
+                              'RECHAZAR',
+                              style: TextStyle(color: Colors.red, fontSize: 15),
+                            ),
+                            onPressed: () => _deleteSubscription()),
+                        CupertinoDialogAction(
+                            isDestructiveAction: true,
+                            child: Text(
+                              'Cancelar',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 15),
                             ),
                             onPressed: () => Navigator.pop(context)),
                       ],
