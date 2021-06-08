@@ -6,29 +6,18 @@ import 'package:leafety/services/socket_service.dart';
 import 'package:leafety/services/auth_service.dart';
 
 import 'package:leafety/pages/principal_page.dart';
-import 'package:upgrader/upgrader.dart';
 
 class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Upgrader().clearSavedSettings(); // Remove this for release builds
-
-    final appcastURL =
-        'https://github.com/DavidMarsCodes/flutter-design-pro-eccomerce/blob/master/appcast_leafety';
-    final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
-
     return Scaffold(
-      body: UpgradeAlert(
-        appcastConfig: cfg,
-        debugLogging: true,
-        child: FutureBuilder(
-          future: checkLoginState(context),
-          builder: (context, snapshot) {
-            return Center(
-              child: _buildLoadingWidget(context),
-            );
-          },
-        ),
+      body: FutureBuilder(
+        future: checkLoginState(context),
+        builder: (context, snapshot) {
+          return Center(
+            child: _buildLoadingWidget(context),
+          );
+        },
       ),
     );
   }

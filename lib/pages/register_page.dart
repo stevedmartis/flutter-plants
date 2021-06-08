@@ -271,43 +271,41 @@ Widget roundedRectButton(
   return Builder(builder: (BuildContext context) {
     final _size = MediaQuery.of(context).size;
 
-    return Padding(
-      padding: EdgeInsets.only(top: 0),
-      child: Stack(
-        alignment: Alignment(1.0, 0.0),
-        children: <Widget>[
-          (loading)
-              ? _buildLoadingWidget()
-              : Container(
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width / 1.7,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
-                    gradient: LinearGradient(
-                        colors: gradient,
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight),
-                  ),
-                  child: Text(title,
-                      style: TextStyle(
-                          color: (isBlack) ? Colors.black54 : Colors.white,
-                          fontSize: _size.height / 40,
-                          fontWeight: FontWeight.w500)),
-                  padding: EdgeInsets.only(top: 16, bottom: 16),
+    return Stack(
+      alignment: Alignment(1.0, 0.0),
+      children: <Widget>[
+        (loading)
+            ? _buildLoadingWidget()
+            : Container(
+                alignment: Alignment.center,
+                width: _size.width / 1.7,
+                height: _size.height / 12,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  gradient: LinearGradient(
+                      colors: gradient,
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight),
                 ),
-          Visibility(
-            visible: isEndIconVisible,
-            child: Padding(
-                padding: EdgeInsets.only(right: 10),
-                child: ImageIcon(
-                  AssetImage("assets/ic_forward.png"),
-                  size: 30,
-                  color: Colors.white,
-                )),
-          ),
-        ],
-      ),
+                child: Text(title,
+                    style: TextStyle(
+                        color: (isBlack) ? Colors.black54 : Colors.white,
+                        fontSize: _size.height / 40,
+                        fontWeight: FontWeight.w500)),
+                padding: EdgeInsets.only(top: 16, bottom: 16),
+              ),
+        Visibility(
+          visible: isEndIconVisible,
+          child: Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: ImageIcon(
+                AssetImage("assets/ic_forward.png"),
+                size: 30,
+                color: Colors.white,
+              )),
+        ),
+      ],
     );
   });
 }

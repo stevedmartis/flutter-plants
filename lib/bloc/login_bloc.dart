@@ -29,7 +29,19 @@ class LoginBloc with Validators {
   Function(String) get changeLastName => _lastNameController.sink.add;
 
   // Obtener el último valor ingresado a los streams
+
+  set setPassword(String value) {
+    _passwordController.value = value;
+    _passwordController.sink.add(value);
+  }
+
+  set setEmail(String value) {
+    _emailController.value = value;
+    _emailController.sink.add(value);
+  }
+
   String get email => _emailController.value;
+
   String get password => _passwordController.value;
   String get username => _usernameController.value;
   String get name => _nameController.value;

@@ -106,6 +106,8 @@ class AuthService with ChangeNotifier {
 
       prefs.setCredentialEmail = email;
 
+      prefs.setCredentialPassword = password;
+
       return true;
     } else {
       return false;
@@ -194,6 +196,7 @@ class AuthService with ChangeNotifier {
 
       prefs.setToken = loginResponse.token;
       prefs.setCredentialEmail = email;
+      prefs.setCredentialPassword = password;
 
       print(prefs.token);
       return true;
@@ -266,7 +269,6 @@ class AuthService with ChangeNotifier {
     var urlFinal = ('${Environment.apiUrl}/api/login/renew');
 
     final token = prefs.token;
-    print('hellor' + token);
 
     final resp = await http.get(Uri.parse(urlFinal),
         headers: {'Content-Type': 'application/json', 'x-token': token});

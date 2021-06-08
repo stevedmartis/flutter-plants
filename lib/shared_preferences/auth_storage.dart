@@ -32,6 +32,14 @@ class AuthUserPreferences {
     return _prefs.getString('email') ?? "";
   }
 
+  set setCredentialPassword(String password) {
+    _prefs.setString('password', password);
+  }
+
+  get credentialPassword {
+    return _prefs.getString('password') ?? "";
+  }
+
   // GET y SET del Genero
   get genero {
     return _prefs.getInt('genero') ?? 1;

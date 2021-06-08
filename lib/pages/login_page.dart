@@ -277,25 +277,37 @@ class _Form extends StatefulWidget {
   __FormState createState() => __FormState();
 }
 
+final bloc = LoginBloc();
+
 class __FormState extends State<_Form> {
   final prefs = new AuthUserPreferences();
 
   final emailCtrl = TextEditingController();
+  final passCtrl = TextEditingController();
+  bool showCounterPass = false;
 
   @override
   void initState() {
-    emailCtrl.text = prefs.credentialEmail;
+    if (prefs.credentialEmail != "") {
+      setState(() {
+        emailCtrl.text = prefs.credentialEmail;
+        bloc.setEmail = prefs.credentialEmail;
+
+        (prefs.credentialPassword != "")
+            ? showCounterPass = false
+            : showCounterPass = true;
+        bloc.setPassword = prefs.credentialPassword;
+        passCtrl.text = prefs.credentialPassword;
+      });
+    }
 
     super.initState();
   }
 
   //final emailCtrl = TextEditingController();
-  final passCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final bloc = CustomProvider.of(context);
-
     //final currentTheme = Provider.of<ThemeChanger>(context).currentTheme;
     final _size = MediaQuery.of(context).size;
 
@@ -308,21 +320,21 @@ class __FormState extends State<_Form> {
           Padding(
               padding: EdgeInsets.only(
                   left: 40.0, right: 20.0, top: 10.0, bottom: 10.0),
-              child: _createEmail(bloc)),
+              child: _createEmail()),
           Padding(
               padding: EdgeInsets.only(
                   left: 40.0, right: 20.0, top: 10.0, bottom: 10.0),
-              child: _createPassword(bloc)),
+              child: _createPassword()),
           Padding(
               padding:
                   EdgeInsets.only(left: 0.0, right: 0.0, top: 5.0, bottom: 5.0),
-              child: _createButton(bloc)),
+              child: _createButton()),
         ],
       ),
     );
   }
 
-  Widget _createButton(LoginBloc bloc) {
+  Widget _createButton() {
     return StreamBuilder(
       stream: bloc.formValidStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -401,7 +413,7 @@ class __FormState extends State<_Form> {
     });
   }
 
-  Widget _createEmail(LoginBloc bloc) {
+  Widget _createEmail() {
     return StreamBuilder(
       stream: bloc.emailStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -444,19 +456,20 @@ class __FormState extends State<_Form> {
     );
   }
 
-  Widget _createPassword(LoginBloc bloc) {
-    final passCtrl = TextEditingController();
-
+  Widget _createPassword() {
     return StreamBuilder(
       stream: bloc.passwordStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         final currentTheme = Provider.of<ThemeChanger>(context);
 
-        passCtrl.text = snapshot.data;
-
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           child: TextField(
+            onTap: () => {
+              setState(() {
+                showCounterPass = true;
+              })
+            },
             controller: passCtrl,
             style: TextStyle(
               color: (currentTheme.customTheme) ? Colors.white : Colors.black,
@@ -483,7 +496,7 @@ class __FormState extends State<_Form> {
                     color: (currentTheme.customTheme)
                         ? Colors.white54
                         : Colors.black54),
-                counterText: snapshot.data,
+                counterText: (showCounterPass) ? snapshot.data : '',
                 counterStyle: TextStyle(
                     color: (currentTheme.customTheme)
                         ? Colors.white54
