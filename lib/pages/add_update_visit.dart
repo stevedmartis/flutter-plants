@@ -745,7 +745,7 @@ class AddUpdateVisitPageState extends State<AddUpdateVisitPage> {
                       color: currentTheme.currentTheme.accentColor, width: 2.0),
                 ),
                 hintText: '',
-                labelText: 'Electro conductor',
+                labelText: 'Electro conductividad',
                 //counterText: snapshot.data,
                 errorText: snapshot.error),
 

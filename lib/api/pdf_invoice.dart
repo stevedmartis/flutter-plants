@@ -447,7 +447,7 @@ class PdfInvoiceApi {
   static Widget buildSubscriptionsDispensaries(Report report) {
     final headers = [
       'Miembro',
-      'Suscripción',
+      'Creación',
       'G.Receta',
       'Estado',
       'Entrega',
@@ -460,7 +460,7 @@ class PdfInvoiceApi {
         (item.subscriptor.name != null && item.subscriptor.name != "")
             ? '${item.subscriptor.name}'
             : '${item.subscriptor.user.username}', //miembro
-        Utils.formatDate(item.subscription.updatedAt), // date suscription
+        Utils.formatDate(item.createdAt), // date suscription
         item.gramsRecipe, // gramos receta
 
         (item.isActive && !item.isDelivered) // estado

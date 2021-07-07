@@ -316,7 +316,7 @@ class _CardDispensaryProductsState extends State<CardDispensaryProducts> {
   }
 
   Widget dateUpdated() {
-    final DateTime dateUpdated = widget.dispensaryProducts.updatedAt;
+    final DateTime dateUpdated = widget.dispensaryProducts.createdAt;
     final currentTheme = Provider.of<ThemeChanger>(context);
 
     final DateFormat formatter = DateFormat('dd MMMM');

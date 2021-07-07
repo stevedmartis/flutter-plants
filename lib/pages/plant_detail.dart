@@ -164,251 +164,314 @@ class _PlantDetailPageState extends State<PlantDetailPage>
     setState(() {
       plant = (plantService.plant != null) ? plantService.plant : widget.plant;
     });
+    Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
-        backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
-        // bottomNavigationBar: BottomNavigation(isVisible: _isVisible),
-        body: NotificationListener<ScrollEndNotification>(
-          onNotification: (_) {
-            if (visits.length == 0) _snapAppbar();
-            if (_scrollController.offset >= 250) {}
-            return false;
-          },
-          child: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).requestFocus(new FocusNode());
-              },
-              child: CustomScrollView(
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  controller: _scrollController,
-                  slivers: <Widget>[
-                    SliverAppBar(
-                      stretch: true,
-                      stretchTriggerOffset: 250.0,
+      backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
+      body: LayoutBuilder(builder: (context, constraints) {
+        return Center(
+          child: AnimatedContainer(
+            color: currentTheme.currentTheme.scaffoldBackgroundColor,
+            padding:
+                constraints.maxWidth < 500 ? EdgeInsets.zero : EdgeInsets.zero,
+            duration: Duration(milliseconds: 500),
 
-                      backgroundColor: _showTitle
-                          ? (currentTheme.customTheme)
-                              ? Colors.black
-                              : Colors.white
-                          : currentTheme.currentTheme.scaffoldBackgroundColor,
-                      leading: Container(
-                          margin: EdgeInsets.only(left: 15),
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0)),
-                            child: CircleAvatar(
-                                child: IconButton(
-                                    icon: Icon(Icons.arrow_back_ios,
-                                        size: 20,
-                                        color: (_showTitle)
-                                            ? currentTheme
-                                                .currentTheme.accentColor
-                                            : Colors.white),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    }),
-                                backgroundColor: _showTitle
-                                    ? (currentTheme.customTheme)
-                                        ? Colors.black54
-                                        : Colors.white54
-                                    : Colors.black54),
-                          )),
+            child: Container(
+                // padding: EdgeInsets.only(top: _size.height / 15),
+                constraints: BoxConstraints(maxWidth: 500, minWidth: 500),
+                width: _size.width,
+                height: _size.height,
+                child: Scaffold(
+                    backgroundColor:
+                        currentTheme.currentTheme.scaffoldBackgroundColor,
+                    // bottomNavigationBar: BottomNavigation(isVisible: _isVisible),
+                    body: NotificationListener<ScrollEndNotification>(
+                      onNotification: (_) {
+                        if (visits.length == 0) _snapAppbar();
+                        if (_scrollController.offset >= 250) {}
+                        return false;
+                      },
+                      child: GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                          },
+                          child: CustomScrollView(
+                              physics: const BouncingScrollPhysics(
+                                  parent: AlwaysScrollableScrollPhysics()),
+                              controller: _scrollController,
+                              slivers: <Widget>[
+                                SliverAppBar(
+                                  stretch: true,
+                                  stretchTriggerOffset: 250.0,
 
-                      actions: [
-                        (widget.isUserAuth)
-                            ? Container(
-                                margin: EdgeInsets.only(left: 0, right: 0),
-                                child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20.0)),
-                                  child: CircleAvatar(
-                                      child: PopupMenuButton<String>(
-                                        icon: FaIcon(FontAwesomeIcons.ellipsisV,
-                                            size: 20,
-                                            color: (_showTitle)
-                                                ? currentTheme
-                                                    .currentTheme.accentColor
-                                                : Colors.white),
-                                        onSelected: (String result) {
-                                          switch (result) {
-                                            case '1':
-                                              aws.isUploadImagePlant = false;
-                                              visitService.visit = visit;
-                                              Navigator.of(context).push(
-                                                  createRouteNewVisit(visit,
-                                                      widget.plant.id, false));
-
-                                              break;
-                                            case '2':
-                                              aws.isUploadImagePlant = false;
-                                              plantService.plant = plant;
-                                              Navigator.of(context).push(
-                                                  createRouteEditPlant(
-                                                      widget.plant));
-                                              break;
-                                            case '3':
-                                              confirmDelete(
-                                                  context,
-                                                  'Confirmar',
-                                                  'Desea eliminar la Planta y todas sus visitas?',
-                                                  plant.id,
-                                                  currentTheme
-                                                      .currentTheme.cardColor);
-                                              break;
-                                            default:
-                                          }
-                                        },
-                                        itemBuilder: (BuildContext context) =>
-                                            <PopupMenuEntry<String>>[
-                                          PopupMenuItem<String>(
-                                              value: '1',
-                                              child: Row(
-                                                children: [
-                                                  FaIcon(FontAwesomeIcons.eye,
-                                                      size: 20,
-                                                      color: currentTheme
-                                                          .currentTheme
-                                                          .accentColor),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    'Visitar',
-                                                    style: TextStyle(
-                                                        color: currentTheme
-                                                            .currentTheme
-                                                            .accentColor),
-                                                  ),
-                                                ],
-                                              )),
-                                          PopupMenuItem<String>(
-                                              value: '2',
-                                              child: Row(
-                                                children: [
-                                                  FaIcon(
-                                                    FontAwesomeIcons.edit,
-                                                    color: currentTheme
-                                                        .currentTheme
-                                                        .accentColor,
+                                  backgroundColor: _showTitle
+                                      ? (currentTheme.customTheme)
+                                          ? Colors.black
+                                          : Colors.white
+                                      : currentTheme
+                                          .currentTheme.scaffoldBackgroundColor,
+                                  leading: Container(
+                                      margin: EdgeInsets.only(left: 15),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
+                                        child: CircleAvatar(
+                                            child: IconButton(
+                                                icon: Icon(Icons.arrow_back_ios,
                                                     size: 20,
+                                                    color: (_showTitle)
+                                                        ? currentTheme
+                                                            .currentTheme
+                                                            .accentColor
+                                                        : Colors.white),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                }),
+                                            backgroundColor: _showTitle
+                                                ? (currentTheme.customTheme)
+                                                    ? Colors.black54
+                                                    : Colors.white54
+                                                : Colors.black54),
+                                      )),
+
+                                  actions: [
+                                    (widget.isUserAuth)
+                                        ? Container(
+                                            margin: EdgeInsets.only(
+                                                left: 0, right: 0),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(20.0)),
+                                              child: CircleAvatar(
+                                                  child:
+                                                      PopupMenuButton<String>(
+                                                    icon: FaIcon(
+                                                        FontAwesomeIcons
+                                                            .ellipsisV,
+                                                        size: 20,
+                                                        color: (_showTitle)
+                                                            ? currentTheme
+                                                                .currentTheme
+                                                                .accentColor
+                                                            : Colors.white),
+                                                    onSelected:
+                                                        (String result) {
+                                                      switch (result) {
+                                                        case '1':
+                                                          aws.isUploadImagePlant =
+                                                              false;
+                                                          visitService.visit =
+                                                              visit;
+                                                          Navigator.of(context)
+                                                              .push(
+                                                                  createRouteNewVisit(
+                                                                      visit,
+                                                                      widget
+                                                                          .plant
+                                                                          .id,
+                                                                      false));
+
+                                                          break;
+                                                        case '2':
+                                                          aws.isUploadImagePlant =
+                                                              false;
+                                                          plantService.plant =
+                                                              plant;
+                                                          Navigator.of(context).push(
+                                                              createRouteEditPlant(
+                                                                  widget
+                                                                      .plant));
+                                                          break;
+                                                        case '3':
+                                                          confirmDelete(
+                                                              context,
+                                                              'Confirmar',
+                                                              'Desea eliminar la Planta y todas sus visitas?',
+                                                              plant.id,
+                                                              currentTheme
+                                                                  .currentTheme
+                                                                  .cardColor);
+                                                          break;
+                                                        default:
+                                                      }
+                                                    },
+                                                    itemBuilder: (BuildContext
+                                                            context) =>
+                                                        <
+                                                            PopupMenuEntry<
+                                                                String>>[
+                                                      PopupMenuItem<String>(
+                                                          value: '1',
+                                                          child: Row(
+                                                            children: [
+                                                              FaIcon(
+                                                                  FontAwesomeIcons
+                                                                      .eye,
+                                                                  size: 20,
+                                                                  color: currentTheme
+                                                                      .currentTheme
+                                                                      .accentColor),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                'Visitar',
+                                                                style: TextStyle(
+                                                                    color: currentTheme
+                                                                        .currentTheme
+                                                                        .accentColor),
+                                                              ),
+                                                            ],
+                                                          )),
+                                                      PopupMenuItem<String>(
+                                                          value: '2',
+                                                          child: Row(
+                                                            children: [
+                                                              FaIcon(
+                                                                FontAwesomeIcons
+                                                                    .edit,
+                                                                color: currentTheme
+                                                                    .currentTheme
+                                                                    .accentColor,
+                                                                size: 20,
+                                                              ),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text('Editar',
+                                                                  style: TextStyle(
+                                                                      color: currentTheme
+                                                                          .currentTheme
+                                                                          .accentColor)),
+                                                            ],
+                                                          )),
+                                                      PopupMenuItem<String>(
+                                                        value: '3',
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(Icons.delete,
+                                                                color: Colors
+                                                                    .grey),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Text('Eliminar',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .grey)),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text('Editar',
-                                                      style: TextStyle(
-                                                          color: currentTheme
-                                                              .currentTheme
-                                                              .accentColor)),
-                                                ],
-                                              )),
-                                          PopupMenuItem<String>(
-                                            value: '3',
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.delete,
-                                                    color: Colors.grey),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text('Eliminar',
-                                                    style: TextStyle(
-                                                        color: Colors.grey)),
-                                              ],
+                                                  backgroundColor: _showTitle
+                                                      ? (currentTheme
+                                                              .customTheme)
+                                                          ? Colors.black54
+                                                          : Colors.white54
+                                                      : Colors.black54),
+                                            ))
+                                        : Container(),
+                                    (widget.isUserAuth)
+                                        ? _buildCircleQuantityPlant()
+                                        : Container(),
+                                  ],
+
+                                  centerTitle: true,
+                                  pinned: true,
+
+                                  expandedHeight: maxHeight,
+                                  // collapsedHeight: 56.0001,
+                                  flexibleSpace: FlexibleSpaceBar(
+                                      stretchModes: [
+                                        StretchMode.zoomBackground,
+                                        StretchMode.fadeTitle,
+                                        // StretchMode.blurBackground
+                                      ],
+                                      background: Material(
+                                        type: MaterialType.transparency,
+                                        child: Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(0.0),
+                                                  topRight:
+                                                      Radius.circular(0.0),
+                                                  bottomRight:
+                                                      Radius.circular(30.0),
+                                                  bottomLeft:
+                                                      Radius.circular(30.0)),
+                                              child: cachedNetworkImage(
+                                                  plant.getCoverImg()),
                                             ),
-                                          ),
-                                        ],
+                                            Positioned(
+                                              bottom: 0.0,
+                                              left: 0.0,
+                                              right: 0.0,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50.0),
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color.fromARGB(
+                                                          170, 0, 0, 0),
+                                                      Color.fromARGB(0, 0, 0, 0)
+                                                    ],
+                                                    begin:
+                                                        Alignment.bottomCenter,
+                                                    end: Alignment.topCenter,
+                                                  ),
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 30.0,
+                                                    horizontal: 20.0),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      backgroundColor: _showTitle
-                                          ? (currentTheme.customTheme)
-                                              ? Colors.black54
-                                              : Colors.white54
-                                          : Colors.black54),
-                                ))
-                            : Container(),
-                        (widget.isUserAuth)
-                            ? _buildCircleQuantityPlant()
-                            : Container(),
-                      ],
-
-                      centerTitle: true,
-                      pinned: true,
-
-                      expandedHeight: maxHeight,
-                      // collapsedHeight: 56.0001,
-                      flexibleSpace: FlexibleSpaceBar(
-                          stretchModes: [
-                            StretchMode.zoomBackground,
-                            StretchMode.fadeTitle,
-                            // StretchMode.blurBackground
-                          ],
-                          background: Material(
-                            type: MaterialType.transparency,
-                            child: Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(0.0),
-                                      topRight: Radius.circular(0.0),
-                                      bottomRight: Radius.circular(30.0),
-                                      bottomLeft: Radius.circular(30.0)),
-                                  child:
-                                      cachedNetworkImage(plant.getCoverImg()),
+                                      centerTitle: true,
+                                      title: Container(
+                                          //  margin: EdgeInsets.only(left: 0),
+                                          width: size.height / 3,
+                                          height: 30,
+                                          child: Container(
+                                            child: Center(
+                                              child: Text(
+                                                plant.name.capitalize(),
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: _showTitle
+                                                        ? (currentTheme
+                                                                .customTheme)
+                                                            ? Colors.white
+                                                            : Colors.black
+                                                        : Colors.white),
+                                              ),
+                                            ),
+                                          ))),
                                 ),
-                                Positioned(
-                                  bottom: 0.0,
-                                  left: 0.0,
-                                  right: 0.0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Color.fromARGB(170, 0, 0, 0),
-                                          Color.fromARGB(0, 0, 0, 0)
-                                        ],
-                                        begin: Alignment.bottomCenter,
-                                        end: Alignment.topCenter,
-                                      ),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 30.0, horizontal: 20.0),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          centerTitle: true,
-                          title: Container(
-                              //  margin: EdgeInsets.only(left: 0),
-                              width: size.height / 3,
-                              height: 30,
-                              child: Container(
-                                child: Center(
-                                  child: Text(
-                                    plant.name.capitalize(),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: _showTitle
-                                            ? (currentTheme.customTheme)
-                                                ? Colors.white
-                                                : Colors.black
-                                            : Colors.white),
-                                  ),
-                                ),
-                              ))),
-                    ),
 
-                    // makeHeaderSpacer(context),
-                    makeHeaderInfo(context),
-                    // makeHeaderSpacer(context),
+                                // makeHeaderSpacer(context),
+                                makeHeaderInfo(context),
+                                // makeHeaderSpacer(context),
 
-                    //   makeHeaderTabs(context),
+                                //   makeHeaderTabs(context),
 
-                    makeListVisits(context)
-                  ])),
-        ));
+                                makeListVisits(context)
+                              ])),
+                    ))),
+
+            //CollapsingList(_hideBottomNavController),
+
+            // floatingActionButton: ButtomFloating(),
+          ),
+        );
+      }),
+    );
   }
 
   void _snapAppbar() {
@@ -453,7 +516,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                                   ))),
                           Container(
                               margin:
-                                  EdgeInsets.only(left: 10, right: 10, top: 15),
+                                  EdgeInsets.only(left: 10, right: 10, top: 40),
                               child: _buildWidgetVisits(visits)),
                         ],
                       )

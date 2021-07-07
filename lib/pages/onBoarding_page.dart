@@ -14,8 +14,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView(
-            child: LayoutBuilder(builder: (context, constraints) {
+        body: LayoutBuilder(builder: (context, constraints) {
           return AnimatedContainer(
               decoration: new BoxDecoration(
                 gradient: LinearGradient(
@@ -84,6 +83,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   ),
                 ),
               ));
-        })));
+        }));
   }
 }

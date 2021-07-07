@@ -660,7 +660,7 @@ Widget _buildWidgetVisits(List<Visit> visits, context) {
   return (visits.length > 0)
       ? CarouselSlider.builder(
           options: CarouselOptions(
-            height: size.height / 4.0,
+            height: size.height / 3.5,
             viewportFraction: 0.80,
             initialPage: 0,
             enableInfiniteScroll: false,

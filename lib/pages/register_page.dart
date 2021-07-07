@@ -19,6 +19,8 @@ import 'package:leafety/helpers/mostrar_alerta.dart';
 
 import 'dart:ui' as ui;
 
+import 'package:universal_platform/universal_platform.dart';
+
 class RegisterPage extends StatelessWidget {
   Future<ui.Image> image(String url) async =>
       await NetworkImageDecoder(image: NetworkImage(url)).uiImage;
@@ -95,17 +97,23 @@ class RegisterPage extends StatelessWidget {
                         ],
                       ),
                       if (!loading)
-                        Expanded(
-                          child: Container(
-                              //padding: EdgeInsets.only(top: 30),
-                              alignment: Alignment.center,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    _buildCircleGoogle(context),
-                                    _buildCircleApple(context),
-                                  ])),
+                        if (UniversalPlatform.isAndroid)
+                          Expanded(
+                            child: Container(
+                                //padding: EdgeInsets.only(top: 30),
+                                alignment: Alignment.center,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      _buildCircleGoogle(context),
+                                      _buildCircleApple(context),
+                                    ])),
+                          ),
+                      if (UniversalPlatform.isWeb)
+                        SizedBox(
+                          height: 50,
                         ),
                       Expanded(
                         child: Container(

@@ -175,11 +175,12 @@ class _ProfileCardState extends State<ProfileCard> {
                         duration: Duration(milliseconds: 500),
                         child: Container(
                             //top: size.height / 3.5,
-
                             margin: EdgeInsets.only(
-                                top: size.height / 10.5,
-                                left: size.width / 1.8,
-                                right: size.width / 20),
+                                left: (UniversalPlatform.isWeb)
+                                    ? size.width / 2.2
+                                    : size.width / 1.8,
+                                bottom: 10,
+                                right: 10),
                             child: Align(
                               alignment: Alignment.bottomRight,
                               child: ButtonSubEditProfile(
@@ -202,12 +203,12 @@ class _ProfileCardState extends State<ProfileCard> {
                       return FadeIn(
                         duration: Duration(milliseconds: 500),
                         child: Container(
-                          //top: size.height / 3.5,
-
                           margin: EdgeInsets.only(
-                              top: size.height / 10.5,
-                              left: size.width / 1.9,
-                              right: size.width / 20),
+                              left: (UniversalPlatform.isWeb)
+                                  ? size.width / 2.2
+                                  : size.width / 1.8,
+                              bottom: 10,
+                              right: 10),
                           child: Align(
                             alignment: Alignment.bottomRight,
                             child: ButtonSubEditProfile(
@@ -240,11 +241,12 @@ class _ProfileCardState extends State<ProfileCard> {
                 duration: Duration(milliseconds: 500),
                 child: Container(
                     //top: size.height / 3.5,
-                    // padding: EdgeInsets.only(top: 0.0),
                     margin: EdgeInsets.only(
-                        top: size.height / 10.5,
-                        left: size.width / 1.8,
-                        right: size.width / 20),
+                        left: (UniversalPlatform.isWeb)
+                            ? size.width / 2.2
+                            : size.width / 1.8,
+                        bottom: 10,
+                        right: 10),
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: ButtonSubEditProfile(
@@ -283,9 +285,11 @@ class _ProfileCardState extends State<ProfileCard> {
                       //top: size.height / 3.5,
 
                       margin: EdgeInsets.only(
-                          top: size.height / 10.5,
-                          left: size.width / 1.9,
-                          right: size.width / 20),
+                          left: (UniversalPlatform.isWeb)
+                              ? size.width / 2.2
+                              : size.width / 1.8,
+                          bottom: 10,
+                          right: 10),
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: ButtonSubEditProfile(
@@ -318,9 +322,11 @@ class _ProfileCardState extends State<ProfileCard> {
                       //top: size.height / 3.5,
 
                       margin: EdgeInsets.only(
-                          top: size.height / 10.5,
-                          left: size.width / 1.9,
-                          right: size.width / 20),
+                          left: (UniversalPlatform.isWeb)
+                              ? size.width / 2.2
+                              : size.width / 1.8,
+                          bottom: 10,
+                          right: 10),
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: ButtonSubEditProfile(
@@ -354,9 +360,11 @@ class _ProfileCardState extends State<ProfileCard> {
                     child: Container(
                       //top: size.height / 3.5,
                       margin: EdgeInsets.only(
-                          top: size.height / 10.5,
-                          left: size.width / 1.9,
-                          right: size.width / 20),
+                          left: (UniversalPlatform.isWeb)
+                              ? size.width / 2.2
+                              : size.width / 1.8,
+                          bottom: 10,
+                          right: 10),
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: ButtonSubEditProfile(
@@ -389,9 +397,11 @@ class _ProfileCardState extends State<ProfileCard> {
                     child: Container(
                       //top: size.height / 3.5,
                       margin: EdgeInsets.only(
-                          top: size.height / 10.5,
-                          left: size.width / 1.9,
-                          right: size.width / 20),
+                          left: (UniversalPlatform.isWeb)
+                              ? size.width / 2.2
+                              : size.width / 1.8,
+                          bottom: 10,
+                          right: 10),
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: ButtonSubEditProfile(

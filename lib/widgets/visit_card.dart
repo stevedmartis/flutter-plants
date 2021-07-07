@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_platform/universal_platform.dart';
 import '../utils/extension.dart';
 
 class CardVisit extends StatefulWidget {
@@ -40,7 +41,7 @@ class _CardVisitState extends State<CardVisit> {
           Container(
               color: Colors.black,
               width: size.width,
-              height: size.height / 5,
+              height: size.height / 4,
               child: ColorFiltered(
                   colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.50), BlendMode.dstATop),
@@ -73,7 +74,9 @@ class _CardVisitState extends State<CardVisit> {
                 padding: EdgeInsets.only(
                   top: 10,
                   left: size.width / 30.0,
-                  right: 90.0,
+                  right: UniversalPlatform.isWeb
+                      ? size.width / 1.8
+                      : size.width / 2.5,
                 ),
                 margin: EdgeInsets.all(16.0),
                 child: Text(

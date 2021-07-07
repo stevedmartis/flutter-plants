@@ -398,92 +398,47 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
         (thisProfile.name == "") ? thisProfile.user.username : thisProfile.name;
 
     //final username = widget.profile.user.username.toLowerCase();
+    Size _size = MediaQuery.of(context).size;
 
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
-          endDrawer: PrincipalMenu(),
-          key: scaffolKey,
-          // bottomNavigationBar: BottomNavigation(isVisible: _isVisible),
-          body: NestedScrollView(
-              controller: _scrollController,
-              headerSliverBuilder: (context, value) {
-                return [
-                  // header
+    return Scaffold(
+        backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
+        endDrawer: PrincipalMenu(),
+        key: scaffolKey,
+        body: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
+          return AnimatedContainer(
+            padding:
+                constraints.maxWidth < 500 ? EdgeInsets.zero : EdgeInsets.zero,
+            duration: Duration(milliseconds: 500),
 
-                  SliverAppBar(
-                    stretch: true,
-                    stretchTriggerOffset: 250.0,
+            child: Center(
+              child: Container(
+                  constraints: BoxConstraints(maxWidth: 500, minWidth: 500),
+                  width: _size.width,
+                  height: _size.height,
+                  child: NestedScrollView(
+                      controller: _scrollController,
+                      headerSliverBuilder: (context, value) {
+                        return [
+                          // header
 
-                    backgroundColor: _showTitle
-                        ? (currentTheme.customTheme
-                            ? Colors.black
-                            : Colors.white)
-                        : currentTheme.currentTheme.scaffoldBackgroundColor,
-                    leading: Container(
-                        margin: EdgeInsets.only(left: 15),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          child: CircleAvatar(
-                              child: IconButton(
-                                  icon: Icon(Icons.arrow_back_ios,
-                                      size: 20,
-                                      color: (_showTitle)
-                                          ? currentTheme
-                                              .currentTheme.accentColor
-                                          : (currentTheme.customTheme
-                                              ? Colors.white
-                                              : Colors.black)),
-                                  onPressed: () => {
-                                        {},
-                                        Navigator.pop(context),
-                                      }),
-                              backgroundColor: (currentTheme.customTheme
-                                  ? Colors.black.withOpacity(0.60)
-                                  : Colors.white.withOpacity(0.60))),
-                        )),
+                          SliverAppBar(
+                            stretch: true,
+                            stretchTriggerOffset: 250.0,
 
-                    actions: [
-                      (!widget.isUserAuth)
-                          ? Container(
-                              width: 40,
-                              height: 40,
-                              margin: EdgeInsets.only(right: 20),
-                              child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20.0)),
-                                child: CircleAvatar(
-                                    child: Center(
-                                      child: IconButton(
-                                        icon: FaIcon(
-                                            FontAwesomeIcons.commentDots,
-                                            size: 25,
-                                            color: (_showTitle)
-                                                ? currentTheme
-                                                    .currentTheme.accentColor
-                                                : (currentTheme.customTheme
-                                                    ? Colors.white
-                                                    : Colors.black)),
-                                        onPressed: () => Navigator.push(
-                                            context, createRouteChat()),
-                                      ),
-                                    ),
-                                    backgroundColor: (currentTheme.customTheme
-                                        ? Colors.black.withOpacity(0.60)
-                                        : Colors.white.withOpacity(0.60))),
-                              ))
-                          : Container(
-                              width: 40,
-                              height: 40,
-                              margin: EdgeInsets.only(right: 20),
-                              child: ClipRRect(
+                            backgroundColor: _showTitle
+                                ? (currentTheme.customTheme
+                                    ? Colors.black
+                                    : Colors.white)
+                                : currentTheme
+                                    .currentTheme.scaffoldBackgroundColor,
+                            leading: Container(
+                                margin: EdgeInsets.only(left: 15),
+                                child: ClipRRect(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20.0)),
                                   child: CircleAvatar(
-                                      child: Center(
-                                        child: IconButton(
-                                          icon: FaIcon(
-                                              FontAwesomeIcons.ellipsisV,
+                                      child: IconButton(
+                                          icon: Icon(Icons.arrow_back_ios,
                                               size: 20,
                                               color: (_showTitle)
                                                   ? currentTheme
@@ -492,207 +447,295 @@ class _MyProfileState extends State<MyProfile> with TickerProviderStateMixin {
                                                       ? Colors.white
                                                       : Colors.black)),
                                           onPressed: () => {
-                                            scaffolKey.currentState
-                                                .openEndDrawer()
-                                          },
-                                        ),
-                                      ),
+                                                {},
+                                                Navigator.pop(context),
+                                              }),
                                       backgroundColor: (currentTheme.customTheme
                                           ? Colors.black.withOpacity(0.60)
-                                          : Colors.white.withOpacity(0.60))))),
-                    ],
+                                          : Colors.white.withOpacity(0.60))),
+                                )),
 
-                    centerTitle: false,
-                    pinned: true,
+                            actions: [
+                              (!widget.isUserAuth)
+                                  ? Container(
+                                      width: 40,
+                                      height: 40,
+                                      margin: EdgeInsets.only(right: 20),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
+                                        child: CircleAvatar(
+                                            child: Center(
+                                              child: IconButton(
+                                                icon: FaIcon(
+                                                    FontAwesomeIcons
+                                                        .commentDots,
+                                                    size: 25,
+                                                    color: (_showTitle)
+                                                        ? currentTheme
+                                                            .currentTheme
+                                                            .accentColor
+                                                        : (currentTheme
+                                                                .customTheme
+                                                            ? Colors.white
+                                                            : Colors.black)),
+                                                onPressed: () => Navigator.push(
+                                                    context, createRouteChat()),
+                                              ),
+                                            ),
+                                            backgroundColor: (currentTheme
+                                                    .customTheme
+                                                ? Colors.black.withOpacity(0.60)
+                                                : Colors.white
+                                                    .withOpacity(0.60))),
+                                      ))
+                                  : Container(
+                                      width: 40,
+                                      height: 40,
+                                      margin: EdgeInsets.only(right: 20),
+                                      child: ClipRRect(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20.0)),
+                                          child: CircleAvatar(
+                                              child: Center(
+                                                child: IconButton(
+                                                  icon: FaIcon(
+                                                      FontAwesomeIcons
+                                                          .ellipsisV,
+                                                      size: 20,
+                                                      color: (_showTitle)
+                                                          ? currentTheme
+                                                              .currentTheme
+                                                              .accentColor
+                                                          : (currentTheme
+                                                                  .customTheme
+                                                              ? Colors.white
+                                                              : Colors.black)),
+                                                  onPressed: () => {
+                                                    scaffolKey.currentState
+                                                        .openEndDrawer()
+                                                  },
+                                                ),
+                                              ),
+                                              backgroundColor: (currentTheme
+                                                      .customTheme
+                                                  ? Colors.black
+                                                      .withOpacity(0.60)
+                                                  : Colors.white
+                                                      .withOpacity(0.60))))),
+                            ],
 
-                    expandedHeight: maxHeight,
-                    shadowColor:
-                        currentTheme.currentTheme.scaffoldBackgroundColor,
-
-                    // collapsedHeight: 56.0001,
-                    flexibleSpace: FlexibleSpaceBar(
-                      title: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            (_showName)
-                                ? FadeIn(
-                                    child: Text(name,
-                                        style: TextStyle(
-                                          color: (currentTheme.customTheme)
-                                              ? Colors.white
-                                              : Colors.black,
-                                        )))
-                                : Container(),
-                            (_showName && thisProfile.isClub)
-                                ? FadeIn(
-                                    child: Container(
-                                      margin: EdgeInsets.only(left: 10),
-                                      child: Stack(children: [
-                                        FaIcon(
-                                          FontAwesomeIcons.certificate,
-                                          color: currentTheme
-                                              .currentTheme.accentColor,
-                                          size: 20,
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              left: 4.5, top: 4.5),
-                                          child: FaIcon(
-                                            FontAwesomeIcons.check,
-                                            color: (currentTheme.customTheme)
-                                                ? Colors.black
-                                                : Colors.white,
-                                            size: 11,
-                                          ),
-                                        )
-                                      ]),
-                                    ),
-                                  )
-                                : Container(),
-                          ]),
-                      stretchModes: [
-                        StretchMode.zoomBackground,
-                        StretchMode.fadeTitle,
-                        // StretchMode.blurBackground
-                      ],
-                      background: ProfilePage(
-                        productsDispensaryBloc: productsDispensaryBloc,
-                        isEmpty: false,
-                        loading: false,
-                        //image: snapshot.data,
-                        isUserAuth: widget.isUserAuth,
-                        isUserEdit: widget.isUserEdit,
-                        profile: thisProfile,
-                      ),
-                      centerTitle: true,
-                    ),
-                  ),
-
-                  (!this.widget.isUserEdit)
-                      ? makeInfoProfile(context)
-                      : makeHeaderSpacer(context),
-
-                  // makeHeaderSpace(context),
-
-                  (thisProfile.isClub && !widget.isUserAuth)
-                      ? makePrivateAccountMessage(context)
-                      : makeHeaderSpacer(context),
-
-                  if (thisProfile.isClub)
-                    (itemCount != null)
-                        ? SliverAppBar(
-                            toolbarHeight: 50,
+                            centerTitle: false,
                             pinned: true,
-                            backgroundColor: currentTheme
+
+                            expandedHeight: maxHeight,
+                            shadowColor: currentTheme
                                 .currentTheme.scaffoldBackgroundColor,
-                            automaticallyImplyLeading: false,
-                            actions: [Container()],
-                            title: Container(
-                                alignment: Alignment.centerLeft,
-                                child: TabBar(
-                                    controller: controller,
-                                    indicatorWeight: 5,
-                                    isScrollable: true,
-                                    labelColor: currentTheme
-                                        .currentTheme.accentColor,
-                                    unselectedLabelColor:
-                                        (currentTheme.customTheme)
-                                            ? Colors.white54.withOpacity(0.30)
-                                            : currentTheme
-                                                .currentTheme.primaryColor,
-                                    indicatorColor:
-                                        currentTheme.currentTheme.accentColor,
-                                    indicator: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: currentTheme
-                                              .currentTheme.accentColor,
-                                          width: 4,
-                                        ),
-                                      ),
-                                    ),
-                                    tabs: List.generate(
+
+                            // collapsedHeight: 56.0001,
+                            flexibleSpace: FlexibleSpaceBar(
+                              title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    (_showName)
+                                        ? FadeIn(
+                                            child: Text(name,
+                                                style: TextStyle(
+                                                  color:
+                                                      (currentTheme.customTheme)
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                )))
+                                        : Container(),
+                                    (_showName && thisProfile.isClub)
+                                        ? FadeIn(
+                                            child: Container(
+                                              margin: EdgeInsets.only(left: 10),
+                                              child: Stack(children: [
+                                                FaIcon(
+                                                  FontAwesomeIcons.certificate,
+                                                  color: currentTheme
+                                                      .currentTheme.accentColor,
+                                                  size: 20,
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.only(
+                                                      left: 4.5, top: 4.5),
+                                                  child: FaIcon(
+                                                    FontAwesomeIcons.check,
+                                                    color: (currentTheme
+                                                            .customTheme)
+                                                        ? Colors.black
+                                                        : Colors.white,
+                                                    size: 11,
+                                                  ),
+                                                )
+                                              ]),
+                                            ),
+                                          )
+                                        : Container(),
+                                  ]),
+                              stretchModes: [
+                                StretchMode.zoomBackground,
+                                StretchMode.fadeTitle,
+                                // StretchMode.blurBackground
+                              ],
+                              background: ProfilePage(
+                                productsDispensaryBloc: productsDispensaryBloc,
+                                isEmpty: false,
+                                loading: false,
+                                //image: snapshot.data,
+                                isUserAuth: widget.isUserAuth,
+                                isUserEdit: widget.isUserEdit,
+                                profile: thisProfile,
+                              ),
+                              centerTitle: true,
+                            ),
+                          ),
+
+                          (!this.widget.isUserEdit)
+                              ? makeInfoProfile(context)
+                              : makeHeaderSpacer(context),
+
+                          // makeHeaderSpace(context),
+
+                          (thisProfile.isClub && !widget.isUserAuth)
+                              ? makePrivateAccountMessage(context)
+                              : makeHeaderSpacer(context),
+
+                          if (thisProfile.isClub)
+                            (itemCount != null)
+                                ? SliverAppBar(
+                                    toolbarHeight: 50,
+                                    pinned: true,
+                                    backgroundColor: currentTheme
+                                        .currentTheme.scaffoldBackgroundColor,
+                                    automaticallyImplyLeading: false,
+                                    actions: [Container()],
+                                    title: Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: TabBar(
+                                            controller: controller,
+                                            indicatorWeight: 5,
+                                            isScrollable: true,
+                                            labelColor: currentTheme
+                                                .currentTheme.accentColor,
+                                            unselectedLabelColor:
+                                                (currentTheme.customTheme)
+                                                    ? Colors.white54
+                                                        .withOpacity(0.30)
+                                                    : currentTheme.currentTheme
+                                                        .primaryColor,
+                                            indicatorColor: currentTheme
+                                                .currentTheme.accentColor,
+                                            indicator: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  color: currentTheme
+                                                      .currentTheme.accentColor,
+                                                  width: 4,
+                                                ),
+                                              ),
+                                            ),
+                                            tabs: List.generate(
+                                              itemCount,
+                                              (index) => FadeInLeft(
+                                                  child: tabBuilder(
+                                                      context, index)),
+                                            ))))
+                                : makeHeaderSpacerShort(context)
+                        ];
+                      },
+
+                      // tab bar view
+                      body: (thisProfile.isClub)
+                          ? (itemCount != null)
+                              ? TabBarView(
+                                  controller: controller,
+                                  children: List.generate(
                                       itemCount,
-                                      (index) => FadeInLeft(
-                                          child: tabBuilder(context, index)),
-                                    ))))
-                        : makeHeaderSpacerShort(context)
-                ];
-              },
+                                      (index) => Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                    height: 30,
+                                                    padding: EdgeInsets.only(
+                                                        left: 20,
+                                                        top: 15,
+                                                        bottom: 0),
+                                                    child: Text(
+                                                      'Tratamientos',
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    )),
+                                                Expanded(
+                                                    child: pageBuilder(
+                                                        context, index))
+                                              ])),
+                                )
+                              : Container()
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: 20, top: 15),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Pedidos',
+                                    style: TextStyle(
+                                        color: (currentTheme.customTheme)
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: StreamBuilder<
+                                      DispensariesProductsResponse>(
+                                    stream: productsDispensaryBloc
+                                        .dispensariesProducts.stream,
+                                    builder: (context,
+                                        AsyncSnapshot<
+                                                DispensariesProductsResponse>
+                                            snapshot) {
+                                      if (snapshot.hasData) {
+                                        dispensariesProducts =
+                                            snapshot.data.dispensariesProducts;
 
-              // tab bar view
-              body: (thisProfile.isClub)
-                  ? (itemCount != null)
-                      ? TabBarView(
-                          controller: controller,
-                          children: List.generate(
-                              itemCount,
-                              (index) => Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                            height: 30,
-                                            padding: EdgeInsets.only(
-                                                left: 20, top: 15, bottom: 0),
-                                            child: Text(
-                                              'Tratamientos',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontWeight: FontWeight.bold),
-                                            )),
-                                        Expanded(
-                                            child: pageBuilder(context, index))
-                                      ])),
-                        )
-                      : Container()
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 20, top: 15),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Pedidos',
-                            style: TextStyle(
-                                color: (currentTheme.customTheme)
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          ),
-                        ),
-                        Expanded(
-                          child: StreamBuilder<DispensariesProductsResponse>(
-                            stream: productsDispensaryBloc
-                                .dispensariesProducts.stream,
-                            builder: (context,
-                                AsyncSnapshot<DispensariesProductsResponse>
-                                    snapshot) {
-                              if (snapshot.hasData) {
-                                dispensariesProducts =
-                                    snapshot.data.dispensariesProducts;
+                                        return (snapshot
+                                                    .data
+                                                    .dispensariesProducts
+                                                    .length >
+                                                0)
+                                            ? _buildWidgetDispensaryProducts(
+                                                context, profile)
+                                            : Container();
+                                      } else if (snapshot.hasError) {
+                                        return _buildErrorWidget(
+                                            snapshot.error);
+                                      } else {
+                                        return _buildLoadingWidget();
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ))),
+            ),
 
-                                return (snapshot
-                                            .data.dispensariesProducts.length >
-                                        0)
-                                    ? _buildWidgetDispensaryProducts(
-                                        context, profile)
-                                    : Container();
-                              } else if (snapshot.hasError) {
-                                return _buildErrorWidget(snapshot.error);
-                              } else {
-                                return _buildLoadingWidget();
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ))),
-    );
+            //CollapsingList(_hideBottomNavController),
+
+            // floatingActionButton: ButtomFloating(),
+          );
+        })));
 
     /*   (itemCount != null)
                 ? TabBarView(

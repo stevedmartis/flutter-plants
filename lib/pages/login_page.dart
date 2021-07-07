@@ -21,6 +21,8 @@ import 'package:leafety/helpers/mostrar_alerta.dart';
 
 import 'dart:ui' as ui;
 
+import 'package:universal_platform/universal_platform.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -103,16 +105,23 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                       if (!loading)
-                        Expanded(
-                          child: Container(
-                              alignment: Alignment.center,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    _buildCircleGoogle(),
-                                    _buildCircleApple(),
-                                  ])),
+                        if (UniversalPlatform.isAndroid)
+                          Expanded(
+                            child: Container(
+                                //padding: EdgeInsets.only(top: 30),
+                                alignment: Alignment.center,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      _buildCircleGoogle(),
+                                      _buildCircleApple(),
+                                    ])),
+                          ),
+                      if (UniversalPlatform.isWeb)
+                        SizedBox(
+                          height: 50,
                         ),
                       Expanded(
                         child: Container(

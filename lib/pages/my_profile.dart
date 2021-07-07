@@ -10,17 +10,33 @@ class MyProfilePage extends StatelessWidget {
     final authService = Provider.of<AuthService>(context);
 
     final profile = authService.profile;
+    Size _size = MediaQuery.of(context).size;
 
     changeStatusDark();
 
     return Scaffold(
-      body: Center(
-        child: MyProfile(
-          profile: profile,
-          isUserAuth: true,
-          isUserEdit: true,
+        body: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
+      return AnimatedContainer(
+        padding: constraints.maxWidth < 500 ? EdgeInsets.zero : EdgeInsets.zero,
+        duration: Duration(milliseconds: 500),
+
+        child: Container(
+          constraints: BoxConstraints(maxWidth: 500, minWidth: 500),
+          width: _size.width,
+          height: _size.height,
+          child: Center(
+            child: MyProfile(
+              profile: profile,
+              isUserAuth: true,
+              isUserEdit: true,
+            ),
+          ),
         ),
-      ),
-    );
+
+        //CollapsingList(_hideBottomNavController),
+
+        // floatingActionButton: ButtomFloating(),
+      );
+    })));
   }
 }

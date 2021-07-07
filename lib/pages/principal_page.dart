@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class PrincipalPage extends StatefulWidget {
   @override
@@ -149,42 +150,42 @@ class _PrincipalPageState extends State<PrincipalPage> {
     final _onFirstPage = (currentPage == 0) ? true : false;
     Size _size = MediaQuery.of(context).size;
 
-    return SafeArea(child: LayoutBuilder(builder: (context, constraints) {
-      return AnimatedContainer(
-        padding: constraints.maxWidth < 500 ? EdgeInsets.zero : EdgeInsets.zero,
-        duration: Duration(milliseconds: 500),
-
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 500, minWidth: 500),
-          width: _size.width,
-          height: _size.height,
-          child: Scaffold(
-            endDrawer: PrincipalMenu(),
-            body: PageTransitionSwitcher(
-                duration: Duration(milliseconds: 500),
-                reverse: !_onFirstPage,
-                transitionBuilder: (Widget child, Animation<double> animation,
-                    Animation<double> secondaryAnimation) {
-                  return SharedAxisTransition(
-                    fillColor:
-                        currentTheme.currentTheme.scaffoldBackgroundColor,
-                    transitionType: SharedAxisTransitionType.horizontal,
-                    animation: animation,
-                    secondaryAnimation: secondaryAnimation,
-                    child: child,
-                  );
-                },
-                child: pageRouter[currentPage].page),
-            bottomNavigationBar:
-                BottomNavigation(isVisible: authService.bottomVisible),
+    return Scaffold(
+      backgroundColor: currentTheme.currentTheme.scaffoldBackgroundColor,
+      endDrawer: PrincipalMenu(),
+      body: LayoutBuilder(builder: (context, constraints) {
+        return AnimatedContainer(
+          color: currentTheme.currentTheme.scaffoldBackgroundColor,
+          padding:
+              constraints.maxWidth < 500 ? EdgeInsets.zero : EdgeInsets.zero,
+          duration: Duration(milliseconds: 500),
+          child: Center(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 500, minWidth: 500),
+              width: _size.width,
+              height: _size.height,
+              child: PageTransitionSwitcher(
+                  duration: Duration(milliseconds: 500),
+                  reverse: !_onFirstPage,
+                  transitionBuilder: (Widget child, Animation<double> animation,
+                      Animation<double> secondaryAnimation) {
+                    return SharedAxisTransition(
+                      fillColor:
+                          currentTheme.currentTheme.scaffoldBackgroundColor,
+                      transitionType: SharedAxisTransitionType.horizontal,
+                      animation: animation,
+                      secondaryAnimation: secondaryAnimation,
+                      child: child,
+                    );
+                  },
+                  child: pageRouter[currentPage].page),
+            ),
           ),
-        ),
-
-        //CollapsingList(_hideBottomNavController),
-
-        // floatingActionButton: ButtomFloating(),
-      );
-    }));
+        );
+      }),
+      bottomNavigationBar:
+          BottomNavigation(isVisible: authService.bottomVisible),
+    );
   }
 }
 

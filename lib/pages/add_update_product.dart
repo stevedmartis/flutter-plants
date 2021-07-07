@@ -793,18 +793,13 @@ class _AddUpdateProductPageState extends State<AddUpdateProductPage> {
 
     if (createProductResp != null) {
       if (createProductResp.ok) {
-        // widget.plants.add(createPlantResp.plant);
-
         (productService.productProfile != null)
             ? productService.productProfile.product = createProductResp.product
             : productService.product = createProductResp.product;
 
-        // productBloc.getPlant(createPlantResp.plant);
-
         setState(() {
           loading = false;
 
-          // plantBloc.getPlantsByUser(profile.user.uid);
           productBloc.getProductsPrincipal(uid);
           productBloc.getCatalogosProducts(profile.user.uid);
 
